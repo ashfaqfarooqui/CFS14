@@ -1,5 +1,4 @@
 .\uv4build\main.o: main.cpp
-.\uv4build\main.o: .\Utilities\STM32F4-Discovery\stm32f4_discovery.h
 .\uv4build\main.o: .\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h
 .\uv4build\main.o: .\Libraries\CMSIS\Include\core_cm4.h
 .\uv4build\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
@@ -35,3 +34,15 @@
 .\uv4build\main.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h
 .\uv4build\main.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\uv4build\main.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
+.\uv4build\main.o: .\STM32F4_Discovery\discoveryf4utils.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\FreeRTOS.h
+.\uv4build\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\projdefs.h
+.\uv4build\main.o: .\FreeRTOS\FreeRTOSConfig.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\portable.h
+.\uv4build\main.o: .\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\mpu_wrappers.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\queue.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\task.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\list.h
+.\uv4build\main.o: .\FreeRTOS\Source\include\croutine.h

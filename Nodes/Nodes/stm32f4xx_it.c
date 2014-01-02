@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * @file    IO_Toggle/stm32f4xx_it.c 
+  * @file    stm32f4xx_it.c
   * @author  MCD Application Team
   * @version V1.0.0
   * @date    19-September-2011
   * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
+  *          This file provides all exceptions handler and peripherals interrupt
+  *          service routine.
   ******************************************************************************
   * @attention
   *
@@ -19,28 +19,19 @@
   *
   * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
   ******************************************************************************
-  */ 
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
-
-/** @addtogroup STM32F4_Discovery_Peripheral_Examples
-  * @{
-  */
-
-/** @addtogroup IO_Toggle
-  * @{
-  */ 
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
-/*            Cortex-M4 Processor Exceptions Handlers                         */
+/*            Cortex-M3 Processor Exceptions Handlers                         */
 /******************************************************************************/
 
 /**
@@ -109,9 +100,9 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-void SVC_Handler(void)
-{
-}
+// void SVC_Handler(void)
+// {
+// }
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -127,24 +118,24 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void PendSV_Handler(void)
-{
-}
+// void PendSV_Handler(void)
+// {
+// }
 
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
-{
-}
+// void SysTick_Handler(void)
+// {
+// }
 
 /******************************************************************************/
-/*                 STM32F4xx Peripherals Interrupt Handlers                   */
+/*                 STM32Fxxx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
 /*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32f4xx.s).                                               */
+/*  file (startup_stm32fxxx.s).                                               */
 /******************************************************************************/
 
 /**
@@ -157,11 +148,47 @@ void SysTick_Handler(void)
 }*/
 
 /**
-  * @}
-  */ 
+  * @brief  This function handles EXTI0_IRQ Handler.
+  * @param  None
+  * @retval None
+  */
+void EXTI0_IRQHandler(void)
+{
+}
 
 /**
-  * @}
-  */ 
+  * @brief  This function handles EXTI15_10_IRQ Handler.
+  * @param  None
+  * @retval None
+  */
+void OTG_FS_WKUP_IRQHandler(void)
+{
+}
+
+/**
+  * @brief  This function handles OTG_HS Handler.
+  * @param  None
+  * @retval None
+  */
+void OTG_FS_IRQHandler(void)
+{
+}
+
+/**
+  * @brief  This function handles SDIO global interrupt request.
+  * @param  None
+  * @retval None
+  */
+// void SDIO_IRQHandler(void)
+// {
+//   /* Process All SDIO Interrupt Sources */
+//   SD_ProcessIRQSrc();
+// }
+
+// void SD_SDIO_DMA_IRQHANDLER(void)
+// {
+// 	SD_ProcessDMAIRQ();
+// }
+
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

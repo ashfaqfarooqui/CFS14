@@ -1,4 +1,4 @@
-.\uv4build\system_stm32f4xx.o: system_stm32f4xx.c
+.\uv4build\system_stm32f4xx.o: Startup\system_stm32f4xx.c
 .\uv4build\system_stm32f4xx.o: .\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h
 .\uv4build\system_stm32f4xx.o: .\Libraries\CMSIS\Include\core_cm4.h
 .\uv4build\system_stm32f4xx.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
