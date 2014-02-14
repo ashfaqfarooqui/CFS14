@@ -5,6 +5,7 @@
 ".\uv4build\stm32f4xx_it.o"
 ".\uv4build\can.o"
 ".\uv4build\main.o"
+".\uv4build\uart.o"
 ".\uv4build\timers.o"
 ".\uv4build\tasks.o"
 ".\uv4build\queue.o"

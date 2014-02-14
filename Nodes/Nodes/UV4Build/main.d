@@ -1,4 +1,5 @@
 .\uv4build\main.o: App_code\main.c
+.\uv4build\main.o: App_code\main.h
 .\uv4build\main.o: .\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h
 .\uv4build\main.o: .\Libraries\CMSIS\Include\core_cm4.h
 .\uv4build\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
@@ -35,6 +36,7 @@
 .\uv4build\main.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\uv4build\main.o: .\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
 .\uv4build\main.o: .\STM32F4_Discovery\discoveryf4utils.h
+.\uv4build\main.o: App_code\UART.h
 .\uv4build\main.o: App_code\can.h
 .\uv4build\main.o: .\FreeRTOS\Source\include\FreeRTOS.h
 .\uv4build\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h

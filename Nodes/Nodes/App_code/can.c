@@ -6,109 +6,155 @@
  */
 
 #include "can.h"
+uint8_t TransmitMailbox = 0;
 
-
-
-
-void init_CAN_Communication()
-{
-			CAN_InitTypeDef        CAN_InitStructure;
-  CAN_FilterInitTypeDef  CAN_FilterInitStructure;
-
-
-  /* CAN register init */
-  CAN_DeInit(CAN1);
-  
-  /* CAN cell init */
-  CAN_InitStructure.CAN_TTCM = DISABLE;
-  CAN_InitStructure.CAN_ABOM = DISABLE;
-  CAN_InitStructure.CAN_AWUM = DISABLE;
-  CAN_InitStructure.CAN_NART = DISABLE;
-  CAN_InitStructure.CAN_RFLM = DISABLE;
-  CAN_InitStructure.CAN_TXFP = DISABLE;
-  CAN_InitStructure.CAN_Mode = CAN_Mode_LoopBack;
-  CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
-
-  /* CAN Baudrate = 175kbps (CAN clocked at 42 MHz) */
-  CAN_InitStructure.CAN_BS1 = CAN_BS1_6tq;
-  CAN_InitStructure.CAN_BS2 = CAN_BS2_8tq;
-  CAN_InitStructure.CAN_Prescaler = 16;
-  CAN_Init(CAN1, &CAN_InitStructure);
-
-  /* CAN filter init */
-#ifdef  USE_CAN1
-  CAN_FilterInitStructure.CAN_FilterNumber = 0;
-#else /* USE_CAN2 */
-  CAN_FilterInitStructure.CAN_FilterNumber = 14;
-#endif  /* USE_CAN1 */
-  CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode_IdMask;
-  CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale_32bit;
-  CAN_FilterInitStructure.CAN_FilterIdHigh = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterIdLow = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterMaskIdHigh = 0x0000;
-  CAN_FilterInitStructure.CAN_FilterMaskIdLow = 0x0000;  
-  CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-
-  CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
-  CAN_FilterInit(&CAN_FilterInitStructure);
+void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
+		uint8_t CAN_FilterScale, uint16_t CAN_FilterIdHigh,
+		uint16_t CAN_FilterIdLow, uint16_t CAN_FilterMaskIdHigh,
+		uint16_t CAN_FilterMaskIdLow, uint16_t CAN_FilterFIFOAssignment,
+		FunctionalState CAN_FilterActivation) {
+	/* CAN filter init */
+	CAN_FilterInitTypeDef CAN_FilterInitStructure;
+	CAN_FilterInitStructure.CAN_FilterNumber = CAN_FilterNumber;
+	CAN_FilterInitStructure.CAN_FilterMode = CAN_FilterMode;
+	CAN_FilterInitStructure.CAN_FilterScale = CAN_FilterScale;
+	CAN_FilterInitStructure.CAN_FilterIdHigh = CAN_FilterIdHigh;
+	CAN_FilterInitStructure.CAN_FilterIdLow = CAN_FilterIdLow;
+	CAN_FilterInitStructure.CAN_FilterMaskIdHigh = CAN_FilterMaskIdHigh;
+	CAN_FilterInitStructure.CAN_FilterMaskIdLow = CAN_FilterMaskIdLow;
+	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = CAN_FilterFIFOAssignment;
+	CAN_FilterInitStructure.CAN_FilterActivation = CAN_FilterActivation;
+	CAN_FilterInit(&CAN_FilterInitStructure);
 }
 
-TestStatus transmit_data() {
-	
+void init_CAN_Communication() {
+	GPIO_InitTypeDef GPIO_InitStructure;
+	CAN_InitTypeDef CAN_InitStructure;
+
+	/* CAN GPIOs configuration **************************************************/
+
+	/* Enable GPIO clock */
+	RCC_AHB1PeriphClockCmd(CAN_GPIO_CLK, ENABLE);
+
+	/* Connect CAN pins to AF9 */
+	GPIO_PinAFConfig(CAN_GPIO_PORT, CAN_RX_SOURCE, CAN_AF_PORT);
+	GPIO_PinAFConfig(CAN_GPIO_PORT, CAN_TX_SOURCE, CAN_AF_PORT);
+
+	/* Configure CAN RX and TX pins */
+	GPIO_InitStructure.GPIO_Pin = CAN_RX_PIN | CAN_TX_PIN;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(CAN_GPIO_PORT, &GPIO_InitStructure);
+
+	/* CAN configuration ********************************************************/
+	/* Enable CAN clock */
+	RCC_APB1PeriphClockCmd(CAN_CLK, ENABLE);
+
+	/* CAN register init */
+	CAN_DeInit(CANx);
+
+	/* CAN cell init */
+	CAN_InitStructure.CAN_TTCM = DISABLE;
+	CAN_InitStructure.CAN_ABOM = DISABLE;
+	CAN_InitStructure.CAN_AWUM = DISABLE;
+	CAN_InitStructure.CAN_NART = DISABLE;
+	CAN_InitStructure.CAN_RFLM = DISABLE;
+	CAN_InitStructure.CAN_TXFP = DISABLE;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_LoopBack;
+	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
+
+	/* CAN Baudrate = 1 MBps (CAN clocked at 30 MHz) */
+	CAN_InitStructure.CAN_BS1 = CAN_BS1_6tq;
+	CAN_InitStructure.CAN_BS2 = CAN_BS2_8tq;
+	CAN_InitStructure.CAN_Prescaler = 2;
+	CAN_Init(CANx, &CAN_InitStructure);
+
+	/* CAN filter init */
+
+	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x003,
+			0x0000, 0x0000, 0x0000, 2, ENABLE);
+}
+
+CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,
+		uint8_t DLC, uint8_t *data) {
+			int ctr;
+	/* transmit */
 	CanTxMsg TxMessage;
-  CanRxMsg RxMessage;
+	TxMessage.StdId = StdId;
+	TxMessage.RTR = RTR;
+	TxMessage.IDE = IDE;
+	TxMessage.DLC = DLC;
+			for(ctr=0;ctr<DLC;ctr++){
+				TxMessage.Data[ctr] = *(data+ctr);
+			}
+	
+	
+	return TxMessage;
+}
 
-	  uint32_t uwCounter = 0;
-  uint8_t TransmitMailbox = 0;
-  /* transmit */
-  TxMessage.StdId = 0x11;
-  TxMessage.RTR = CAN_RTR_DATA;
-  TxMessage.IDE = CAN_ID_STD;
-  TxMessage.DLC = 2;
-  TxMessage.Data[0] = 0xFE;
-  TxMessage.Data[1] = 0xCA;
+void CAN_ReceiverInit(CanRxMsg *RxMessage) {
+	/* receive */
+	
+	RxMessage->StdId = 0x00;
+	RxMessage->IDE = CAN_ID_STD;
+	RxMessage->DLC = 0;
+	RxMessage->Data[0] = 0x00;
+	RxMessage->Data[1] = 0x00;
+	RxMessage->Data[2] = 0x00;
+	RxMessage->Data[3] = 0x00;
+	RxMessage->Data[4] = 0x00;
+	RxMessage->Data[5] = 0x00;
+	RxMessage->Data[6] = 0x00;
+	RxMessage->Data[7] = 0x00;
+}
 
-  TransmitMailbox = CAN_Transmit(CAN1, &TxMessage);
-  uwCounter = 0;
-  while((CAN_TransmitStatus(CAN1, TransmitMailbox)  !=  CANTXOK) && (uwCounter  !=  0xFFFF))
-  {
-    uwCounter++;
-  }
+void transmit_data() {
+	CanTxMsg TxMessage;
 
-  uwCounter = 0;
-  while((CAN_MessagePending(CAN1, CAN_FIFO0) < 1) && (uwCounter  !=  0xFFFF))
-  {
-    uwCounter++;
-  }
+	/* transmit */
+	uint8_t data[3];
+	data[0] = 0xFE;
+	data[1] = 0xCA;
+	data[2]=0x11;
+	TxMessage = CAN_createMessage(0x11, CAN_RTR_DATA, CAN_ID_STD, 3, &data[0]);
+	TransmitMailbox = CAN_Transmit(CAN1, &TxMessage);
 
-  /* receive */
-  RxMessage.StdId = 0x00;
-  RxMessage.IDE = CAN_ID_STD;
-  RxMessage.DLC = 0;
-  RxMessage.Data[0] = 0x00;
-  RxMessage.Data[1] = 0x00;
-  CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 
-  if (RxMessage.StdId != 0x11)
-  {
-    return FAILED;  
-  }
+	
 
-  if (RxMessage.IDE != CAN_ID_STD)
-  {
-    return FAILED;
-  }
+}
 
-  if (RxMessage.DLC != 2)
-  {
-    return FAILED;  
-  }
+void NVIC_Config()
+{
+  NVIC_InitTypeDef  NVIC_InitStructure;
 
-  if ((RxMessage.Data[0]<<8|RxMessage.Data[1]) != 0xCAFE)
-  {
-    return FAILED;
-  }
-  
-  return PASSED; 
+  NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
+
+char receiverTest(CanRxMsg RxMessage)
+{
+	if (RxMessage.StdId != 0x11) {
+		return FAILED;
+	}
+
+	if (RxMessage.IDE != CAN_ID_STD) {
+		return FAILED;
+	}
+
+	if (RxMessage.DLC != 2) {
+		return FAILED;
+	}
+
+	if ((RxMessage.Data[0] << 8 | RxMessage.Data[1]) != 0xFECA) {
+		return FAILED;
+	}
+
+	return PASSED;
 
 }
