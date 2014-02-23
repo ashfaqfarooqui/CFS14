@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 //******************************************************************************
@@ -17,10 +16,13 @@ int main(void) {
 	 to be preempt priority bits by calling
 	 NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 ); before the RTOS is started.
 	 */
+	NODE=0x00;
+	setNode();
 	int i;
 	CanRxMsg RxMessage;
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	init_uart(9600);
 	NVIC_Config();
 	init_CAN_Communication();
@@ -30,7 +32,6 @@ int main(void) {
 	STM_EVAL_LEDInit(LED_ORANGE);
 	STM_EVAL_LEDInit(LED_RED);
 
-
 //	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
 //			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 //	xTaskCreate(vLedBlinkRed, (const signed char* )"Led Blink Task Red",
@@ -39,25 +40,24 @@ int main(void) {
 //			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vLedBlinkOrange, (const signed char* )"Led Blink Task Orange",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vCANReceiver, (const signed char* )"CAN",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vCANReceiver, (const signed char* )"CAN", STACK_SIZE_MIN, NULL,
+			tskIDLE_PRIORITY, NULL);
 
 	//vTaskStartScheduler();
-do{
-	CAN_ReceiverInit(&RxMessage);
-	TransmitMailBox=transmit_data();
-	TransmitMailBox=transmit_data();
-}
-	while(CAN_TransmitStatus(CAN1,TransmitMailBox)==CAN_TxStatus_Failed);
-	
-	for (;;) {
-			if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)) {
-				CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-				receiverTest(RxMessage);
+	do {
+		CAN_ReceiverInit(&RxMessage);
+		TransmitMailBox = transmit_data();
+		TransmitMailBox = transmit_data();
+	} while (CAN_TransmitStatus(CAN1, TransmitMailBox) == CAN_TxStatus_Failed);
 
-			}
-			//vTaskDelay(900 / portTICK_RATE_MS);
+	for (;;) {
+		if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)) {
+			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+			receiverTest(RxMessage);
+
 		}
+		//vTaskDelay(900 / portTICK_RATE_MS);
+	}
 
 }
 //******************************************************************************
@@ -99,14 +99,27 @@ void vCANReceiver(void *pvParameters) {
 	CanRxMsg RxMessage;
 	CAN_ReceiverInit(&RxMessage);
 	for (;;) {
-				if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)&&CAN_GetITStatus(CAN1,CAN_IT_FMP0)) {
-					CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-					receiverTest(RxMessage);
+		if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
+				&& CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
+			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+			receiverTest(RxMessage);
 
-				}
-				vTaskDelay(500 / portTICK_RATE_MS);
-			}
+		}
+		vTaskDelay(500 / portTICK_RATE_MS);
+	}
 }
 
 //******************************************************************************
 
+void setNode() {
+	GPIO_InitTypeDef GPIO_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(INPUTPORT, &GPIO_InitStructure);
+
+	NODE=NODE|1<<GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_7)|1<<GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_6);
+}

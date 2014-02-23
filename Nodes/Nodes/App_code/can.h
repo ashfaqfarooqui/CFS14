@@ -2,8 +2,6 @@
 #define __H_
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
-//#include "stm32f4xx_can.c"
-//typedef enum {FAILED = 'a', PASSED = 'z'} TestStatus;
 
 char FAILED ='a';
 char PASSED='z';
