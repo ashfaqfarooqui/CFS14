@@ -438,6 +438,11 @@
               <FileType>1</FileType>
               <FilePath>.\App_code\UART.c</FilePath>
             </File>
+            <File>
+              <FileName>driver_interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\driver_interface.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
