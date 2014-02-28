@@ -16,12 +16,15 @@ int main(void) {
 	 to be preempt priority bits by calling
 	 NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 ); before the RTOS is started.
 	 */
-	NODE=0x00;
-	setNode();
+	
+	
 	int i;
-	CanRxMsg RxMessage;
+
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
+	CanRxMsg *RxMessage;
+	uint8_t NODE=0x00;
+	setNode();
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	init_uart(9600);
 	NVIC_Config();
@@ -45,15 +48,15 @@ int main(void) {
 
 	//vTaskStartScheduler();
 	do {
-		CAN_ReceiverInit(&RxMessage);
-		TransmitMailBox = transmit_data();
+		CAN_ReceiverInit(RxMessage);
+
 		TransmitMailBox = transmit_data();
 	} while (CAN_TransmitStatus(CAN1, TransmitMailBox) == CAN_TxStatus_Failed);
 
 	for (;;) {
 		if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)) {
-			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-			receiverTest(RxMessage);
+			CAN_Receive(CAN1, CAN_FIFO0, RxMessage);
+			
 
 		}
 		//vTaskDelay(900 / portTICK_RATE_MS);
@@ -102,7 +105,7 @@ void vCANReceiver(void *pvParameters) {
 		if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
 				&& CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
 			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-			receiverTest(RxMessage);
+		
 
 		}
 		vTaskDelay(500 / portTICK_RATE_MS);

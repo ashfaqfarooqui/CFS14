@@ -131,5 +131,5 @@ void NVIC_Config()
 
 void CAN1_RX0_IRQHandler()
 {
-	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+	CAN_Receive(CAN1, CAN_FIFO0, RxMessage);
 }
