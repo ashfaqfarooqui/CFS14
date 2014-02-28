@@ -71,10 +71,8 @@ void init_CAN_Communication() {
 	CAN_InitStructure.CAN_Prescaler = 2;
 	CAN_Init(CANx, &CAN_InitStructure);
 
-	/* CAN filter init */
 
-	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x003,
-			0x0000, 0x0000, 0x0000, 2, ENABLE);
+
 }
 
 CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,
@@ -110,15 +108,8 @@ void CAN_ReceiverInit(CanRxMsg *RxMessage) {
 	RxMessage->Data[7] = 0x00;
 }
 
-void transmit_data() {
-	CanTxMsg TxMessage;
+void transmit_data(CanTxMsg TxMessage) {
 
-	/* transmit */
-	uint8_t data[3];
-	data[0] = 0xFE;
-	data[1] = 0xCA;
-	data[2]=0x11;
-	TxMessage = CAN_createMessage(0x11, CAN_RTR_DATA, CAN_ID_STD, 3, &data[0]);
 	TransmitMailbox = CAN_Transmit(CAN1, &TxMessage);
 
 
@@ -137,24 +128,8 @@ void NVIC_Config()
   NVIC_Init(&NVIC_InitStructure);
 }
 
-char receiverTest(CanRxMsg RxMessage)
+
+void CAN1_RX0_IRQHandler()
 {
-	if (RxMessage.StdId != 0x11) {
-		return FAILED;
-	}
-
-	if (RxMessage.IDE != CAN_ID_STD) {
-		return FAILED;
-	}
-
-	if (RxMessage.DLC != 2) {
-		return FAILED;
-	}
-
-	if ((RxMessage.Data[0] << 8 | RxMessage.Data[1]) != 0xFECA) {
-		return FAILED;
-	}
-
-	return PASSED;
-
+	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 }

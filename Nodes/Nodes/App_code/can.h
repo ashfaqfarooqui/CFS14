@@ -16,7 +16,7 @@ char PASSED='z';
  #define CAN_RX_SOURCE              GPIO_PinSource0
  #define CAN_TX_SOURCE              GPIO_PinSource1
   
-void transmit_data();
+void transmit_data(CanTxMsg );
 void init_CAN_Communication();
 CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,  uint8_t DLC,uint8_t *data);
 void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
