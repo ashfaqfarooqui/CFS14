@@ -117,7 +117,7 @@ void transmit_data(CanTxMsg TxMessage) {
 
 }
 
-void NVIC_Config()
+void NVIC_Config_CAN()
 {
   NVIC_InitTypeDef  NVIC_InitStructure;
 

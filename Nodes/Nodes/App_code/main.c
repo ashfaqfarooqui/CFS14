@@ -25,9 +25,9 @@ int main(void) {
 	CanRxMsg *RxMessage;
 	uint8_t NODE=0x00;
 	setNode();
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
 	init_uart(9600);
-	NVIC_Config();
+	NVIC_Config_CAN();
 	init_CAN_Communication();
 	CAN_ReceiverInit();
 	STM_EVAL_LEDInit(LED_BLUE);
