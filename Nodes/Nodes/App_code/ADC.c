@@ -95,7 +95,7 @@ void DMA_Config(void) {
 	DMA_InitTypeDef DMA_InitStructure;
 
 	DMA_InitStructure.DMA_Channel = DMA_Channel_0;
-	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & RAW_ADC;
+	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) &RAW_ADC;
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) ADC_CDR_ADDRESS;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
 	DMA_InitStructure.DMA_BufferSize = 8;
@@ -127,4 +127,9 @@ void NVIC_Config_adc(void) {
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
+}
+
+void DMA2_Stream0_IRQHandler()
+{
+
 }
