@@ -1,6 +1,6 @@
 
-#ifndef __H
-#define __H_
+#ifndef __MAIN_H
+#define __MAIN_H_
 
 //******************************************************************************
 #include "stm32f4xx.h"
@@ -8,6 +8,7 @@
 #include "discoveryf4utils.h"
 #include "UART.h"
 #include "can.h"
+#include "ADC.h"
 #include "driver_interface.h"
 //******************************************************************************
 
@@ -18,7 +19,6 @@
 #include "croutine.h"
 //******************************************************************************
 
-#endif
 void setNode();
 
 void vSerialSender(void *pvParameters);
@@ -33,3 +33,5 @@ void vCANReceiver(void *pvParameters);
 extern uint8_t NODE=0x00;
 GPIO_InitTypeDef GPIO_InitStruct;
 USART_InitTypeDef USART_InitStruct;
+
+#endif

@@ -1,7 +1,8 @@
-#ifndef __H
-#define __H_
+#ifndef __DRIVER_INTERFACE_H
+#define __DRIVERINTERFACE_H_
 
 #include "stm32f4xx.h"
+
 
 
 #define GEARUP GPIO_Pin_7
@@ -24,5 +25,5 @@
 void init_driverInterface(uint8_t node);
 void SwitchWarningLight(uint8_t ONOFF);
 
-
 #endif
+

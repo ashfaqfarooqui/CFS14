@@ -1,10 +1,4 @@
-#include "can.h"
-#include "driver_interface.h"
-#define MAX 100
-#define OIL 0x01
-#define WATER 0x10
-uint8_t getTemprature( uint8_t);
-void fanSpeed( uint8_t);
+#include "safety.h"
 
 //TODO put tempratures into variables!
 uint8_t getTemprature(uint8_t param) {
@@ -22,12 +16,12 @@ void waterTempCheck() {
 	if (temp > 120) {
 		//TODO: shutdown engine
 	} else if (temp > 110) {
-		fanSpeed(MAX);
+		setFanSpeed(MAX);
 		SwitchWarningLight(ON);
 	} else if (temp > 95) {
-		fanSpeed(90);
+		setFanSpeed(90);
 	} else {
-		fanSpeed(75);
+		setFanSpeed(75);
 	}
 }
 
@@ -37,5 +31,10 @@ void oilTempCheck() {
 	if (temp > 120) {
 		//TODO: shutdown engine
 	}
+
+}
+
+void setFanSpeed(uint8_t pwmSpeed)
+{
 
 }

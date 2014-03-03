@@ -22,11 +22,11 @@ GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
 GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
 GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_UART4);
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_UART4);
 GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_UART4);
 
 
-USART_InitStructure.USART_BaudRate=9600;
+USART_InitStructure.USART_BaudRate=baudrate;
 USART_InitStructure.USART_WordLength=USART_WordLength_8b;
 USART_InitStructure.USART_StopBits=USART_StopBits_2;
 USART_InitStructure.USART_Parity=USART_Parity_No;
@@ -45,9 +45,7 @@ NVIC_Init(&NVIC_InitStructure);
 }
 
 
-void USART_puts(USART_TypeDef* USARTx, char *s){
-
-        
+void USART_puts_char(USART_TypeDef* USARTx, char *s){
 	while(*s){
 		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
 		{
@@ -56,4 +54,26 @@ void USART_puts(USART_TypeDef* USARTx, char *s){
 		}
 	}
 	
+}
+
+void USART_puts_int8(USART_TypeDef* USARTx, uint8_t *s){
+	while(*s){
+		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
+		{
+			USART_SendData(UART4,*s++);
+
+		}
+	}
+
+}
+
+void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s){
+	while(*s){
+		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
+		{
+			USART_SendData(UART4,*s++);
+
+		}
+	}
+
 }

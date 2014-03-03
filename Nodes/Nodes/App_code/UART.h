@@ -4,7 +4,8 @@
 #include "stm32f4xx_usart.h"
 
 void init_uart(uint32_t );
-void USART_puts(USART_TypeDef* USARTx, char *s);
-
+void USART_puts_char(USART_TypeDef* USARTx, char *s);
+void USART_puts_int8(USART_TypeDef* USARTx, uint8_t *s);
+void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s);
 
 #endif

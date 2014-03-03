@@ -6,6 +6,8 @@
  */
 
 #include "can.h"
+
+CanRxMsg *RxMessage;
 uint8_t TransmitMailbox = 0;
 
 void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
