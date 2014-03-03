@@ -443,6 +443,16 @@
               <FileType>1</FileType>
               <FilePath>.\App_code\driver_interface.c</FilePath>
             </File>
+            <File>
+              <FileName>ADC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\ADC.c</FilePath>
+            </File>
+            <File>
+              <FileName>safety.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\safety.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

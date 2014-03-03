@@ -4,7 +4,7 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 E:\FormulaStudent\Code\Nodes\Nodes\Nodes.uvproj
-Project File Date:  02/23/2014
+Project File Date:  03/03/2014
 
 <h2>Output:</h2>
 Rebuild target 'STM32F407VG'
@@ -13,64 +13,34 @@ assembling startup_stm32f4xx.s...
 compiling stm32f4_discovery.c...
 compiling stm32f4xx_it.c...
 compiling can.c...
-App_code\can.h(19): warning:  #1295-D: Deprecated declaration transmit_data - give arg types
-  void transmit_data();
 App_code\can.h(20): warning:  #1295-D: Deprecated declaration init_CAN_Communication - give arg types
   void init_CAN_Communication();
-App_code\can.c: 2 warnings, 0 errors
+App_code\can.c: 1 warning, 0 errors
 compiling main.c...
-App_code\UART.h(10): warning:  #1-D: last line of file ends without a newline
-  #endif
+App_code\can.h(20): warning:  #1295-D: Deprecated declaration init_CAN_Communication - give arg types
+  void init_CAN_Communication();
 App_code\main.h(22): warning:  #1295-D: Deprecated declaration setNode - give arg types
   void setNode();
-App_code\main.c(21): error:  #268: declaration may not appear after executable statement in block
-        int i;
-App_code\main.c(22): error:  #268: declaration may not appear after executable statement in block
-        CanRxMsg RxMessage;
-App_code\main.c(23): error:  #268: declaration may not appear after executable statement in block
+App_code\main.c(22): warning:  #177-D: variable "TransmitStatus" was declared but never referenced
         char *TransmitStatus;
-App_code\main.c(24): error:  #268: declaration may not appear after executable statement in block
+App_code\main.c(23): warning:  #177-D: variable "TransmitMailBox" was declared but never referenced
         uint8_t TransmitMailBox;
-App_code\main.c(27): warning:  #223-D: function "NVIC_Config" declared implicitly
-        NVIC_Config();
-App_code\main.c(28): warning:  #223-D: function "init_CAN_Communication" declared implicitly
-        init_CAN_Communication();
-App_code\main.c(29): warning:  #223-D: function "CAN_ReceiverInit" declared implicitly
-        CAN_ReceiverInit();
-App_code\main.c(49): warning:  #223-D: function "transmit_data" declared implicitly
-                TransmitMailBox = transmit_data();
-App_code\main.c(56): warning:  #223-D: function "receiverTest" declared implicitly
-                        receiverTest(RxMessage);
-App_code\main.c(21): warning:  #177-D: variable "i" was declared but never referenced
-        int i;
-App_code\main.c(23): warning:  #177-D: variable "TransmitStatus" was declared but never referenced
-        char *TransmitStatus;
-App_code\main.c(100): warning:  #223-D: function "CAN_ReceiverInit" declared implicitly
-        CAN_ReceiverInit(&RxMessage);
-App_code\main.c(105): warning:  #223-D: function "receiverTest" declared implicitly
-                        receiverTest(RxMessage);
-App_code\main.c: 11 warnings, 4 errors
+App_code\main.c(24): warning:  #177-D: variable "RxMessage" was declared but never referenced
+        CanRxMsg *RxMessage;
+App_code\main.c(26): warning:  #177-D: variable "NODE" was declared but never referenced
+        uint8_t NODE = 0x00;
+App_code\main.c(65): warning:  #223-D: function "DMA_GetADC" declared implicitly
+                        data = DMA_GetADC(i);
+App_code\main.c: 7 warnings, 0 errors
 compiling UART.c...
-App_code\UART.h(10): warning:  #1-D: last line of file ends without a newline
-  #endif
-App_code\UART.c(59): warning:  #1-D: last line of file ends without a newline
-  }
-App_code\UART.c: 2 warnings, 0 errors
 compiling driver_interface.c...
-App_code\driver_interface.c(46): error:  #20: identifier "SwitchState" is undefined
-        SwitchState=SwitchState;///////////;
-App_code\driver_interface.c(57): error:  #20: identifier "previousSwitchState" is undefined
-        else if(previousSwitchState!=SwitchStates)
-App_code\driver_interface.c: 0 warnings, 2 errors
-compiling timer.c...
-App_code\timer.c(10): error:  #268: declaration may not appear after executable statement in block
-        TIM_TimeBaseInitTypeDef timerInitStructure;
-App_code\timer.c(21): error:  #268: declaration may not appear after executable statement in block
-        NVIC_InitTypeDef nvicStructure;
-App_code\timer.c(41): error:  #20: identifier "GPIO_InitStructure" is undefined
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-App_code\timer.c: 0 warnings, 3 errors
 compiling ADC.c...
+compiling safety.c...
+App_code\can.h(20): warning:  #1295-D: Deprecated declaration init_CAN_Communication - give arg types
+  void init_CAN_Communication();
+App_code\safety.c(12): warning:  #940-D: missing return statement at end of non-void function "getTemprature"
+  }
+App_code\safety.c: 2 warnings, 0 errors
 compiling timers.c...
 compiling tasks.c...
 compiling queue.c...
@@ -94,5 +64,32 @@ compiling stm32f4xx_syscfg.c...
 compiling stm32f4xx_tim.c...
 compiling stm32f4xx_usart.c...
 compiling stm32f4xx_wwdg.c...
-".\UV4Build\Nodes.axf" - 9 Error(s), 15 Warning(s).
-Target not created
+linking...
+Program Size: Code=7988 RO-data=460 RW-data=184 ZI-data=78080  
+FromELF: creating hex file...
+".\UV4Build\Nodes.axf" - 0 Error(s), 10 Warning(s).
+Load "E:\\FormulaStudent\\Code\\Nodes\\Nodes\\UV4Build\\Nodes.axf" 
+Full Chip Erase Done.
+Programming Done.
+Verify OK.
+dent\\Code\\Nodes\\Nodes\\UV4Build\\Nodes.axf" 
+Full Chip Erase Done.
+Programming Done.
+Verify OK.
+c(70): error:  #247: function "USART_puts" has already been defined
+  void USART_puts(USART_TypeDef* USARTx, uint16_t *s){
+App_code\UART.c: 0 warnings, 5 errors
+compiling driver_interface.c...
+compiling ADC.c...
+compiling safety.c...
+App_code\can.h(20): warning:  #1295-D: Deprecated declaration init_CAN_Communication - give arg types
+  void init_CAN_Communication();
+App_code\safety.c(12): warning:  #940-D: missing return statement at end of non-void function "getTemprature"
+  }
+App_code\safety.c: 2 warnings, 0 errors
+compiling timers.c...
+compiling tasks.c...
+compiling queue.c...
+compiling list.c...
+".\UV4Build\Nodes.axf" - 8 Error(s), 11 Warning(s).
+Project build/rebuild aborted.
