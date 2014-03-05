@@ -4,7 +4,7 @@
 
 void init_uart(uint32_t baudrate){
 
-	USART_InitTypeDef USART_InitStructure;
+USART_InitTypeDef USART_InitStructure;
 GPIO_InitTypeDef GPIO_InitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -47,7 +47,7 @@ NVIC_Init(&NVIC_InitStructure);
 
 void USART_puts_char(USART_TypeDef* USARTx, char *s){
 	while(*s){
-		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
+		while((USART_GetFlagStatus(UART4,USART_FLAG_TXE)==RESET))
 		{
 			USART_SendData(UART4,*s++);
 			
@@ -58,7 +58,7 @@ void USART_puts_char(USART_TypeDef* USARTx, char *s){
 
 void USART_puts_int8(USART_TypeDef* USARTx, uint8_t *s){
 	while(*s){
-		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
+		while((USART_GetFlagStatus(UART4,USART_FLAG_TXE)==RESET))
 		{
 			USART_SendData(UART4,*s++);
 
@@ -69,7 +69,7 @@ void USART_puts_int8(USART_TypeDef* USARTx, uint8_t *s){
 
 void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s){
 	while(*s){
-		while((USART_GetFlagStatus(UART4,USART_FLAG_TC)==SET))
+		while((USART_GetFlagStatus(UART4,USART_FLAG_TXE)==RESET))
 		{
 			USART_SendData(UART4,*s++);
 

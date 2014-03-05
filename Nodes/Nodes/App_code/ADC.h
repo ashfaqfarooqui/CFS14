@@ -12,7 +12,7 @@ void init_ADC(void);
 void DMA_Config(void);
 void NVIC_Config_adc(void);
 
-#define ADC_CDR_ADDRESS    ((uint32_t)0x4001204C)
+#define ADC_DR_ADDRESS    ((uint32_t)0x4001204C)
 
 
 

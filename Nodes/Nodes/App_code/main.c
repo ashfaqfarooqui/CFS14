@@ -22,18 +22,22 @@ int main(void) {
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
 	CanRxMsg *RxMessage;
-
 	uint8_t NODE = 0x00;
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
-	setNode();
-	init_ADC();
-
-	init_uart(115200);
 
 	STM_EVAL_LEDInit(LED_BLUE);
 	STM_EVAL_LEDInit(LED_GREEN);
 	STM_EVAL_LEDInit(LED_ORANGE);
 	STM_EVAL_LEDInit(LED_RED);
+	
+	
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
+	setNode();
+	init_ADC();
+	init_Timer();
+
+	init_uart(115200);
+
+	
 
 	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
@@ -60,7 +64,7 @@ void vLedBlinkBlue(void *pvParameters) {
 		STM_EVAL_LEDToggle(LED_GREEN);
 
 		
-
+		ADC_SoftwareStartConv(ADC1);
 			for(i=0;i<8;i++){
 			data = DMA_GetADC(i);
 				
@@ -76,7 +80,7 @@ void vLedBlinkBlue(void *pvParameters) {
 
 void vLedBlinkRed(void *pvParameters) {
 	for (;;) {
-		STM_EVAL_LEDToggle(LED_RED);
+
 		vTaskDelay(750 / portTICK_RATE_MS);
 	}
 }

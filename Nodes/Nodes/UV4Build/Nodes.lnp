@@ -9,6 +9,7 @@
 ".\uv4build\driver_interface.o"
 ".\uv4build\adc.o"
 ".\uv4build\safety.o"
+".\uv4build\timer.o"
 ".\uv4build\timers.o"
 ".\uv4build\tasks.o"
 ".\uv4build\queue.o"

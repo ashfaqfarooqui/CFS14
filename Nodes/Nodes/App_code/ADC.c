@@ -16,7 +16,7 @@ void init_ADC(void) {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC,ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	/* DMA2 Stream0 channel0 configuration **************************************/
 	DMA_Config();
 
@@ -66,7 +66,7 @@ void init_ADC(void) {
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 8, ADC_SampleTime_144Cycles);
 
 	/* Enable DMA request after last transfer (single-ADC mode)  */
-	 ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
+	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
 
 	/* Enable ADC1 -- ADC_CR2_ADON */
 	ADC_Cmd(ADC1, ENABLE);
@@ -76,8 +76,6 @@ void init_ADC(void) {
 
 	/* Enable ADC1 DMA since ADC1 is the Master*/
 	ADC_DMACmd(ADC1, ENABLE);
-	
-	ADC_SoftwareStartConv(ADC1);
 
 }
 
@@ -85,8 +83,8 @@ void DMA_Config(void) {
 	DMA_InitTypeDef DMA_InitStructure;
 	NVIC_Config_adc();
 	DMA_InitStructure.DMA_Channel = DMA_Channel_0;
-	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&RAW_ADC;
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) ADC_CDR_ADDRESS;
+	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & RAW_ADC;
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) ADC_DR_ADDRESS;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
 	DMA_InitStructure.DMA_BufferSize = 8;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -106,7 +104,7 @@ void DMA_Config(void) {
 }
 
 uint16_t DMA_GetADC(uint16_t Number) {
-	return RAW_ADC[Number];
+	return ADCValues[Number];
 }
 void NVIC_Config_adc(void) {
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -120,11 +118,11 @@ void NVIC_Config_adc(void) {
 }
 
 void DMA2_Stream0_IRQHandler() {
-	int i;
-	for(i=0;i<8;i++)
-	{
-		ADCValues[i]=RAW_ADC[i];
-
+	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET) {
+		int i;
+		for (i = 0; i < 8; i++) {
+			ADCValues[i] = RAW_ADC[i];
+		}
+		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
 	}
-
 }

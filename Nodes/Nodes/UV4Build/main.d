@@ -41,6 +41,7 @@
 .\uv4build\main.o: App_code\ADC.h
 .\uv4build\main.o: ..\Nodes\stm32f4xx_it.h
 .\uv4build\main.o: App_code\driver_interface.h
+.\uv4build\main.o: App_code\timer.h
 .\uv4build\main.o: .\FreeRTOS\Source\include\FreeRTOS.h
 .\uv4build\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
 .\uv4build\main.o: .\FreeRTOS\Source\include\projdefs.h
