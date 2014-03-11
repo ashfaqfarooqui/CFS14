@@ -7,15 +7,28 @@
 
 #define GEARUP GPIO_Pin_7
 #define GEARDOWN GPIO_Pin_8
-#define INPUTPORT GPIOE
-#define OUTPUTPORT GPIOC
+#define DATALOGGER GPIO_Pin_10
+#define TRACTION_CONTROL GPIO_Pin_11
+#define AUTOSHIFTING GPIO_Pin_12
+#define FANCONTROL GPIO_Pin_13
+#define E_CLUTCH GPIO_Pin_14
+#define LAUNCH_CONTROL GPIO_Pin_15
+
 #define WARNINGLIGHT GPIO_Pin_14
 
+#define INPUTPORT GPIOE
+#define OUTPUTPORT GPIOC
+
 //position in switch states for each switch
-#define GEARUPPOS 0
-#define GEARDOWNPOS 1
-#define LC 2
-#define TC 3
+#define GEARUP_POS 0
+#define GEARDOWN_POS 1
+#define LC_POS 2
+#define TC_POS 3
+#define DL_POS 4
+#define AS_POS 5
+#define FC_POS 6
+#define EC_POS 7
+
 
 #define FRONT_NODE 0x01
 #define REAR_NODE 0x02
@@ -23,7 +36,9 @@
 #define OFF 0x22
 
 void init_driverInterface(uint8_t node);
-void SwitchWarningLight(uint8_t ONOFF);
+void switchWarningLight(uint8_t );
+void switchAction(void);
+void setSwitchStates(uint8_t);
 
 #endif
 

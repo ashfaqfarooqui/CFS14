@@ -7,7 +7,6 @@
 
 #include "can.h"
 
-CanRxMsg *RxMessage;
 uint8_t TransmitMailbox = 0;
 
 void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
@@ -64,7 +63,7 @@ void init_CAN_Communication() {
 	CAN_InitStructure.CAN_NART = DISABLE;
 	CAN_InitStructure.CAN_RFLM = DISABLE;
 	CAN_InitStructure.CAN_TXFP = DISABLE;
-	CAN_InitStructure.CAN_Mode = CAN_Mode_LoopBack;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
 
 	/* CAN Baudrate = 1 MBps (CAN clocked at 30 MHz) */
@@ -72,31 +71,29 @@ void init_CAN_Communication() {
 	CAN_InitStructure.CAN_BS2 = CAN_BS2_8tq;
 	CAN_InitStructure.CAN_Prescaler = 2;
 	CAN_Init(CANx, &CAN_InitStructure);
-
-
+	NVIC_Config_CAN();
 
 }
 
 CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,
 		uint8_t DLC, uint8_t *data) {
-			int ctr;
+	int ctr;
 	/* transmit */
 	CanTxMsg TxMessage;
 	TxMessage.StdId = StdId;
 	TxMessage.RTR = RTR;
 	TxMessage.IDE = IDE;
 	TxMessage.DLC = DLC;
-			for(ctr=0;ctr<DLC;ctr++){
-				TxMessage.Data[ctr] = *(data+ctr);
-			}
-	
-	
+	for (ctr = 0; ctr < DLC; ctr++) {
+		TxMessage.Data[ctr] = *(data + ctr);
+	}
+
 	return TxMessage;
 }
 
 void CAN_ReceiverInit(CanRxMsg *RxMessage) {
 	/* receive */
-	
+
 	RxMessage->StdId = 0x00;
 	RxMessage->IDE = CAN_ID_STD;
 	RxMessage->DLC = 0;
@@ -110,28 +107,54 @@ void CAN_ReceiverInit(CanRxMsg *RxMessage) {
 	RxMessage->Data[7] = 0x00;
 }
 
-void transmit_data(CanTxMsg TxMessage) {
+void CAN_transmit_data(CanTxMsg TxMessage) {
 
 	TransmitMailbox = CAN_Transmit(CAN1, &TxMessage);
 
+}
+/*
+ void CAN_DMA_config()
+ {
+ DMA_InitTypeDef DMA_initStructure;
 
-	
 
+ DMA_initStructure.DMA_Channel = DMA_Channel_;
+ DMA_initStructure.DMA_Memory0BaseAddr = (uint32_t)screenBuffer;
+ DMA_initStructure.DMA_PeripheralBaseAddr = (uint32_t)(); //CAN DR
+ DMA_initStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+ DMA_initStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;
+ DMA_initStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral ;
+ DMA_initStructure.DMA_Mode = DMA_Mode_Normal;
+ DMA_initStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+ DMA_initStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ DMA_initStructure.DMA_BufferSize = 6*84;
+ DMA_initStructure.DMA_Priority = DMA_Priority_High;
+ DMA_initStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ DMA_initStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ DMA_initStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+
+ DMA_Init(DMA1_Stream4, &DMA_initStructure);
+ DMA_Cmd(DMA1_Stream4, ENABLE);
+
+ SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);
+ }
+ */
+void NVIC_Config_CAN() {
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
+//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
+//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
+	CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
 }
 
-void NVIC_Config_CAN()
-{
-  NVIC_InitTypeDef  NVIC_InitStructure;
-
-  NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-}
-
-
-void CAN1_RX0_IRQHandler()
-{
-	CAN_Receive(CAN1, CAN_FIFO0, RxMessage);
+void CAN1_RX0_IRQHandler() {
+	if (CAN_GetITStatus(CAN1, CAN_IT_FMP0) != RESET) {
+		CAN_Receive(CAN1, CAN_FIFO0, RxMessage);
+		STM_EVAL_LEDToggle(LED_BLUE);
+	}
+	CAN_ClearITPendingBit(CAN1,CAN_IT_FMP0);
 }

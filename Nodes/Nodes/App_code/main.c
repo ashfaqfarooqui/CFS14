@@ -1,4 +1,7 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 //******************************************************************************
 char start[] = "Hello world";
@@ -18,27 +21,28 @@ int main(void) {
 	 to be preempt priority bits by calling
 	 NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 ); before the RTOS is started.
 	 */
-
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
-	CanRxMsg *RxMessage;
 	uint8_t NODE = 0x00;
 
 	STM_EVAL_LEDInit(LED_BLUE);
 	STM_EVAL_LEDInit(LED_GREEN);
 	STM_EVAL_LEDInit(LED_ORANGE);
 	STM_EVAL_LEDInit(LED_RED);
-	
-	
+	STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_GPIO);
+
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
 	setNode();
-	init_ADC();
-	init_Timer();
+	//init_ADC();
+	//init_Timer();
 
-	init_uart(115200);
+	//init_uart(115200);
+//	init_CAN_Communication();
+//	CAN_ReceiverInit(RxMessage);
+//	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
+//			0x0000, 0x0000, 0x0000, 0, ENABLE);
 
-	
-
+init_driverInterface(0x01);
 	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vLedBlinkRed, (const signed char* )"Led Blink Task Red",
@@ -61,45 +65,45 @@ void vLedBlinkBlue(void *pvParameters) {
 
 	uint16_t i;
 	for (;;) {
-		STM_EVAL_LEDToggle(LED_GREEN);
 
 		
-		ADC_SoftwareStartConv(ADC1);
-			for(i=0;i<8;i++){
-			data = DMA_GetADC(i);
-				
-			USART_puts_int16(UART4, &data);
-				
-			}
-			//USART_puts_char(UART4, "a");
+		if(GPIO_ReadInputDataBit(INPUTPORT,FANCONTROL)==RESET){
+	SwitchWarningLight(ON);
+			STM_EVAL_LEDOn(LED_RED);
+	}
+		else {
+			SwitchWarningLight(OFF);
+		}
 
-		
 		vTaskDelay(500 / portTICK_RATE_MS);
 	}
 }
 
 void vLedBlinkRed(void *pvParameters) {
-	for (;;) {
-
+for(;;)
+{
+	STM_EVAL_LEDOff(LED_RED);	
 		vTaskDelay(750 / portTICK_RATE_MS);
-	}
+}
+
+	
 }
 
 void vLedBlinkGreen(void *pvParameters) {
-	for (;;) {
-		STM_EVAL_LEDToggle(LED_BLUE);
+for(;;)
+	{
+
 		vTaskDelay(250 / portTICK_RATE_MS);
 	}
 }
 
 void vSerialSender(void *pvParameters) {
 	for (;;) {
-
+vTaskDelay(900 / portTICK_RATE_MS);
 	}
 }
 void vLedBlinkOrange(void *pvParameters) {
 	for (;;) {
-		STM_EVAL_LEDToggle(LED_ORANGE);
 		vTaskDelay(900 / portTICK_RATE_MS);
 	}
 }

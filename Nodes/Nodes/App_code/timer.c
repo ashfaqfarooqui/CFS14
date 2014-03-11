@@ -7,9 +7,9 @@ void init_Timer() {
 	NVIC_InitTypeDef nvicStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-	timerInitStructure.TIM_Prescaler = 42000-1;
+	timerInitStructure.TIM_Prescaler = 42000 - 1;
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStructure.TIM_Period = 2000-1;
+	timerInitStructure.TIM_Period = 2000 - 1;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 
 	TIM_TimeBaseInit(TIM2, &timerInitStructure);

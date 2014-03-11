@@ -2,6 +2,7 @@
 #define __CAN_H_
 #include "stm32f4xx.h"
 #include "stm32f4xx_can.h"
+#include "discoveryf4utils.h"
 
 
 
@@ -16,7 +17,7 @@
 #define CAN_RX_SOURCE              GPIO_PinSource0
 #define CAN_TX_SOURCE              GPIO_PinSource1
 
-void transmit_data(CanTxMsg);
+void CAN_transmit_data(CanTxMsg);
 void init_CAN_Communication(void);
 CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,
 		uint8_t DLC, uint8_t *data);
@@ -27,6 +28,7 @@ void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
 		FunctionalState CAN_FilterActivation);
 void CAN_ReceiverInit(CanRxMsg*);
 
-void NVIC_Config(void);
+void NVIC_Config_CAN(void);
 
+static CanRxMsg *RxMessage;
 #endif
