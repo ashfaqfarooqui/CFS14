@@ -37,10 +37,10 @@ int main(void) {
 	//init_Timer();
 
 	//init_uart(115200);
-//	init_CAN_Communication();
-//	CAN_ReceiverInit(RxMessage);
-//	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
-//			0x0000, 0x0000, 0x0000, 0, ENABLE);
+	init_CAN_Communication();
+	CAN_ReceiverInit(RxMessage);
+	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
+			0x0000, 0x0000, 0x0000, 0, ENABLE);
 
 init_driverInterface(0x01);
 	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
@@ -80,9 +80,27 @@ void vLedBlinkBlue(void *pvParameters) {
 }
 
 void vLedBlinkRed(void *pvParameters) {
+		CanTxMsg txmsg;
+	uint8_t data[3];
+	data[0]=0xff;
+	data[1]=0x01;
+	data[2]=0xee;
+
 for(;;)
 {
-	STM_EVAL_LEDOff(LED_RED);	
+	uint16_t t=64;
+	if(STM_EVAL_PBGetState(BUTTON_USER)==SET)
+	{
+		STM_EVAL_LEDToggle(LED_RED);	
+		txmsg=CAN_createMessage(0x01,CAN_RTR_Data,CAN_Id_Standard,3,&data[0]);
+		CAN_transmit_data(txmsg);
+		while(t--){
+			
+			}
+	}
+	
+
+
 		vTaskDelay(750 / portTICK_RATE_MS);
 }
 

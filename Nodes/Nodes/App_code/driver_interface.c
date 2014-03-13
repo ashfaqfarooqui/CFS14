@@ -57,14 +57,14 @@ void SwitchWarningLight(uint8_t ONOFF)
 
 void ReadSwitchStates()
 {
-	SwitchStates |= (GPIO_ReadInputDataBit(GEARUP) << GEARUP_POS)
-			| (GPIO_ReadInputDataBit(GEARDOWN) << GEARDOWN_POS)
-			| (GPIO_ReadInputDataBit(TRACTION_CONTROL) << TC_POS)
-			| (GPIO_ReadInputDataBit(DATALOGGER) << DL_POS)
-			| (GPIO_ReadInputDataBit(AUTOSHIFTING) << AS_POS)
-			| (GPIO_ReadInputDataBit(FANCONTROL) << FC_POS)
-			| (GPIO_ReadInputDataBit(E_CLUTCH) << EC_POS)
-			| (GPIO_ReadInputDataBit(LAUNCH_CONTROL) << LC_POS);
+	SwitchStates |= (GPIO_ReadInputDataBit(INPUTPORT,GEARUP) << GEARUP_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,GEARDOWN) << GEARDOWN_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,TRACTION_CONTROL) << TC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,DATALOGGER) << DL_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,AUTOSHIFTING) << AS_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,FANCONTROL) << FC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,E_CLUTCH) << EC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT,LAUNCH_CONTROL) << LC_POS);
 
 	if ((SwitchStates & (1 << GEARUP_POS)) == 1 << GEARUP_POS) //check if gear upis triggerd
 	{
@@ -74,6 +74,9 @@ void ReadSwitchStates()
 	{
 //TODO GearDown algo
 		SwitchStates = SwitchStates & 1 << GEARDOWN_POS; //Clear Gear down flag
+	} else if (SwitchStates & (1 << EC_POS) != 1 << EC_POS)
+	{
+		//TODO: turnOnn el-clutch control
 	} else if (previousSwitchStates != SwitchStates)
 	{
 //TODO do the required control
@@ -113,14 +116,6 @@ void switchAction()
 		//TODO: turnOn Datalogger control
 	}
 
-	if (SwitchStates & (1 << EC_POS) == 1 << EC_POS)
-	{
-		//TODO: turnOf el-clutch control
-	}
-	if (SwitchStates & (1 << EC_POS) != 1 << EC_POS)
-	{
-		//TODO: turnOn el-clutch control
-	}
 	if (SwitchStates & (1 << FC_POS) == 1 << FC_POS)
 	{
 		//TODO: Tunr fan on

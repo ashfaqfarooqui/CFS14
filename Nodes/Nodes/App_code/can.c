@@ -63,7 +63,7 @@ void init_CAN_Communication() {
 	CAN_InitStructure.CAN_NART = DISABLE;
 	CAN_InitStructure.CAN_RFLM = DISABLE;
 	CAN_InitStructure.CAN_TXFP = DISABLE;
-	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_LoopBack;
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
 
 	/* CAN Baudrate = 1 MBps (CAN clocked at 30 MHz) */
@@ -155,6 +155,7 @@ void CAN1_RX0_IRQHandler() {
 	if (CAN_GetITStatus(CAN1, CAN_IT_FMP0) != RESET) {
 		CAN_Receive(CAN1, CAN_FIFO0, RxMessage);
 		STM_EVAL_LEDToggle(LED_BLUE);
+		CAN_FIFORelease(CAN1,CAN_FIFO0);
 	}
 	CAN_ClearITPendingBit(CAN1,CAN_IT_FMP0);
 }
