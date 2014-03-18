@@ -183,6 +183,7 @@ void ShiftUp(int gearPosition){
 		gearPositionCurrent = GetGearPosition();
 		//TODO Ashfaq
 		delay(100);
+
 		//TODO Ashfaq
 		if(gearPositionCurrent = gearPosition + 1){
 			RestoreIgnition();
@@ -190,6 +191,8 @@ void ShiftUp(int gearPosition){
 		}
 
 		if(cylinderPositionMonitor>MONITOR_TIME){
+
+
 			//after cylinder move the gear cannot reach next level
 			//TODO PT
 		}
