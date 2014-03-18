@@ -220,6 +220,7 @@ void ShiftDown(int gearPosition){
 		gearPositionCurrent = GetGearPosition();
 		//TODO Ashfaq
 		delay(100);
+
 		//TODO Ashfaq
 		if(gearPositionCurrent = gearPosition - 1){
 			//clutch back;
@@ -227,6 +228,7 @@ void ShiftDown(int gearPosition){
 			break;
 		}
 	}
+
 
 	//release gear cylinder
 	//release clutch cylinder
