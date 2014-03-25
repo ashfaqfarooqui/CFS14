@@ -2,7 +2,11 @@
 #define __DRIVERINTERFACE_H_
 
 #include "stm32f4xx.h"
+#include "state.h"
 
+#define FAST_SWITCH_DELAY 5 // 10ms
+#define MEDIUM_SWITCH_DELAY 10 // 20ms
+#define SLOW_SWITCH_DELAY 50 //100ms
 
 
 #define GEARUP GPIO_Pin_7
@@ -30,8 +34,7 @@
 #define EC_POS 7
 
 
-#define FRONT_NODE 0x01
-#define REAR_NODE 0x02
+
 #define ON 0x21
 #define OFF 0x22
 
@@ -39,6 +42,7 @@ void init_driverInterface(uint8_t node);
 void switchWarningLight(uint8_t );
 void switchAction(void);
 void setSwitchStates(uint8_t);
+unsigned char debounceInput(int , int , int  );
 
 #endif
 

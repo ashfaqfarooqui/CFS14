@@ -7,6 +7,7 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_it.h"
 #include <stm32f4xx.h>
+#include "state.h"
 
 void init_ADC(void);
 void DMA_Config(void);

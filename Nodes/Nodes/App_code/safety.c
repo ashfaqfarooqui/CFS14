@@ -44,7 +44,20 @@ void oilTempCheck()
 
 }
 
-void setFanSpeed(uint8_t pwmSpeed)
+void setFanSpeed(uint8_t dutyCycle)
 {
+	uint16_t pwmSpeed=(dutyCycle*665)/100;
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_Pulse = pwmSpeed;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+
+	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
+
+	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+
+	/* TIM3 enable counter */
+	TIM_Cmd(TIM3, ENABLE);
 	//TODO write pwm code to control the driver motor.
 }

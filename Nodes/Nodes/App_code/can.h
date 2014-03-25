@@ -19,16 +19,18 @@
 
 void CAN_transmit_data(CanTxMsg);
 void init_CAN_Communication(void);
-CanTxMsg CAN_createMessage(uint32_t StdId, uint8_t RTR, uint8_t IDE,
+CanTxMsg CAN_createMessage_uint(uint32_t StdId, uint8_t RTR, uint8_t IDE,
 		uint8_t DLC, uint8_t *data);
+CanTxMsg CAN_createMessage_int(uint32_t StdId, uint8_t RTR, uint8_t IDE,
+		uint8_t DLC, int *data);
 void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
 		uint8_t CAN_FilterScale, uint16_t CANFilterIdHigh,
 		uint16_t CAN_FilterIdLow, uint16_t CAN_FilterMaskIdHigh,
 		uint16_t CAN_FilterMaskIdLow, uint16_t CAN_FilterFIFOAssignment,
 		FunctionalState CAN_FilterActivation);
 void CAN_ReceiverInit(CanRxMsg*);
-
+CanRxMsg* getRXmsg();
 void NVIC_Config_CAN(void);
 
-static CanRxMsg *RxMessage;
+static CanRxMsg RxMessage;
 #endif

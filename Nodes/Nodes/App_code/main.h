@@ -11,6 +11,7 @@
 #include "ADC.h"
 #include "driver_interface.h"
 #include "timer.h"
+#include "state.h"
 //******************************************************************************
 
 //******************************************************************************
@@ -31,7 +32,7 @@ void vCANReceiver(void *pvParameters);
      
 #define STACK_SIZE_MIN	128	/* usStackDepth	- the stack size DEFINED IN WORDS.*/
 
-extern uint8_t NODE=0x00;
+
 GPIO_InitTypeDef GPIO_InitStruct;
 USART_InitTypeDef USART_InitStruct;
 

@@ -1,10 +1,18 @@
 #include "driver_interface.h"
 
 static uint8_t previousSwitchStates = 0x00;
-static uint8_t SwitchStates = 0x00;
+static uint8_t RawSwitchStates = 0x00;
+
+short debounce[10] = {
+0
+};
+
+extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE]={0};
+
 /** initialize the features of the driver interface*/
 void init_driverInterface(uint8_t node)
 {
+	uint8_t i;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	if (node == FRONT_NODE)
@@ -40,6 +48,9 @@ void init_driverInterface(uint8_t node)
 
 	}
 
+	for(i=0;i<NUMBER_OF_DIGITAL_IN_PER_NODE;i++){
+		rawDigitalState[i]=0;
+	}
 }
 
 void SwitchWarningLight(uint8_t ONOFF)
@@ -54,73 +65,153 @@ void SwitchWarningLight(uint8_t ONOFF)
 		WARNINGLIGHT);
 	}
 }
-
+void updateSwitches()
+{
+	uint8_t digIn[NUMBER_OF_DIGITAL_IN_PER_NODE],i;
+	digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARUP),
+			GEARUP_POS, FAST_SWITCH_DELAY);
+	digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
+			GEARDOWN_POS + 1, FAST_SWITCH_DELAY);
+	if (NODE == FRONT_NODE)
+	{
+		digIn[2] = debounceInput(
+				!GPIO_ReadInputDataBit(INPUTPORT, LAUNCH_CONTROL), LC_POS + 2,
+				SLOW_SWITCH_DELAY);
+		digIn[3] = debounceInput(
+				!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), TC_POS + 3,
+				SLOW_SWITCH_DELAY);
+		digIn[4] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, DATALOGGER),
+				DL_POS + 4, SLOW_SWITCH_DELAY);
+		digIn[5] = debounceInput(
+				!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), AS_POS + 5,
+				SLOW_SWITCH_DELAY);
+		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, FANCONTROL),
+				FC_POS + 5, SLOW_SWITCH_DELAY);
+		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, E_CLUTCH),
+				EC_POS + 5, SLOW_SWITCH_DELAY);
+	} else
+	{
+		digIn[2] = 0;
+		digIn[3] = 0;
+		digIn[4] = 0;
+		digIn[5] = 0;
+	}
+	digIn[8] = 0;
+	digIn[9] = 0;
+	for (i = 0; i < NUMBER_OF_DIGITAL_IN_PER_NODE; i++)
+	{
+		*(rawDigitalState + i) = digIn[i];
+	}
+}
 void ReadSwitchStates()
 {
-	SwitchStates |= (GPIO_ReadInputDataBit(INPUTPORT,GEARUP) << GEARUP_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,GEARDOWN) << GEARDOWN_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,TRACTION_CONTROL) << TC_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,DATALOGGER) << DL_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,AUTOSHIFTING) << AS_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,FANCONTROL) << FC_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,E_CLUTCH) << EC_POS)
-			| (GPIO_ReadInputDataBit(INPUTPORT,LAUNCH_CONTROL) << LC_POS);
+	RawSwitchStates |= (GPIO_ReadInputDataBit(INPUTPORT, GEARUP) << GEARUP_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) << GEARDOWN_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL) << TC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, DATALOGGER) << DL_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING) << AS_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, FANCONTROL) << FC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, E_CLUTCH) << EC_POS)
+			| (GPIO_ReadInputDataBit(INPUTPORT, LAUNCH_CONTROL) << LC_POS);
 
-	if ((SwitchStates & (1 << GEARUP_POS)) == 1 << GEARUP_POS) //check if gear upis triggerd
+	if ((RawSwitchStates & (1 << GEARUP_POS)) == 1 << GEARUP_POS) //check if gear up is triggerd
 	{
 //TODO GearUp algo
-		SwitchStates = SwitchStates & 1 << GEARUP_POS; //clear GREARUP flag
-	} else if ((SwitchStates & 1 << GEARDOWN_POS) == 1 << GEARDOWN_POS) //check if gearDown is triggered
+		RawSwitchStates = RawSwitchStates & 1 << GEARUP_POS; //clear GREARUP flag
+	} else if ((RawSwitchStates & 1 << GEARDOWN_POS) == 1 << GEARDOWN_POS) //check if gearDown is triggered
 	{
 //TODO GearDown algo
-		SwitchStates = SwitchStates & 1 << GEARDOWN_POS; //Clear Gear down flag
-	} else if (SwitchStates & (1 << EC_POS) != 1 << EC_POS)
+		RawSwitchStates = RawSwitchStates & 1 << GEARDOWN_POS; //Clear Gear down flag
+	} else if (RawSwitchStates & (1 << EC_POS) != 1 << EC_POS)
 	{
 		//TODO: turnOnn el-clutch control
-	} else if (previousSwitchStates != SwitchStates)
+	} else if (previousSwitchStates != RawSwitchStates)
 	{
 //TODO do the required control
 	}
-	previousSwitchStates = SwitchStates;
+	previousSwitchStates = RawSwitchStates;
+}
+void updateSwitchStates()
+{
+
 }
 void setSwitchStates(uint8_t states)
 {
-	SwitchStates = states;
+	RawSwitchStates = states;
+}
+
+unsigned char debounceInput(int buttonValue, int stateIndex, int debounceDelay)
+{
+
+	//NOTHING TO DO
+	if (!buttonValue && !rawDigitalState[stateIndex])
+	{
+		debounce[stateIndex] = 0;
+		return 0;
+	}
+
+	// ACTIVATE
+	if (buttonValue)
+	{
+		if (debounce[stateIndex] >= debounceDelay)
+		{
+			return 1;
+		} else
+		{
+			debounce[stateIndex]++;
+			return 0;
+		}
+	}
+
+	// DEACTIVATE
+	if (!buttonValue && rawDigitalState[stateIndex])
+	{
+		if (debounce[stateIndex] <= 0)
+		{
+			return 0;
+		} else
+		{
+			debounce[stateIndex]--;
+			return 1;
+		}
+	}
+
+	return rawDigitalState[stateIndex];
 }
 
 void switchAction()
 {
-	if (SwitchStates & (1 << TC_POS) == 1 << TC_POS)
+	if (RawSwitchStates & (1 << TC_POS) == 1 << TC_POS)
 	{
 //TODO: turnOff Tranction control
 	}
-	if (SwitchStates & (1 << TC_POS) != 1 << TC_POS)
+	if (RawSwitchStates & (1 << TC_POS) != 1 << TC_POS)
 	{
 //TODO: turnOn Tranction control
 	}
 
-	if (SwitchStates & (1 << LC_POS) == 1 << LC_POS)
+	if (RawSwitchStates & (1 << LC_POS) == 1 << LC_POS)
 	{
 		//TODO: turnOf launch control
 	}
-	if (SwitchStates & (1 << LC_POS) != 1 << LC_POS)
+	if (RawSwitchStates & (1 << LC_POS) != 1 << LC_POS)
 	{
 		//TODO: turnOn launch control
 	}
-	if (SwitchStates & (1 << DL_POS) == 1 << DL_POS)
+	if (RawSwitchStates & (1 << DL_POS) == 1 << DL_POS)
 	{
 		//TODO: turnOf datalogger control
 	}
-	if (SwitchStates & (1 << DL_POS) != 1 << DL_POS)
+	if (RawSwitchStates & (1 << DL_POS) != 1 << DL_POS)
 	{
 		//TODO: turnOn Datalogger control
 	}
 
-	if (SwitchStates & (1 << FC_POS) == 1 << FC_POS)
+	if (RawSwitchStates & (1 << FC_POS) == 1 << FC_POS)
 	{
 		//TODO: Tunr fan on
 	}
-	if (SwitchStates & (1 << FC_POS) != 1 << FC_POS)
+	if (RawSwitchStates & (1 << FC_POS) != 1 << FC_POS)
 	{
 		//TODO: Connect FAN to auto control mode
 	}

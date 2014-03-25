@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tests.h"
 
 //******************************************************************************
 char start[] = "Hello world";
@@ -23,7 +24,7 @@ int main(void) {
 	 */
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
-	uint8_t NODE = 0x00;
+	
 
 	STM_EVAL_LEDInit(LED_BLUE);
 	STM_EVAL_LEDInit(LED_GREEN);
@@ -33,16 +34,30 @@ int main(void) {
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
 	setNode();
-	//init_ADC();
+	if(NODE==FRONT_NODE){
+		//TODO configure front node
+	}
+	if(NODE==REAR_NODE){
+		init_pwm_config();
+		setFanSpeed(200);
+		//TODO configure rear node
+	}
+	init_ADC();
 	//init_Timer();
 
 	//init_uart(115200);
+	init_Timer();
+	init_counter();
+
 	init_CAN_Communication();
-	CAN_ReceiverInit(RxMessage);
+	CAN_ReceiverInit(&RxMessage);
 	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
 			0x0000, 0x0000, 0x0000, 0, ENABLE);
+	testPWM();
+	//testCAN();
 
 init_driverInterface(0x01);
+
 	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vLedBlinkRed, (const signed char* )"Led Blink Task Red",
@@ -56,6 +71,7 @@ init_driverInterface(0x01);
 
 	vTaskStartScheduler();
 	vTaskDelay(900 / portTICK_RATE_MS);
+
 
 }
 //******************************************************************************
@@ -80,28 +96,19 @@ void vLedBlinkBlue(void *pvParameters) {
 }
 
 void vLedBlinkRed(void *pvParameters) {
-		CanTxMsg txmsg;
-	uint8_t data[3];
-	data[0]=0xff;
-	data[1]=0x01;
-	data[2]=0xee;
+CanTxMsg txmsg;
+	
 
 for(;;)
 {
-	uint16_t t=64;
-	if(STM_EVAL_PBGetState(BUTTON_USER)==SET)
-	{
-		STM_EVAL_LEDToggle(LED_RED);	
-		txmsg=CAN_createMessage(0x01,CAN_RTR_Data,CAN_Id_Standard,3,&data[0]);
-		CAN_transmit_data(txmsg);
-		while(t--){
-			
-			}
-	}
-	
+	//setFanSpeed((rawAnalogState[4]*100)/0xFFF);
+
+	txmsg = CAN_createMessage_int(0x01, CAN_RTR_Data, CAN_Id_Standard,
+						1, &rawAnalogState[4]);
+	CAN_transmit_data(txmsg);
 
 
-		vTaskDelay(750 / portTICK_RATE_MS);
+		vTaskDelay(1500 / portTICK_RATE_MS);
 }
 
 	

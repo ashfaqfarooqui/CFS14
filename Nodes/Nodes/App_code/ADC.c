@@ -1,5 +1,6 @@
 #include "ADC.h"
 
+int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE]={0};
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t RAW_ADC[8];
 uint16_t ADCValues[8];
@@ -76,6 +77,7 @@ void init_ADC(void) {
 
 	/* Enable ADC1 DMA since ADC1 is the Master*/
 	ADC_DMACmd(ADC1, ENABLE);
+	ADC_SoftwareStartConv(ADC1);
 
 }
 
@@ -121,7 +123,7 @@ void DMA2_Stream0_IRQHandler() {
 	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET) {
 		int i;
 		for (i = 0; i < 8; i++) {
-			ADCValues[i] = RAW_ADC[i];
+			*(rawAnalogState+i) = *(RAW_ADC+i);
 		}
 		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
 	}
