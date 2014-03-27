@@ -1,6 +1,7 @@
 #include "ADC.h"
 
 int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE]={0};
+
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t RAW_ADC[8];
 uint16_t ADCValues[8];
