@@ -15,7 +15,7 @@
 
 
 #define MONITOR_TIME 500
-#define SWITCHHOLDINGTIME 50
+#define SwWITCHHOLDINGTIME 10
 
 #define MAX_GEAR_POSITION 3
 #define MIN_GEAR_POSITION 1
@@ -32,6 +32,9 @@
 
 #define RANGE 0x0A
 
+#define NATURAL_CYLINDER_POSITION
+
+
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
 #define GEAR1LOW (GEAR1 - RANGE)
@@ -47,7 +50,9 @@
 #define GEAR6LOW (GEAR6 - RANGE)
 #define GEAR6HIGH (GEAR6 + RANGE)
 
-void gearShiftManager(void);
+void ShiftUpActive(void);
+void ShiftDownActive(void);
+void GoToNeutralActive(void);
 bool GearIsInPosition(void);
 Int GetGearPosition(void);
 void ShiftUp(void);
@@ -56,7 +61,8 @@ void GoToNeutral(void);
 void CutIgnition(void);
 void RestoreIgnition(void);
 void ElClutch(void);
-void AutoShifting(void);
+uint16_t GetGearCylinderPosition(void);
+uint16_t GetGearPositionSensorData(void);
 
 
 #define GEAR_SHIFT_PORT GPIOC
