@@ -458,6 +458,16 @@
               <FileType>1</FileType>
               <FilePath>.\App_code\timer.c</FilePath>
             </File>
+            <File>
+              <FileName>tests.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\tests.c</FilePath>
+            </File>
+            <File>
+              <FileName>DAQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\DAQ.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
