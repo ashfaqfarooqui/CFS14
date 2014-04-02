@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename resource &apos;Nodes/App_code/gearshifting&apos; to &apos;gearshifting.h&apos;" description="Rename resource &apos;gearshifting&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="App_code/gearshifting" name="gearshifting.h" stamp="1395088656321" updateReferences="true"/>
-</session>
