@@ -15,7 +15,6 @@
 unsigned int gearPosition = 0;
 bool gearIsInPosition = false;
 bool problem = false;
-bool autoShiftingBlock = true;
 
 int shiftUpTime = 0;
 int shiftDownTime = 0;
@@ -52,30 +51,24 @@ void release(GPIO_TypeDef* port,uint16_t system)
 //
 //actuate(GEAR_SHIFT_PORT,SHIFT_UP)
 //
-//gearPositionSensor = rawAnalogState[1]
-//front wheel speed left = rawAnalogState[2]
-//front wheel speed right = rawAnalogState[3]
+//gear = rawAnalogState[]
 //
 //Digital input
 //gearup digIn[0] = 1
 //geardown digIn[1] = 1
-//Elclutch digIn[2] = 1
-//Auto digIn[3] = 1
 
 
 /****************************************/
 
 
 void gearShiftManager(void) {
-	void init_actuators();
+
 	static unsigned int shiftDownHoldingTime = 0;
 
 	int shiftUpSwitch, shiftDownSwitch;
 	bool shiftUpActive, shiftDownActive, goToNeutralActive;
 
 	unsigned int sensorMonitor = 0;
-
-	ElClutch(digIn[2]);
 
 	gearIsInPosition = GearIsInPosition();
 	gearPosition = GetGearPosition();
@@ -95,6 +88,9 @@ void gearShiftManager(void) {
 		//put it into higher position
 	    sensorMonitor = 0;
 	}
+
+//	shiftUpSwitch = digIn[0];
+//	shiftDownSwitch = digIn[1];
 
 	if(!digIn[0] && !digIn[1]){
 		shiftUpActive = false;
@@ -117,7 +113,7 @@ void gearShiftManager(void) {
 				shiftDownActive = true;
 				shiftUpActive = false;
 				goToNeutral = false;
-			}else if(gearPosition > MAX_GEAR_POSITION - 1){//in gear 3 or over gear
+			}else if(gearPosition > 2){//in gear 3 or over gear
 				return;
 			}else{
 				shiftUpActive = true;
@@ -164,9 +160,6 @@ void gearShiftManager(void) {
 			}else if(gearPosition == 1){//now is in gear1, cannot shift down
 				return;
 			}else{
-				//TODO
-				//PT
-				//Shift down speed protect
 				shiftDownActive = true;
 				shiftUpActive = false;
 				goToNeutralActive = false;
@@ -181,11 +174,6 @@ void gearShiftManager(void) {
 
 	if(shiftUpActive){
 		actuate(GEAR_SHIFT_PORT,SHIFT_UP);
-		for(int i = 0; i < 50; i++){
-
-		}
-
-		release(GEAR_SHIFT_PORT,SHIFT_UP);
 	}
 
 	if(shiftDownActive){
@@ -195,9 +183,8 @@ void gearShiftManager(void) {
 	if(goToNeutralActive){
 		GoToNeutral();
 	}
-	if(digIn[3] == 1){
-		AutoShifting();
-	}
+
+	AutoShifting();
 }
 
 bool GearIsInPosition(void){
@@ -279,39 +266,29 @@ void GoToNeutral(void){
 
 	//delay
 
-	actuate(GEAR_SHIFT_PORT,SHIFT_UP);
-	//Use the function in ECU
-	//TODO
-	//Toni
+	actuate(GEAR_SHIFT_PORT,ShiftUp);
+	//give out shiftup signal
+	//TODO Ashfaq
 
-	for(int i = 0; i < 50; i++){
+	int gearPositionCurrent = 0;
+
+	for(int gearPositionMonitor = 0 ; ; gearPositionMonitor++){
+		gearPositionCurrent = GetGearPosition();
+		//TODO Ashfaq
+		delay(100);
+		//TODO Ashfaq
+		if(gearPositionCurrent = 0){
+			//release gear
+		}
 
 	}
-
-	release(GEAR_SHIFT_PORT,SHIFT_UP);
-	release(GEAR_SHIFT_PORT,NEUTRAL);
 }
 
 
-void ElClutch(int elClutch){
+void ElClutch(void){
 
-	if(elClutch == 1){
-		actuate(GEAR_SHIFT_PORT,CLUTCH);
-	}
-	if(elClutch == 0){
-		release(GEAR_SHIFT_PORT,CLUTCH);
-	}
 }
 
 void AutoShifting(void){
-	//TODO
-	//ashfaq
-	//read engine speed through CAN or....????
-
-	//int engineSpeed =
-	//int vehicalSpeed = (rawAnalogState[2] + rawAnalogState[3])/2;
-
-
-
 
 }

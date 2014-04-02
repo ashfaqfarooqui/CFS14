@@ -15,7 +15,6 @@
 unsigned int gearPosition = 0;
 bool gearIsInPosition = false;
 bool problem = false;
-bool autoShiftingBlock = true;
 
 int shiftUpTime = 0;
 int shiftDownTime = 0;

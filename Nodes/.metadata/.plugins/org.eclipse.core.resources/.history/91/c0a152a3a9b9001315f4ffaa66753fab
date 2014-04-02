@@ -15,7 +15,6 @@
 unsigned int gearPosition = 0;
 bool gearIsInPosition = false;
 bool problem = false;
-bool autoShiftingBlock = true;
 
 int shiftUpTime = 0;
 int shiftDownTime = 0;
@@ -67,7 +66,7 @@ void release(GPIO_TypeDef* port,uint16_t system)
 
 
 void gearShiftManager(void) {
-	void init_actuators();
+
 	static unsigned int shiftDownHoldingTime = 0;
 
 	int shiftUpSwitch, shiftDownSwitch;
