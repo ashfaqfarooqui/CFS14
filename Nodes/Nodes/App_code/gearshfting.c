@@ -4,7 +4,6 @@
  *  Created on: Mar 17, 2014
  *      Author: Zeyang Geng
  */
-
 #include "gearshifting.h"
 
 //How to go neutrual
@@ -12,7 +11,7 @@
 
 
 /********** GLOBAL DEFINATION **********/
-unsigned int gearPosition = 0;
+int gearPosition = 0;
 bool gearIsInPosition = false;
 bool problem = false;
 bool autoShiftingBlock = true;
@@ -70,10 +69,14 @@ void gearShiftManager(void) {
 	void init_actuators();
 	static unsigned int shiftDownHoldingTime = 0;
 
-	int shiftUpSwitch, shiftDownSwitch;
-	bool shiftUpActive, shiftDownActive, goToNeutralActive;
+	//int shiftUpSwitch, shiftDownSwitch;
+	bool shiftUpActive = false;
+  bool shiftDownActive = false;
+	bool goToNeutralActive = false;
 
 	unsigned int sensorMonitor = 0;
+	
+	int shiftUpDelay;	
 
 	ElClutch(digIn[2]);
 
@@ -84,7 +87,7 @@ void gearShiftManager(void) {
 			sensorMonitor++;
 	}else{
 		if(problem){
-			realse(GEAR_SHIFT_PORT,CLUTCH);
+			release(GEAR_SHIFT_PORT,CLUTCH);
 			sensorMonitor = 0;
 		}
 	}
@@ -100,11 +103,9 @@ void gearShiftManager(void) {
 		shiftUpActive = false;
 		shiftDownActive = false;
 		goToNeutralActive = false;
-		shiftDownSwitchHoldingTime = 0;
-		shiftUpUsedTime = 0;
-		shiftDownUsedTime = 0;
-		goToNeutralUsedTime = 0;
-
+		shiftDownHoldingTime = 0;
+		shiftUpTime = 0;
+		shiftDownTime = 0;
 		return;
 	}
 
@@ -113,10 +114,10 @@ void gearShiftManager(void) {
 		gearPosition = GetGearPosition();
 
 		if(gearIsInPosition){
-			if(gearPosition = 0){//now is in neutral
+			if(gearPosition == 0){//now is in neutral
 				shiftDownActive = true;
 				shiftUpActive = false;
-				goToNeutral = false;
+				goToNeutralActive = false;
 			}else if(gearPosition > MAX_GEAR_POSITION - 1){//in gear 3 or over gear
 				return;
 			}else{
@@ -134,17 +135,17 @@ void gearShiftManager(void) {
 	}
 
 	while(digIn[1]){
-		shiftDownSwitchHoldingTime++;
+		shiftDownHoldingTime++;
 	}
 
-	if(shiftDownSwitchHoldingTime > SWITCHHOLDINGTIME){
+	if(shiftDownHoldingTime > SWITCHHOLDINGTIME){
 		//holding shift down for long time mean go to neutral
 		gearIsInPosition = GearIsInPosition();
 		gearPosition = GetGearPosition();
 
 		if(gearIsInPosition){
-			if(gearPosition = 1){//in gear 1 and go to neutral
-				shiftDownSwitchHoldingTime = 0;
+			if(gearPosition == 1){//in gear 1 and go to neutral
+				shiftDownHoldingTime = 0;
 				goToNeutralActive = true;
 				shiftUpActive = false;
 				shiftDownActive = false;
@@ -155,7 +156,7 @@ void gearShiftManager(void) {
 		}
 
 	}else{//want to shift down
-		shiftDownSwitchHoldingTime = 0;
+		shiftDownHoldingTime = 0;
 		gearIsInPosition = GearIsInPosition();
 		gearPosition = GetGearPosition();
 		if(gearIsInPosition){
@@ -181,8 +182,8 @@ void gearShiftManager(void) {
 
 	if(shiftUpActive){
 		actuate(GEAR_SHIFT_PORT,SHIFT_UP);
-		for(int i = 0; i < 50; i++){
-
+		for(shiftUpDelay = 0 ; shiftUpDelay < 50; shiftUpDelay++){
+	      ;
 		}
 
 		release(GEAR_SHIFT_PORT,SHIFT_UP);
@@ -202,9 +203,9 @@ void gearShiftManager(void) {
 
 bool GearIsInPosition(void){
 	uint16_t gearPositionSensorData = rawAnalogState[1];
-
-	for(int i = 0 ; i < 7 ; i++){
-		if (gearPositionSensorData > shiftLevelsLow[i] && gearPositionSensorData < shiftLevelsHigh[i]){
+	int gear;
+	for(gear = 0 ; gear < 7 ; gear++){
+		if (gearPositionSensorData > shiftLevelsLow[gear] && gearPositionSensorData < shiftLevelsHigh[gear]){
 			return true;
 		}
 	}
@@ -212,20 +213,21 @@ bool GearIsInPosition(void){
 	return false;
 }
 
-Int GetGearPosition(){
+int GetGearPosition(){
 
 	uint16_t gearPositionSensorData = rawAnalogState[1];
 
 	int gearPosition = 0;
-	for(int i = 0 ; i < 7 ; i++){
-		if (gearPositionSensorData > shiftLevelsLow[i] && gearPositionSensorData < shiftLevelsHigh[i]){
-			gearPosition = i;
+	int gear;
+	for(gear = 0 ; gear < 7 ; gear++){
+		if (gearPositionSensorData > shiftLevelsLow[gear] && gearPositionSensorData < shiftLevelsHigh[gear]){
+			gearPosition = gear;
 			gearIsInPosition = true;
 			break;
 			}
 
-		if (gearPositionSensorData > shiftLevelsHigh[i] && gearPositionSensorData < shiftLevelsLow[i+1]){
-			gearPosition = i;
+		if (gearPositionSensorData > shiftLevelsHigh[gear] && gearPositionSensorData < shiftLevelsLow[gear+1]){
+			gearPosition = gear;
 			gearIsInPosition = false;
 			break;
 			}
@@ -236,25 +238,28 @@ Int GetGearPosition(){
 }
 
 void ShiftDown(int gearPosition){
-
+	int i;
+	int gearPositionCurrent = 0;
+  int gearPositionMonitor = 0;
+	
 	actuate(GEAR_SHIFT_PORT,CLUTCH);
-
-	for(int i = 0 ; i< 50; i++){
+	
+	for( i=0; i< 50; i++){
 		;
 	}
+	
 	shiftDownTime = shiftDownTime + 50;
 
 	actuate(GEAR_SHIFT_PORT,SHIFT_DOWN);
 
-	int gearPositionCurrent = 0;
 
-	for(int gearPositionMonitor = 0 ; ; gearPositionMonitor++){
+	for( ; ; gearPositionMonitor++){
 		gearPositionCurrent = GetGearPosition();
-		for(int i = 0 ; i< 50; i++){
+		for(i = 0 ; i< 50; i++){
 				;
 			}
 		shiftDownTime = shiftDownTime + 50;
-		if(gearPositionCurrent = gearPosition - 1){
+		if(gearPositionCurrent == gearPosition - 1){
 			break;
 		}
 		if(gearPositionMonitor > MONITOR_TIME){
@@ -270,6 +275,7 @@ void ShiftDown(int gearPosition){
 }
 
 void GoToNeutral(void){
+	int goToNeutralDelay;
 	actuate(GEAR_SHIFT_PORT,NEUTRAL);
 
 	//how can we know that the neutral cylinder is in position?
@@ -283,9 +289,9 @@ void GoToNeutral(void){
 	//Use the function in ECU
 	//TODO
 	//Toni
-
-	for(int i = 0; i < 50; i++){
-
+	
+	for(goToNeutralDelay = 0; goToNeutralDelay < 50; goToNeutralDelay++){
+		;
 	}
 
 	release(GEAR_SHIFT_PORT,SHIFT_UP);
