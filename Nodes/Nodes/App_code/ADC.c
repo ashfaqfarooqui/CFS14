@@ -1,11 +1,14 @@
 #include "ADC.h"
 
-int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE]={0};
+int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE] = {
+0
+};
 
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t RAW_ADC[8];
 uint16_t ADCValues[8];
-void init_ADC(void) {
+void init_ADC(void)
+{
 	GPIO_InitTypeDef GPIO_AdcInit;
 	ADC_InitTypeDef ADC_InitStructure;
 
@@ -82,7 +85,8 @@ void init_ADC(void) {
 
 }
 
-void DMA_Config(void) {
+void DMA_Config(void)
+{
 	DMA_InitTypeDef DMA_InitStructure;
 	NVIC_Config_adc();
 	DMA_InitStructure.DMA_Channel = DMA_Channel_0;
@@ -106,10 +110,12 @@ void DMA_Config(void) {
 	DMA_Cmd(DMA2_Stream0, ENABLE);
 }
 
-uint16_t DMA_GetADC(uint16_t Number) {
+uint16_t DMA_GetADC(uint16_t Number)
+{
 	return ADCValues[Number];
 }
-void NVIC_Config_adc(void) {
+void NVIC_Config_adc(void)
+{
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* Enable the DMA2 Stream0 Interrupt */
@@ -120,12 +126,48 @@ void NVIC_Config_adc(void) {
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-void DMA2_Stream0_IRQHandler() {
-	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET) {
+void DMA2_Stream0_IRQHandler()
+{
+	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET)
+	{
 		int i;
-		for (i = 0; i < 8; i++) {
-			*(rawAnalogState+i) = *(RAW_ADC+i);
+		for (i = 0; i < 8; i++)
+		{
+			*(rawAnalogState + i) = *(RAW_ADC + i);
 		}
-		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
+		DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
 	}
+}
+
+void saveRawData()
+{
+	if (THIS_NODE == FRONT_NODE)
+	{
+		sensorData[DAMPER_TRAVEL_FL] = rawAnalogState[AN_DAMPER_TRAVEL_FL];
+		sensorData[DAMPER_TRAVEL_FR] = rawAnalogState[AN_DAMPER_TRAVEL_FR];
+		sensorData[BRAKE_DISC_TEMP] = rawAnalogState[AN_BRAKE_DISC_TEMP];
+		sensorData[BRAKE_PRESSURE_F] = rawAnalogState[AN_BRAKE_PRESSURE_F];
+		sensorData[BRAKE_PRESSURE_R] = rawAnalogState[AN_BRAKE_PRESSURE_R];
+		sensorData[STEERING_ANGLE] = rawAnalogState[AN_STEERING_ANGLE];
+
+	} else if (THIS_NODE == REAR_NODE)
+	{
+		sensorData[DAMPER_TRAVEL_RL] = rawAnalogState[AN_DAMPER_TRAVEL_RL];
+		sensorData[DAMPER_TRAVEL_RR] = rawAnalogState[AN_DAMPER_TRAVEL_RR];
+		sensorData[GEAR_POSITION] = rawAnalogState[AN_GEAR_POSITION];
+		sensorData[OIL_PRESSURE] = rawAnalogState[AN_OIL_PRESSURE];
+		sensorData[OIL_TEMPRATURE] = rawAnalogState[AN_OIL_TEMPRATURE];
+		sensorData[CYLINDER_POSITION] = rawAnalogState[AN_CYLINDER_POSITION];
+	}
+}
+
+uint8_t getGearPosition()
+{
+	uint8_t scaledGear=convertData(sensorData[GEAR_POSITION])*1000;
+
+}
+
+float convertData(int val)
+{
+	return val*(3.3/4096);
 }

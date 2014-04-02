@@ -5,12 +5,12 @@
 #include "can.h"
 
 
-#define CAN_ADR_DAMPER_POSITION 0x101
+#define CAN_ADR_DAMPER_POSITION	0x101
 
 #define CAN_ADR_BRAKE_PRESSURET 0x112
 #define CAN_ADR_OIL_PRESSURE 0x113
 #define CAN_ADR_SHIFTING 0x115
-#define CAN_ADR_WHEEL_SPEED 0x120
+#define CAN_ADR_WHEEL_SPEED	0x120
 #define CAN_ADR_STEERING_WHEEL_ANGLE 0x121
 #define CAN_ADR_READ_WHEEL_SLIP 0x123
 #define CAN_ADR_ACC 0x125
@@ -18,6 +18,7 @@
 
 #define CAN_FRONT_NODE_FILTER 64
 #define CAN_REAR_NODE_FILTER 32
+
 
 #if THIS_NODE==FRONT_NODE
 #define CAN_NODE_FILTER CAN_FRONT_NODE_FILTER
@@ -27,6 +28,11 @@
 
 
 
+
+void sendWheelSpeed(void);
+void sendDamperPosition(void);
+void sendBrakePressure(void);
+void sendOilPressure(void);
 
 
 

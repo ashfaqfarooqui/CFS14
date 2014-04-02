@@ -12,6 +12,7 @@
 #include "driver_interface.h"
 #include "timer.h"
 #include "state.h"
+#include "DAQ.h"
 //******************************************************************************
 
 //******************************************************************************
@@ -22,6 +23,7 @@
 //******************************************************************************
 
 void setNode();
+void createTaskDAQ(void);
 
 void vSerialSender(void *pvParameters);
 void vLedBlinkBlue(void *pvParameters);

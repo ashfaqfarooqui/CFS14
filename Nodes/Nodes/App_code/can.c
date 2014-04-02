@@ -13,7 +13,8 @@ void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
 		uint8_t CAN_FilterScale, uint16_t CAN_FilterIdHigh,
 		uint16_t CAN_FilterIdLow, uint16_t CAN_FilterMaskIdHigh,
 		uint16_t CAN_FilterMaskIdLow, uint16_t CAN_FilterFIFOAssignment,
-		FunctionalState CAN_FilterActivation) {
+		FunctionalState CAN_FilterActivation)
+{
 	/* CAN filter init */
 	CAN_FilterInitTypeDef CAN_FilterInitStructure;
 	CAN_FilterInitStructure.CAN_FilterNumber = CAN_FilterNumber;
@@ -28,7 +29,8 @@ void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
 	CAN_FilterInit(&CAN_FilterInitStructure);
 }
 
-void init_CAN_Communication() {
+void init_CAN_Communication()
+{
 	GPIO_InitTypeDef GPIO_InitStructure;
 	CAN_InitTypeDef CAN_InitStructure;
 
@@ -63,14 +65,15 @@ void init_CAN_Communication() {
 	CAN_InitStructure.CAN_NART = DISABLE;
 	CAN_InitStructure.CAN_RFLM = DISABLE;
 	CAN_InitStructure.CAN_TXFP = DISABLE;
-	CAN_InitStructure.CAN_Mode = CAN_Mode_LoopBack;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
 
 	/* CAN Baudrate = 500KbBps (CAN clocked at 42 MHz) */
 	CAN_InitStructure.CAN_BS1 = CAN_BS1_14tq;
 	CAN_InitStructure.CAN_BS2 = CAN_BS2_6tq;
 	CAN_InitStructure.CAN_Prescaler = 4;
-	if(CAN_Init(CANx, &CAN_InitStructure)==CAN_InitStatus_Success){
+	if (CAN_Init(CANx, &CAN_InitStructure) == CAN_InitStatus_Success)
+	{
 		STM_EVAL_LEDOn(LED_GREEN);
 	}
 	NVIC_Config_CAN();
@@ -78,7 +81,8 @@ void init_CAN_Communication() {
 }
 
 CanTxMsg CAN_createMessage_uint(uint32_t StdId, uint8_t RTR, uint8_t IDE,
-		uint8_t DLC, uint8_t *data) {
+		uint8_t DLC, uint8_t *data)
+{
 	int ctr;
 	/* transmit */
 	CanTxMsg TxMessage;
@@ -86,15 +90,17 @@ CanTxMsg CAN_createMessage_uint(uint32_t StdId, uint8_t RTR, uint8_t IDE,
 	TxMessage.RTR = RTR;
 	TxMessage.IDE = IDE;
 	TxMessage.DLC = DLC;
-	for (ctr = 0; ctr < DLC; ctr++) {
+	for (ctr = 0; ctr < DLC; ctr++)
+	{
 		TxMessage.Data[ctr] = *(data + ctr);
 	}
 
 	return TxMessage;
 }
-		
+
 CanTxMsg CAN_createMessage_int(uint32_t StdId, uint8_t RTR, uint8_t IDE,
-		uint8_t DLC, int *data) {
+		uint8_t DLC, int *data)
+{
 	int ctr;
 	/* transmit */
 	CanTxMsg TxMessage;
@@ -102,14 +108,16 @@ CanTxMsg CAN_createMessage_int(uint32_t StdId, uint8_t RTR, uint8_t IDE,
 	TxMessage.RTR = RTR;
 	TxMessage.IDE = IDE;
 	TxMessage.DLC = DLC;
-	for (ctr = 0; ctr < DLC; ctr++) {
+	for (ctr = 0; ctr < DLC; ctr++)
+	{
 		TxMessage.Data[ctr] = *(data + ctr);
 	}
 
 	return TxMessage;
 }
 
-void CAN_ReceiverInit(CanRxMsg *RxMessage) {
+void CAN_ReceiverInit(CanRxMsg *RxMessage)
+{
 	/* receive */
 
 	RxMessage->StdId = 0x00;
@@ -125,13 +133,15 @@ void CAN_ReceiverInit(CanRxMsg *RxMessage) {
 	RxMessage->Data[7] = 0x00;
 }
 
-void CAN_transmit_data(CanTxMsg TxMessage) {
+void CAN_transmit_data(CanTxMsg TxMessage)
+{
 
 	TransmitMailbox = CAN_Transmit(CAN1, &TxMessage);
 
 }
 
-void NVIC_Config_CAN() {
+void NVIC_Config_CAN()
+{
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
@@ -143,15 +153,18 @@ void NVIC_Config_CAN() {
 	CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
 }
 
-CanRxMsg* getRXmsg(){
+CanRxMsg* getRXmsg()
+{
 	return &RxMessage;
 }
 
-void CAN1_RX0_IRQHandler() {
-	if (CAN_GetITStatus(CAN1, CAN_IT_FMP0) != RESET) {
+void CAN1_RX0_IRQHandler()
+{
+	if (CAN_GetITStatus(CAN1, CAN_IT_FMP0) != RESET)
+	{
 		CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 		STM_EVAL_LEDToggle(LED_BLUE);
-		CAN_FIFORelease(CAN1,CAN_FIFO0);
+		CAN_FIFORelease(CAN1, CAN_FIFO0);
 	}
-	CAN_ClearITPendingBit(CAN1,CAN_IT_FMP0);
+	CAN_ClearITPendingBit(CAN1, CAN_IT_FMP0);
 }

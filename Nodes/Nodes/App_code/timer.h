@@ -6,8 +6,8 @@
 #include "state.h"
 
 
-void init_Timer(void);
-void init_counter(void);
+//void init_Timer(void);
+//void init_counter(void);
 void init_pwm_config(void);
 
 #endif

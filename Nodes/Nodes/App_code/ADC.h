@@ -9,12 +9,13 @@
 #include <stm32f4xx.h>
 #include "state.h"
 
+
 void init_ADC(void);
 void DMA_Config(void);
 void NVIC_Config_adc(void);
-
+void saveRawData(void);
+float convertData(int);
+uint8_t getGearPosition(void);
 #define ADC_DR_ADDRESS    ((uint32_t)0x4001204C)
-
-
 
 #endif

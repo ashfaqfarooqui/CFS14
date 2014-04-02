@@ -1,13 +1,14 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "tests.h"
 
 //******************************************************************************
 char start[] = "Hello world";
 uint16_t data;
-int main(void) {
+unsigned int sensorData[150] = {
+0
+};
+int main(void)
+{
 
 	/*!< At this stage the microcontroller clock setting is already configured,
 	 this is done through SystemInit() function which is called from startup
@@ -24,7 +25,6 @@ int main(void) {
 	 */
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
-	
 
 	STM_EVAL_LEDInit(LED_BLUE);
 	STM_EVAL_LEDInit(LED_GREEN);
@@ -34,10 +34,12 @@ int main(void) {
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
 	setNode();
-	if(NODE==FRONT_NODE){
+	if (NODE == FRONT_NODE)
+	{
 		//TODO configure front node
 	}
-	if(NODE==REAR_NODE){
+	if (NODE == REAR_NODE)
+	{
 		init_pwm_config();
 		setFanSpeed(200);
 		//TODO configure rear node
@@ -46,8 +48,8 @@ int main(void) {
 	//init_Timer();
 
 	//init_uart(115200);
-	init_Timer();
-	init_counter();
+//	init_Timer();
+//	init_counter();
 
 	init_CAN_Communication();
 	CAN_ReceiverInit(&RxMessage);
@@ -56,38 +58,55 @@ int main(void) {
 	testPWM();
 	//testCAN();
 
-init_driverInterface(0x01);
+	init_driverInterface(0x01);
 
-	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vLedBlinkRed, (const signed char* )"Led Blink Task Red",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	createTaskDAQ();
+//	xTaskCreate(vLedBlinkBlue, (const signed char* )"Led Blink Task Blue",
+//			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+//	xTaskCreate(vLedBlinkRed, (const signed char* )"Led Blink Task Red",
+//			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vLedBlinkGreen, (const signed char* )"Led Blink Task Green",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vLedBlinkOrange, (const signed char* )"Led Blink Task Orange",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+//	xTaskCreate(vLedBlinkOrange, (const signed char* )"Led Blink Task Orange",
+//			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 //	xTaskCreate(vCANReceiver, (const signed char* )"CAN", STACK_SIZE_MIN, NULL,
 	//		tskIDLE_PRIORITY, NULL);
 
 	vTaskStartScheduler();
 	vTaskDelay(900 / portTICK_RATE_MS);
 
+}
+//******************************************************************************
+void createTaskDAQ()
+{
+	//wheel speed and damper data
+	xTaskCreate(vSend50HzData,(const signed char* )"send 50Hz Data",
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	//breakdisc temprature , gear and steering angle
+	xTaskCreate(vSend40HzData,(const signed char* )"send 40Hz Data",
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	//oil pressure, water temp,acc, gyro
+	xTaskCreate(vSend10HzData,(const signed char* )"send 10Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	//break pressure firewall temp, wheel temp
+	xTaskCreate(vsend5HzData,(const signed char* )"send 5Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 }
 //******************************************************************************
-
-//******************************************************************************
-void vLedBlinkBlue(void *pvParameters) {
+void vLedBlinkBlue(void *pvParameters)
+{
 
 	uint16_t i;
-	for (;;) {
-
+	for (;;)
+	{
 		
-		if(GPIO_ReadInputDataBit(INPUTPORT,FANCONTROL)==RESET){
-	SwitchWarningLight(ON);
+		if (GPIO_ReadInputDataBit(INPUTPORT, FANCONTROL) == RESET)
+		{
+			SwitchWarningLight(ON);
 			STM_EVAL_LEDOn(LED_RED);
-	}
-		else {
+		} else
+		{
 			SwitchWarningLight(OFF);
 		}
 
@@ -95,49 +114,64 @@ void vLedBlinkBlue(void *pvParameters) {
 	}
 }
 
-void vLedBlinkRed(void *pvParameters) {
-CanTxMsg txmsg;
-	
-
-for(;;)
+void vLedBlinkRed(void *pvParameters)
 {
-	//setFanSpeed((rawAnalogState[4]*100)/0xFFF);
+	CanTxMsg txmsg;
+	
+	for (;;)
+	{
+		//setFanSpeed((rawAnalogState[4]*100)/0xFFF);
 
-	txmsg = CAN_createMessage_int(0x01, CAN_RTR_Data, CAN_Id_Standard,
-						1, &rawAnalogState[4]);
-	CAN_transmit_data(txmsg);
-
+		txmsg = CAN_createMessage_int(0x01, CAN_RTR_Data, CAN_Id_Standard, 1,
+				&rawAnalogState[4]);
+		CAN_transmit_data(txmsg);
 
 		vTaskDelay(1500 / portTICK_RATE_MS);
-}
-
+	}
 	
 }
 
-void vLedBlinkGreen(void *pvParameters) {
-for(;;)
+void vLedBlinkGreen(void *pvParameters)
+{
+	sensorData[W_SPEED_FL] = 100;
+	sensorData[W_SPEED_FR] = 50;
+	sensorData[DAMPER_TRAVEL_FL] = 1;
+	sensorData[DAMPER_TRAVEL_FR] = 2;
+	sensorData[DAMPER_TRAVEL_RL] = 3;
+	sensorData[DAMPER_TRAVEL_RR] = 4;
+
+	sensorData[BRAKE_PRESSURE_R] = 2;
+	sensorData[BRAKE_PRESSURE_R] = 3;
+	for (;;)
 	{
-
-		vTaskDelay(250 / portTICK_RATE_MS);
+		testDAQ();
+		vTaskDelay(5000 / portTICK_RATE_MS);
 	}
 }
 
-void vSerialSender(void *pvParameters) {
-	for (;;) {
-vTaskDelay(900 / portTICK_RATE_MS);
-	}
-}
-void vLedBlinkOrange(void *pvParameters) {
-	for (;;) {
+void vSerialSender(void *pvParameters)
+{
+	for (;;)
+	{
 		vTaskDelay(900 / portTICK_RATE_MS);
 	}
 }
-void vCANReceiver(void *pvParameters) {
+void vLedBlinkOrange(void *pvParameters)
+{
+	for (;;)
+	{
+		vTaskDelay(900 / portTICK_RATE_MS);
+	}
+}
+void vCANReceiver(void *pvParameters)
+{
 	CanRxMsg RxMessage;
 	CAN_ReceiverInit(&RxMessage);
-	for (;;) {
+	for (;;)
+	{
 		if ((CAN_MessagePending(CAN1, CAN_FIFO0) > 0)
-				&& CAN_GetITStatus(CAN1, CAN_IT_FMP0)) {
+				&& CAN_GetITStatus(CAN1, CAN_IT_FMP0))
+		{
 			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 
 		}
@@ -147,7 +181,8 @@ void vCANReceiver(void *pvParameters) {
 
 //******************************************************************************
 
-void setNode() {
+void setNode()
+{
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;

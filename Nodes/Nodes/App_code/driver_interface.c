@@ -71,24 +71,24 @@ void updateSwitches()
 	digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARUP),
 			GEARUP_POS, FAST_SWITCH_DELAY);
 	digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
-			GEARDOWN_POS + 1, FAST_SWITCH_DELAY);
+			GEARDOWN_POS , FAST_SWITCH_DELAY);
 	if (NODE == FRONT_NODE)
 	{
 		digIn[2] = debounceInput(
-				!GPIO_ReadInputDataBit(INPUTPORT, LAUNCH_CONTROL), LC_POS + 2,
+				!GPIO_ReadInputDataBit(INPUTPORT, LAUNCH_CONTROL), LC_POS ,
 				SLOW_SWITCH_DELAY);
 		digIn[3] = debounceInput(
-				!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), TC_POS + 3,
+				!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), TC_POS ,
 				SLOW_SWITCH_DELAY);
 		digIn[4] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, DATALOGGER),
-				DL_POS + 4, SLOW_SWITCH_DELAY);
+				DL_POS , SLOW_SWITCH_DELAY);
 		digIn[5] = debounceInput(
-				!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), AS_POS + 5,
+				!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), AS_POS ,
 				SLOW_SWITCH_DELAY);
 		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, FANCONTROL),
-				FC_POS + 5, SLOW_SWITCH_DELAY);
+				FC_POS , SLOW_SWITCH_DELAY);
 		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, E_CLUTCH),
-				EC_POS + 5, SLOW_SWITCH_DELAY);
+				EC_POS , SLOW_SWITCH_DELAY);
 	} else
 	{
 		digIn[2] = 0;
