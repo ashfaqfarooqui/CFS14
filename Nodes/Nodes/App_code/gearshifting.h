@@ -8,7 +8,12 @@
 #include "can.h"
 #include "ADC.h"
 #include "driver_interface.h"
+#include "state.h"
 
+typedef int bool;
+#define true 1
+#define false 0
+	
 #define CLUTCH GPIO_Pin_15
 #define SHIFT_UP GPIO_Pin_14
 #define SHIFT_DOWN GPIO_Pin_13
@@ -49,13 +54,12 @@
 
 void gearShiftManager(void);
 bool GearIsInPosition(void);
-Int GetGearPosition(void);
-void ShiftUp(void);
-void ShiftDown(void);
+int GetGearPosition(void);
+void ShiftDown(int);
 void GoToNeutral(void);
 void CutIgnition(void);
 void RestoreIgnition(void);
-void ElClutch(void);
+void ElClutch(int);
 void AutoShifting(void);
 
 
@@ -63,3 +67,5 @@ void AutoShifting(void);
 void actuate(GPIO_TypeDef* port,uint16_t system);
 void release(GPIO_TypeDef* port,uint16_t system);
 void init_actuators();
+
+#endif
