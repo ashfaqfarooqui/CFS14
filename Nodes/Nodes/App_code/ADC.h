@@ -16,6 +16,7 @@ void NVIC_Config_adc(void);
 void saveRawData(void);
 float convertData(int);
 uint8_t getGearPosition(void);
+int processAdcSamples(uint8_t );
 #define ADC_DR_ADDRESS    ((uint32_t)0x4001204C)
 
 #endif

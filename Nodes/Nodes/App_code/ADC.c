@@ -1,11 +1,10 @@
 #include "ADC.h"
 
-int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE] = {
-0
-};
+int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
+
 
 /* Private variables ---------------------------------------------------------*/
-__IO uint16_t RAW_ADC[8];
+__IO uint16_t RAW_ADC[80];
 uint16_t ADCValues[8];
 void init_ADC(void)
 {
@@ -61,14 +60,14 @@ void init_ADC(void)
 	ADC_Init(ADC1, &ADC_InitStructure);
 
 	/* ADC1 regular channel6 configuration -- ADCx->SMPR1,SMPR2 et ADCx->SQR1,SQR2,SQR3  */
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 2, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 3, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 4, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 6, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 7, ADC_SampleTime_144Cycles);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 8, ADC_SampleTime_144Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 3, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 4, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 5, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 6, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 7, ADC_SampleTime_3Cycles);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 8, ADC_SampleTime_3Cycles);
 
 	/* Enable DMA request after last transfer (single-ADC mode)  */
 	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
@@ -93,7 +92,7 @@ void DMA_Config(void)
 	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & RAW_ADC;
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) ADC_DR_ADDRESS;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-	DMA_InitStructure.DMA_BufferSize = 8;
+	DMA_InitStructure.DMA_BufferSize = 80;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -126,14 +125,29 @@ void NVIC_Config_adc(void)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+int processAdcSamples(uint8_t index)
+{
+	long rawData=0;
+	uint8_t sample;
+	for(sample=index;sample<80;sample+=8)
+	{
+		rawData+=RAW_ADC[sample];
+		
+	}
+	return rawData/10;
+}
+
 void DMA2_Stream0_IRQHandler()
 {
+	
 	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET)
 	{
-		int i;
+		uint8_t i,j;
 		for (i = 0; i < 8; i++)
 		{
-			*(rawAnalogState + i) = *(RAW_ADC + i);
+			*(rawAnalogState+i)=processAdcSamples(i);
+	//		j=10*i;
+	//		*(rawAnalogState + i) = *(RAW_ADC + j);
 		}
 		DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
 	}
