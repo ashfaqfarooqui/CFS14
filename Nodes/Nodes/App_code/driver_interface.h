@@ -11,12 +11,13 @@
 
 #define GEARUP GPIO_Pin_7
 #define GEARDOWN GPIO_Pin_8
-#define DATALOGGER GPIO_Pin_10
+#define LAUNCH_CONTROL GPIO_Pin_15
 #define TRACTION_CONTROL GPIO_Pin_11
+#define DATALOGGER GPIO_Pin_10
 #define AUTOSHIFTING GPIO_Pin_12
 #define FANCONTROL GPIO_Pin_13
 #define E_CLUTCH GPIO_Pin_14
-#define LAUNCH_CONTROL GPIO_Pin_15
+
 
 #define WARNINGLIGHT GPIO_Pin_14
 
@@ -38,11 +39,12 @@
 #define ON 0x21
 #define OFF 0x22
 
-void init_driverInterface(uint8_t node);
+void init_driverInterface();
 void switchWarningLight(uint8_t );
 void switchAction(void);
 void setSwitchStates(uint8_t);
 unsigned char debounceInput(int , int , int  );
+void updateSwitches(void);
 
 #endif
 

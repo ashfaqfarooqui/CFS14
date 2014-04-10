@@ -19,21 +19,34 @@ bool autoShiftingBlock = true;
 int shiftUpTime = 0;
 int shiftDownTime = 0;
 
+
 const unsigned short shiftLevelsHigh[7] =
 	{NEUTRALHIGH, GEAR1HIGH, GEAR2HIGH, GEAR3HIGH, GEAR4HIGH, GEAR5HIGH, GEAR6HIGH};
 const unsigned short shiftLevelsLow[7] =
 	{NEUTRALLOW, GEAR1LOW, GEAR2LOW, GEAR3LOW, GEAR4LOW, GEAR5LOW, GEAR6LOW};
 
+
 /***************************************/
 void init_actuators()
 {
+	
 	GPIO_InitTypeDef GPIO_InitStructure;
-	GPIO_InitStructure.GPIO_Pin =CLUTCH|SHIFT_UP|SHIFT_DOWN;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	GPIO_InitStructure.GPIO_Pin =SHIFT_UP|SHIFT_DOWN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GEAR_SHIFT_PORT, &GPIO_InitStructure);
+	
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	GPIO_InitStructure.GPIO_Pin =GPIO_Pin_14|GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
 
 void actuate(GPIO_TypeDef* port,uint16_t system)
@@ -66,22 +79,21 @@ void release(GPIO_TypeDef* port,uint16_t system)
 
 
 void gearShiftManager(void) {
-	void init_actuators();
+
 	static unsigned int shiftDownHoldingTime = 0;
 
 	//int shiftUpSwitch, shiftDownSwitch;
 	bool shiftUpActive = false;
-  bool shiftDownActive = false;
+	bool shiftDownActive = false;
 	bool goToNeutralActive = false;
 
 	unsigned int sensorMonitor = 0;
 	
 	int shiftUpDelay;	
 
-	ElClutch(digIn[2]);
+	ElClutch(rawDigitalState[0]);
 
-	gearIsInPosition = GearIsInPosition();
-	gearPosition = GetGearPosition();
+	GetGearPosition();
 
 	if (!gearIsInPosition){
 			sensorMonitor++;
@@ -99,7 +111,7 @@ void gearShiftManager(void) {
 	    sensorMonitor = 0;
 	}
 
-	if(!digIn[0] && !digIn[1]){
+	if(!rawDigitalState[0] && !rawDigitalState[1]){
 		shiftUpActive = false;
 		shiftDownActive = false;
 		goToNeutralActive = false;
@@ -109,9 +121,9 @@ void gearShiftManager(void) {
 		return;
 	}
 
-	if(digIn[0]){
-		gearIsInPosition = GearIsInPosition();
-		gearPosition = GetGearPosition();
+	if(rawDigitalState[0]){
+		
+		GetGearPosition();
 
 		if(gearIsInPosition){
 			if(gearPosition == 0){//now is in neutral
@@ -134,14 +146,14 @@ void gearShiftManager(void) {
 		//TODO
 	}
 
-	while(digIn[1]){
+	while(rawDigitalState[1]){
 		shiftDownHoldingTime++;
 	}
 
 	if(shiftDownHoldingTime > SWITCHHOLDINGTIME){
 		//holding shift down for long time mean go to neutral
-		gearIsInPosition = GearIsInPosition();
-		gearPosition = GetGearPosition();
+		
+		GetGearPosition();
 
 		if(gearIsInPosition){
 			if(gearPosition == 1){//in gear 1 and go to neutral
@@ -157,8 +169,7 @@ void gearShiftManager(void) {
 
 	}else{//want to shift down
 		shiftDownHoldingTime = 0;
-		gearIsInPosition = GearIsInPosition();
-		gearPosition = GetGearPosition();
+		GetGearPosition();
 		if(gearIsInPosition){
 			if(gearPosition == 0){//now is in neutral, cannot shift down
 				return;
@@ -196,30 +207,22 @@ void gearShiftManager(void) {
 	if(goToNeutralActive){
 		GoToNeutral();
 	}
+	/*
 	if(digIn[3] == 1){
 		AutoShifting();
 	}
+	*/
 }
 
-bool GearIsInPosition(void){
-	uint16_t gearPositionSensorData = rawAnalogState[1];
-	int gear;
-	for(gear = 0 ; gear < 7 ; gear++){
-		if (gearPositionSensorData > shiftLevelsLow[gear] && gearPositionSensorData < shiftLevelsHigh[gear]){
-			return true;
-		}
-	}
 
-	return false;
-}
 
 int GetGearPosition(){
 
-	uint16_t gearPositionSensorData = rawAnalogState[1];
 
-	int gearPosition = 0;
+	int gearPositionSensorData =getGearPositionData();
+
 	int gear;
-	for(gear = 0 ; gear < 7 ; gear++){
+	for(gear = 0 ; gear < 6 ; gear++){
 		if (gearPositionSensorData > shiftLevelsLow[gear] && gearPositionSensorData < shiftLevelsHigh[gear]){
 			gearPosition = gear;
 			gearIsInPosition = true;
@@ -232,8 +235,17 @@ int GetGearPosition(){
 			break;
 			}
 	}
+	gear = 0;
+
+	if(gearIsInPosition){
+		actuate(GPIOE,GPIO_Pin_1);
+	}else{
+		release(GPIOE,GPIO_Pin_1);
+	}
 
 	return gearPosition;
+
+
 
 }
 
@@ -302,10 +314,10 @@ void GoToNeutral(void){
 void ElClutch(int elClutch){
 
 	if(elClutch == 1){
-		actuate(GEAR_SHIFT_PORT,CLUTCH);
+		actuate(GPIOC,CLUTCH);
 	}
 	if(elClutch == 0){
-		release(GEAR_SHIFT_PORT,CLUTCH);
+		release(GPIOC,CLUTCH);
 	}
 }
 
