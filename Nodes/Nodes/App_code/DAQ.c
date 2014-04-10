@@ -83,7 +83,7 @@ void sendOilTemprature()
 	data[0] = 0;
 	data[1] = (sensorData[OIL_TEMPRATURE]) & 0xff;
 	data[2] = (sensorData[OIL_TEMPRATURE] >> 8) & 0x0f;
-	OilTempratureMsg = CAN_createMessage_uint(CAN_ADR_OIL_,
+	OilTempratureMsg = CAN_createMessage_uint(CAN_ADR_OIL_TEMPRATURE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
 	while (CAN_Transmit(CAN1, &OilTempratureMsg) != CAN_TxStatus_NoMailBox)
 		;
@@ -94,9 +94,9 @@ void sendGear()
 	CanTxMsg GearMsg;
 	uint8_t data[4];
 	data[0] = 0;
-	data[1] =;
-	data[2] =;
-	data[3] = getGearPosition();
+	//data[1] =;
+//	data[2] =;
+	//data[3] =;
 	GearMsg = CAN_createMessage_uint(CAN_ADR_SHIFTING,
 	CAN_RTR_Data, CAN_ID_STD, 4, &data[0]);
 	while (CAN_Transmit(CAN1, &GearMsg) != CAN_TxStatus_NoMailBox)
@@ -145,8 +145,25 @@ void sendGyroData()
 	data[4] = (sensorData[GYRO_YAW] >> 8) & 0x0f;
 	data[5] = (sensorData[GYRO_PITCH]) & 0xff;
 	data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
-	AccMsg = CAN_createMessage_uint(CAN_ADR_GYRO,
+	GyroMsg = CAN_createMessage_uint(CAN_ADR_GYRO,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
 	while (CAN_Transmit(CAN1, &GyroMsg) != CAN_TxStatus_NoMailBox)
 		;
+}
+
+void sendBrakeDiscTemp()
+{
+	CanTxMsg BrakeDisc;
+		uint8_t data[7];
+		data[0] = 0;
+		data[1] = (sensorData[GYRO_ROLL]) & 0xff;
+		data[2] = (sensorData[GYRO_ROLL] >> 8) & 0x0f;
+		data[3] = (sensorData[GYRO_YAW]) & 0xff;
+		data[4] = (sensorData[GYRO_YAW] >> 8) & 0x0f;
+		data[5] = (sensorData[GYRO_PITCH]) & 0xff;
+		data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
+		GyroMsg = CAN_createMessage_uint(CAN_ADR_BRAKE_DISC_TEMP,
+		CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
+		while (CAN_Transmit(CAN1, &BrakeDisc) != CAN_TxStatus_NoMailBox)
+			;
 }

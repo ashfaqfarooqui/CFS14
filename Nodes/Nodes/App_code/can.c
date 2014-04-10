@@ -76,7 +76,8 @@ void init_CAN_Communication()
 	{
 		STM_EVAL_LEDOn(LED_GREEN);
 	}
-	NVIC_Config_CAN();
+//	NVIC_Config_CAN();
+	CAN_ReceiverInit(&RxMessage);
 
 }
 
@@ -156,6 +157,21 @@ void NVIC_Config_CAN()
 CanRxMsg* getRXmsg()
 {
 	return &RxMessage;
+}
+void readMessages()
+{
+	if (CAN_GetFlagStatus(CAN1,CAN_FLAG_FMP0)==SET)
+		{
+			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+			if(RxMessage.StdId==0x280)
+			{
+				sensorData[ENGINE_RPM]=0;
+				sensorData[ENGINE_RPM]|=RxMessage.Data[3];
+				sensorData[ENGINE_RPM]=(sensorData[ENGINE_RPM]<<8)|RxMessage.Data[2];
+				STM_EVAL_LEDToggle(LED_BLUE);
+			}
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+		}
 }
 
 void CAN1_RX0_IRQHandler()

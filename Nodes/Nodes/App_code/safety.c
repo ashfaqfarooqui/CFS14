@@ -1,25 +1,11 @@
 #include "safety.h"
 
-//TODO put tempratures into variables!
-uint8_t getTemprature(uint8_t param)
-{
-	if (param == OIL)
-	{
-		//send can rtr to get oil temp from ECU
-	}
-	if (param == WATER)
-	{
-		//send can rtr to get water temp from ECU
-	}
-
-}
-
 void waterTempCheck()
 {
-	uint8_t temp = getTemprature(OIL);
+	uint8_t temp = sensorData[WATER_TEMPRATURE];
 	if (temp > 120)
 	{
-		//TODO: shutdown engine
+		shutDownEngine();
 	} else if (temp > 110)
 	{
 		setFanSpeed(MAX);
@@ -36,18 +22,22 @@ void waterTempCheck()
 void oilTempCheck()
 {
 
-	uint8_t temp = getTemprature(WATER);
+	uint8_t temp = sensorData[OIL_PRESSURE];
 	if (temp > 120)
 	{
-		//TODO: shutdown engine
+		shutDownEngine();
 	}
 
 }
 
+void shutDownEngine()
+{
+//TODO	actuate(GPIO,pin);
+}
 void setFanSpeed(uint8_t dutyCycle)
 {
-	uint16_t pwmSpeed=(dutyCycle*665)/100;
-	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	uint16_t pwmSpeed = (dutyCycle * 665) / 100;
+	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_Pulse = pwmSpeed;
@@ -59,5 +49,4 @@ void setFanSpeed(uint8_t dutyCycle)
 
 	/* TIM3 enable counter */
 	TIM_Cmd(TIM3, ENABLE);
-	//TODO write pwm code to control the driver motor.
 }

@@ -8,6 +8,6 @@
 #define OIL 0x01
 #define WATER 0x10
 
-uint8_t getTemprature( uint8_t);
+uint8_t shutDownEngine( );
 void setFanSpeed( uint8_t);
 #endif

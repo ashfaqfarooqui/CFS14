@@ -23,6 +23,8 @@
 #define THIS_NODE FRONT_NODE
 //#define THIS_NODE REAR_NODE
 
+#define TESTMODE 0
+
 #define FRONT_NODE_OFFSET 0
 #define REAR_NODE_OFFSET 8
 
@@ -52,7 +54,7 @@
 #define DAMPER_TRAVEL_RR 4
 
 #define OIL_PRESSURE 8
-#define OIL_TEMPRATURE 9
+#define WATER_TEMPRATURE 9
 #define ACC_X 10
 #define ACC_Y 11
 #define ACC_Z 12
