@@ -13,6 +13,6 @@ void init_pwm_config(void);
 void calculateWheelSpeed();
 void init_inputCapture(void);
 void config_Capture_DMA(void);
-void delay(void);
+void delay(uint16_t);
 
 #endif

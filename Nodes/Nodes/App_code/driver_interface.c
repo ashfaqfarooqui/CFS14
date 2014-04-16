@@ -72,7 +72,7 @@ void updateSwitches()
 			GEARUP_POS, FAST_SWITCH_DELAY);
 	digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
 			GEARDOWN_POS , FAST_SWITCH_DELAY);
-	if (NODE == FRONT_NODE)
+	if (THIS_NODE == FRONT_NODE)
 	{
 		digIn[2] = debounceInput(
 				!GPIO_ReadInputDataBit(INPUTPORT, LAUNCH_CONTROL), LC_POS ,

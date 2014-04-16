@@ -146,8 +146,6 @@ void DMA2_Stream0_IRQHandler()
 		for (i = 0; i < 8; i++)
 		{
 			*(rawAnalogState+i)=processAdcSamples(i);
-	//		j=10*i;
-	//		*(rawAnalogState + i) = *(RAW_ADC + j);
 		}
 		DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
 	}
@@ -163,25 +161,28 @@ void saveRawData()
 		sensorData[BRAKE_PRESSURE_F] = rawAnalogState[AN_BRAKE_PRESSURE_F];
 		sensorData[BRAKE_PRESSURE_R] = rawAnalogState[AN_BRAKE_PRESSURE_R];
 		sensorData[STEERING_ANGLE] = rawAnalogState[AN_STEERING_ANGLE];
+		sensorData[GEAR_POSITION] = rawAnalogState[1];
 
 	} else if (THIS_NODE == REAR_NODE)
 	{
 		sensorData[DAMPER_TRAVEL_RL] = rawAnalogState[AN_DAMPER_TRAVEL_RL];
 		sensorData[DAMPER_TRAVEL_RR] = rawAnalogState[AN_DAMPER_TRAVEL_RR];
-		sensorData[GEAR_POSITION] = rawAnalogState[AN_GEAR_POSITION];
+		sensorData[GEAR_POSITION] = rawAnalogState[1];//rawAnalogState[AN_GEAR_POSITION];
 		sensorData[OIL_PRESSURE] = rawAnalogState[AN_OIL_PRESSURE];
-		sensorData[OIL_TEMPRATURE] = rawAnalogState[AN_OIL_TEMPRATURE];
+//		sensorData[OIL_TEMPRATURE] = rawAnalogState[AN_OIL_TEMPRATURE];
 		sensorData[CYLINDER_POSITION] = rawAnalogState[AN_CYLINDER_POSITION];
 	}
 }
 
-uint8_t getGearPosition()
+
+
+int getGearPositionData()
 {
-	uint8_t scaledGear=convertData(sensorData[GEAR_POSITION])*1000;
+	return (int)(convertData(sensorData[GEAR_POSITION])*1000);
 
 }
 
 float convertData(int val)
 {
-	return val*(3.3/4096);
+	return (float)((((val)*3.3)/4095)*1.5);
 }

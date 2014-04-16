@@ -121,20 +121,26 @@ void config_Capture_DMA()
 	DMA_Init(DMA1_Stream1, &DMA_InitStructure);
 }
 
-void delay()
+void delay(uint16_t delay)
 {
+	uint16_t tim = 0;
 	TIM_TimeBaseInitTypeDef timerInitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	tim=(uint16_t) delay*(42000)/41999;
 
 	timerInitStructure.TIM_Prescaler = 42000 - 1;//1MHz
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStructure.TIM_Period = 2000 - 1;
+	timerInitStructure.TIM_Period = tim;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 
 	TIM_TimeBaseInit(TIM2, &timerInitStructure);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	TIM_Cmd(TIM2, ENABLE);
-	while (TIM_GetFlagStatus(TIM2, TIM_FLAG_Update))
+	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
+	while (!(TIM_GetITStatus(TIM2, TIM_IT_Update))){
 		;
+	}
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	TIM_Cmd(TIM2, DISABLE);
 
 }
