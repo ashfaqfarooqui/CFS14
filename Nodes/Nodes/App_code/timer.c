@@ -1,4 +1,4 @@
- #include "timer.h"
+#include "timer.h"
 #define SAMPLES 10
 /** This code will configure timer 2 so that it runs for a time period of one second whcih
  * will be used to calculate the freq for freq-sensors**/
@@ -88,7 +88,7 @@ void config_Capture_DMA()
 	DMA_InitStructure.DMA_BufferSize = SAMPLES;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; // 32-bit
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
@@ -110,7 +110,7 @@ void config_Capture_DMA()
 	DMA_InitStructure.DMA_BufferSize = SAMPLES;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; // 32-bit
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
@@ -121,23 +121,25 @@ void config_Capture_DMA()
 	DMA_Init(DMA1_Stream1, &DMA_InitStructure);
 }
 
-void delay(uint16_t tim)
+void delay(uint16_t delay)
 {
-
+	uint16_t tim = 0;
 	TIM_TimeBaseInitTypeDef timerInitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	tim=(uint16_t) delay*(42000)/41999;
 
-	timerInitStructure.TIM_Prescaler = 42000 - 1; //1MHz
+	timerInitStructure.TIM_Prescaler = 42000 - 1;//1MHz
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStructure.TIM_Period = (tim - 1);
+	timerInitStructure.TIM_Period = tim;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 
 	TIM_TimeBaseInit(TIM2, &timerInitStructure);
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	TIM_Cmd(TIM2, ENABLE);
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-	while (!(TIM_GetITStatus(TIM2, TIM_IT_Update)))
+	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
+	while (!(TIM_GetITStatus(TIM2, TIM_IT_Update))){
 		;
+	}
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	TIM_Cmd(TIM2, DISABLE);
 
