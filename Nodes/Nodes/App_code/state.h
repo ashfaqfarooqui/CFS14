@@ -55,12 +55,13 @@
 
 #define OIL_PRESSURE 8
 #define WATER_TEMPRATURE 9
-#define ACC_X 10
-#define ACC_Y 11
-#define ACC_Z 12
-#define GYRO_ROLL 13
-#define GYRO_PITCH 14
-#define GYRO_YAW 15
+#define OIL_TEMPRATURE 10
+#define ACC_X 11
+#define ACC_Y 12
+#define ACC_Z 13
+#define GYRO_ROLL 14
+#define GYRO_PITCH 15
+#define GYRO_YAW 16
 #define W_SPEED_FL 20
 #define W_SPEED_FR 21
 #define W_SPEED_RL 22

@@ -21,16 +21,27 @@
 #include "task.h"
 #include "croutine.h"
 //******************************************************************************
-
-void setNode();
+void TimingDelay_Decrement(void);
 void createTaskDAQ(void);
 
-void vSerialSender(void *pvParameters);
-void vLedBlinkBlue(void *pvParameters);
-void vLedBlinkRed(void *pvParameters);
-void vLedBlinkGreen(void *pvParameters);
-void vLedBlinkOrange(void *pvParameters);
 void vCANReceiver(void *pvParameters);
+void vSend50HzData(void *pvParameters);
+void vSend50HzData1(void *pvParameters);
+void vSend40HzData(void *pvParameters);
+void vSend10HzData(void *pvParameters);
+void vSend5HzData(void *pvParameters);
+void vRecieveCan(void *pvParameters);
+void vUpdateSensors(void *pvParameters);
+
+void vSendWheelSpeed(void *pvParameters);
+void vSendDamperTravel(void *pvParameters);
+void vSendAcc(void *pvParameters);
+void vSendGyro(void *pvParameters);
+void vSendBrakeDisc(void *pvParameters);
+void vSendSteeringAngle(void *pvParameters);
+void vSendOilPressure(void *pvParameters);
+void vSendWaterTemp(void *pvParameters);
+void vSendGear(void *pvParameters);
      
 #define STACK_SIZE_MIN	128	/* usStackDepth	- the stack size DEFINED IN WORDS.*/
 

@@ -8,6 +8,6 @@
 #define OIL 0x01
 #define WATER 0x10
 
-uint8_t shutDownEngine( );
+void shutDownEngine(void);
 void setFanSpeed( uint8_t);
 #endif

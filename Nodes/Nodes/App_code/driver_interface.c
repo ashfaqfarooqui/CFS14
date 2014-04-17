@@ -10,12 +10,12 @@ short debounce[10] = {
 extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE]={0};
 
 /** initialize the features of the driver interface*/
-void init_driverInterface(uint8_t node)
+void init_driverInterface()
 {
 	uint8_t i;
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
-	if (node == FRONT_NODE)
+	if (THIS_NODE == FRONT_NODE)
 	{
 //Inputs
 		GPIO_InitStructure.GPIO_Pin =
@@ -36,7 +36,7 @@ void init_driverInterface(uint8_t node)
 		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 		GPIO_Init(OUTPUTPORT, &GPIO_InitStructure);
 
-	} else if (node == REAR_NODE)
+	} else if (THIS_NODE == REAR_NODE)
 	{
 		GPIO_InitStructure.GPIO_Pin =
 		GEARUP | GEARDOWN;
@@ -103,7 +103,7 @@ void updateSwitches()
 		*(rawDigitalState + i) = digIn[i];
 	}
 }
-void ReadSwitchStates()
+/*void ReadSwitchStates()
 {
 	RawSwitchStates |= (GPIO_ReadInputDataBit(INPUTPORT, GEARUP) << GEARUP_POS)
 			| (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) << GEARDOWN_POS)
@@ -139,6 +139,7 @@ void setSwitchStates(uint8_t states)
 {
 	RawSwitchStates = states;
 }
+*/
 
 unsigned char debounceInput(int buttonValue, int stateIndex, int debounceDelay)
 {

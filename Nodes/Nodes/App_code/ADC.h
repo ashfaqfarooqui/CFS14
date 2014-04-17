@@ -13,7 +13,7 @@
 void init_ADC(void);
 void DMA_Config(void);
 void NVIC_Config_adc(void);
-void saveRawData(void);
+void saveRawADCData(void);
 float convertData(int);
 uint8_t getGearPosition(void);
 int processAdcSamples(uint8_t );

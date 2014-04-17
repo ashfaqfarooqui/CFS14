@@ -16,5 +16,6 @@
 void testCAN(void);
 void testPWM(void);
 void testDAQ(void);
-
+void simulateEngineRpm(void);
+void testUART();
 #endif

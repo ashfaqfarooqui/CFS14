@@ -38,7 +38,7 @@
 #define ON 0x21
 #define OFF 0x22
 
-void init_driverInterface(uint8_t node);
+void init_driverInterface();
 void switchWarningLight(uint8_t );
 void switchAction(void);
 void setSwitchStates(uint8_t);

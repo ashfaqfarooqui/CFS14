@@ -146,14 +146,12 @@ void DMA2_Stream0_IRQHandler()
 		for (i = 0; i < 8; i++)
 		{
 			*(rawAnalogState+i)=processAdcSamples(i);
-	//		j=10*i;
-	//		*(rawAnalogState + i) = *(RAW_ADC + j);
 		}
 		DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
 	}
 }
 
-void saveRawData()
+void saveRawADCData()
 {
 	if (THIS_NODE == FRONT_NODE)
 	{
