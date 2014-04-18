@@ -1,23 +1,25 @@
 #include "timer.h"
 #define SAMPLES 10
+
 /** This code will configure timer 2 so that it runs for a time period of one second whcih
  * will be used to calculate the freq for freq-sensors**/
 
-uint32_t Buffer1[SAMPLES];
-uint32_t Buffer2[SAMPLES];
+//uint32_t Buffer1[SAMPLES] = 0;
+//uint32_t Buffer2[SAMPLES] = 0;
+uint8_t CaptureNumberLeft = CaptureNumberRight = 0;
+uint16_t counterLeft = 0, TimeL, counterRight = 0, TimeR;
 void init_inputCapture(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	TIM_ICInitTypeDef TIM_ICInitStructure;
-
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	/* TIM1 clock enable */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
-
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 
 	/* TIM1 channel 1 and 2 pin (PE.9 and PE.11) configuration */
-	//TODO configure two channels
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -31,7 +33,16 @@ void init_inputCapture(void)
 	/* Connect TIM pins to AF2 */
 	GPIO_PinAFConfig(GPIOE, GPIO_PinSource9, GPIO_AF_TIM1);
 	GPIO_PinAFConfig(GPIOE, GPIO_PinSource11, GPIO_AF_TIM1);
+//timer base config
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //Control with dead zone.
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //Counter direction
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 84 - 1; //Timer clock = sysclock /(TIM_Prescaler+1) = 2M
+	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+	TIM_TimeBaseInitStructure.TIM_Period = 0xFFFF;
+	//Period = (TIM counter clock / TIM output clock) - 1 = 40Hz
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);
 
+	//timer channel configuration
 	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1;
 	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
@@ -48,87 +59,142 @@ void init_inputCapture(void)
 
 	TIM_ICInit(TIM1, &TIM_ICInitStructure);
 
-	config_Capture_DMA();
-	TIM_DMACmd(TIM1, TIM_DMA_CC1, ENABLE);
-	TIM_DMACmd(TIM1, TIM_DMA_CC2, ENABLE);
+	//config_Capture_DMA();
+	//TIM_DMACmd(TIM1, TIM_DMA_CC1, ENABLE);
+	//TIM_DMACmd(TIM1, TIM_DMA_CC2, ENABLE);
 	/* TIM enable counter */
 	TIM_Cmd(TIM1, ENABLE);
+	TIM_ClearFlag(TIM1, TIM_FLAG_CC1);
+	TIM_ClearFlag(TIM1, TIM_FLAG_CC2);
 
 }
 
-void calculateWheelSpeed()
+void calculateWheelSpeedLeft()
 {
-	uint32_t capture[SAMPLES - 1];
-	int i;
-	for (i = 0; i < SAMPLES - 1; i++)
+	uint8_t wheelID;
+	if (TIM_GetFlagStatus(TIM1, TIM_FLAG_CC1) == SET)
 	{
-		if (Buffer1[i + 1] > Buffer1[i])
+		TIM_ClearFlag(TIM1, TIM_FLAG_CC1);
+		if (CaptureNumberLeft == 0)
 		{
-			capture[i] = Buffer1[i + 1] - Buffer1[i];
-		} else if (Buffer1[i + 1] < Buffer1[i])
+			counterLeft = TIM_GetCapture1(TIM1);  //The first capture
+			CaptureNumberLeft = 1;
+		} else if (CaptureNumberLeft == 1)  //Treatment of second capture
 		{
-			capture[i] = (0xFFFF - Buffer1[i]) - Buffer1[i + 1];
+			if (TIM_GetFlagStatus(TIM1, TIM_FLAG_Update) != SET) //Treatment of two capture no overflow occurs
+			{
+				TimeR = TIM_GetCapture1(TIM1);
+				TimeR = TimeR - counterLeft;
+			} else
+			{
+				TIM_ClearFlag(TIM1, TIM_FLAG_Update);   //The update event
+				TimeR = 0xFFFF - counterLeft + TIM_GetCapture1(TIM1) + 1; //If the calculation mode update events
+			}
+			CaptureNumberLeft = 0;
+			if (TimeR != 0)
+			{
+				//freq = 2000000 / Time;  //Calculation of frequency
+				wheelID = THIS_NODE == FRONT_NODE ? W_SPEED_FL : W_SPEED_RL;
+				sensorData[wheelID] = TimeR;
+			}
+			
 		}
 	}
 
 }
-void config_Capture_DMA()
+void calculateWheelSpeedRight()
 {
-	//chanel 1
+	uint8_t wheelID;
 
-	DMA_InitTypeDef DMA_InitStructure;
-	DMA_DeInit(DMA2_Stream3);
+	if (TIM_GetFlagStatus(TIM1, TIM_FLAG_CC2) == SET)
+	{
+		TIM_ClearFlag(TIM1, TIM_FLAG_CC2);
+		if (CaptureNumberRight == 0)
+		{
+			counterRight = TIM_GetCapture2(TIM1);  //The first capture
+			CaptureNumberRight = 1;
+		} else if (CaptureNumberRight == 1)  //Treatment of second capture
+		{
+			if (TIM_GetFlagStatus(TIM1, TIM_FLAG_Update) != SET) //Treatment of two capture no overflow occurs
+			{
+				TimeL = TIM_GetCapture2(TIM1);
+				TimeL = TimeL - counterRight;
+			} else
+			{
+				TIM_ClearFlag(TIM1, TIM_FLAG_Update);   //The update event
+				TimeL = 0xFFFF - counterRight + TIM_GetCapture2(TIM1) + 1; //If the calculation mode update events
+			}
+			CaptureNumberRight = 0;
+			if (TimeL != 0)
+			{
+				wheelID = THIS_NODE == FRONT_NODE ? W_SPEED_FR : W_SPEED_RR;
+				//freq = 2000000 / Time;  //Calculation of frequency
+				sensorData[wheelID] = TimeL;
+			}
+		}
+	}
 
-	DMA_StructInit(&DMA_InitStructure);
-
-	DMA_InitStructure.DMA_Channel = DMA_Channel_6;
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&TIM1->CCR1);
-	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & Buffer1[0];
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-	DMA_InitStructure.DMA_BufferSize = SAMPLES;
-	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
-	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-	DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-	DMA_Init(DMA1_Stream1, &DMA_InitStructure);
-
-	//channel 2
-	DMA_DeInit(DMA2_Stream2);
-
-	DMA_StructInit(&DMA_InitStructure);
-
-	DMA_InitStructure.DMA_Channel = DMA_Channel_6;
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&TIM1->CCR2);
-	DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & Buffer2[0];
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-	DMA_InitStructure.DMA_BufferSize = SAMPLES;
-	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
-	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-	DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-	DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-	DMA_Init(DMA1_Stream1, &DMA_InitStructure);
 }
+/*void config_Capture_DMA()
+ {
+ //chanel 1
+
+ DMA_InitTypeDef DMA_InitStructure;
+ DMA_DeInit(DMA2_Stream3);
+
+ DMA_StructInit(&DMA_InitStructure);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+ RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+
+ DMA_InitStructure.DMA_Channel = DMA_Channel_6;
+ DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&(TIM1->CCR1));
+ DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & Buffer1[0];
+ DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+ DMA_InitStructure.DMA_BufferSize = SAMPLES;
+ DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+ DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
+ DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+ DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+ DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+ DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+ DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+ DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ DMA_Init(DMA2_Stream3, &DMA_InitStructure);
+ DMA_Cmd(DMA2_Stream3, ENABLE);
+ //channel 2
+ DMA_DeInit(DMA2_Stream2);
+
+ DMA_StructInit(&DMA_InitStructure);
+
+ DMA_InitStructure.DMA_Channel = DMA_Channel_6;
+ DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&(TIM1->CCR2));
+ DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) & Buffer2[0];
+ DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+ DMA_InitStructure.DMA_BufferSize = SAMPLES;
+ DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+ DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+ DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word; // 32-bit
+ DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+ DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+ DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+ DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+ DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+ DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+ DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+ DMA_Init(DMA2_Stream2, &DMA_InitStructure);
+ DMA_Cmd(DMA2_Stream2, ENABLE);
+ }*/
 
 void delay(uint16_t delay)
 {
 	uint16_t tim = 0;
 	TIM_TimeBaseInitTypeDef timerInitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	tim=(uint16_t) delay*(42000)/41999;
+	tim = (uint16_t) delay * (42000) / 41999;
 
-	timerInitStructure.TIM_Prescaler = 42000 - 1;//1MHz
+	timerInitStructure.TIM_Prescaler = 42000 - 1; //1MHz
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	timerInitStructure.TIM_Period = tim;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -136,8 +202,9 @@ void delay(uint16_t delay)
 	TIM_TimeBaseInit(TIM2, &timerInitStructure);
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	TIM_Cmd(TIM2, ENABLE);
-	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE);
-	while (!(TIM_GetITStatus(TIM2, TIM_IT_Update))){
+	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	while (!(TIM_GetITStatus(TIM2, TIM_IT_Update)))
+	{
 		;
 	}
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);

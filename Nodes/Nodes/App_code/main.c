@@ -34,15 +34,15 @@ int main(void)
 	init_uart(115200);
 //	init_Timer();
 //	init_counter();
-//	init_inputCapture();
+    init_inputCapture();
 	init_CAN_Communication();
+	init_pwm_config();
 	CAN_ReceiverInit(&RxMessage);
 	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
 			0x0000, 0x0000, 0x0000, 0, ENABLE);
-testDAQ();
 
 	init_driverInterface();
-	testUART();
+	setFanSpeed(10);
 
 
 	createTaskDAQ();
@@ -50,7 +50,10 @@ testDAQ();
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateSensors, (const signed char* )"Update Sensors",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	
+	xTaskCreate(vUpdateWheelSpeedLeft, (const signed char* )"Update wheel speed left",
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vUpdateWheelSpeedRight, (const signed char* )"Update wheel speed right",
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 	vTaskStartScheduler();
 	vTaskDelay(900 / portTICK_RATE_MS);
@@ -80,14 +83,36 @@ void createTaskDAQ()
 	xTaskCreate(vSend5HzData, (const signed char* )"send 5Hz Data",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
+
 }
 //******************************************************************************
+void vUpdateWheelSpeedLeft(void *pvParameters)
+{
+	while(1)
+	{
 
+		calculateWheelSpeedLeft();
+
+		vTaskDelay(0.5 / portTICK_RATE_MS);
+
+	}
+}
+
+void vUpdateWheelSpeedRight(void *pvParameters)
+{
+	while(1)
+	{
+
+		calculateWheelSpeedRight();
+
+		vTaskDelay(0.25 / portTICK_RATE_MS);
+
+	}
+}
 void vUpdateSensors(void *pvParameters)
 {
 	while (1)
 	{
-		testDAQ();
 		updateSwitches();
 		//saveRawADCData();
 

@@ -33,6 +33,9 @@ void vSend5HzData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateSensors(void *pvParameters);
 
+void vUpdateWheelSpeedLeft(void *pvParameters);
+void vUpdateWheelSpeedRight(void *pvParameters);
+
 void vSendWheelSpeed(void *pvParameters);
 void vSendDamperTravel(void *pvParameters);
 void vSendAcc(void *pvParameters);

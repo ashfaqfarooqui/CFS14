@@ -20,8 +20,8 @@
 #define ALL_NODE 0
 
 
-#define THIS_NODE FRONT_NODE
-//#define THIS_NODE REAR_NODE
+//#define THIS_NODE FRONT_NODE
+#define THIS_NODE REAR_NODE
 
 #define TESTMODE 0
 
@@ -92,8 +92,11 @@
 static unsigned int NODE = 0x00;
 
 
+//extern __IO int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
 extern int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
-
+extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE];
 extern unsigned int sensorData[150];
+
+
 
 #endif
