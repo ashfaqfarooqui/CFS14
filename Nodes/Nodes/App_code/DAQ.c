@@ -21,9 +21,10 @@ void sendWheelSpeed()
 	}
 	wheelSpeedMsg = CAN_createMessage_uint(CAN_ADR_WHEEL_SPEED, CAN_RTR_Data,
 	CAN_ID_STD, 3, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &wheelSpeedMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &wheelSpeedMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
 void sendDamperPosition()
 {
@@ -47,9 +48,10 @@ void sendDamperPosition()
 	}
 	DamperPosMsg = CAN_createMessage_uint(CAN_ADR_DAMPER_POSITION, CAN_RTR_Data,
 	CAN_ID_STD, 5, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &DamperPosMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &DamperPosMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
 
 void sendBrakePressure()
@@ -64,9 +66,10 @@ void sendBrakePressure()
 	data[4] = (sensorData[BRAKE_PRESSURE_R] >> 8) & 0x0f;
 	BrakePressureMsg = CAN_createMessage_uint(CAN_ADR_BRAKE_PRESSURET,
 	CAN_RTR_Data, CAN_ID_STD, 5, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &BrakePressureMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &BrakePressureMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 }
 void sendOilPressure()
@@ -79,9 +82,10 @@ void sendOilPressure()
 	data[2] = (sensorData[OIL_PRESSURE] >> 8) & 0x0f;
 	OilPressureMsg = CAN_createMessage_uint(CAN_ADR_OIL_PRESSURE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &OilPressureMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &OilPressureMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 }
 void sendOilTemprature()
@@ -94,9 +98,10 @@ void sendOilTemprature()
 	data[2] = (sensorData[OIL_TEMPRATURE] >> 8) & 0x0f;
 	OilTempratureMsg = CAN_createMessage_uint(CAN_ADR_OIL_TEMPRATURE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &OilTempratureMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &OilTempratureMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 }
 void sendGear()
@@ -110,9 +115,10 @@ void sendGear()
 	//data[3] =;
 	GearMsg = CAN_createMessage_uint(CAN_ADR_SHIFTING,
 	CAN_RTR_Data, CAN_ID_STD, 4, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &GearMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &GearMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 }
 void sendSteeringAngle()
@@ -126,9 +132,10 @@ void sendSteeringAngle()
 	data[2] = (sensorData[STEERING_ANGLE] >> 8) & 0x0f;
 	SteeringMsg = CAN_createMessage_uint(CAN_ADR_STEERING_WHEEL_ANGLE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &SteeringMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &SteeringMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 }
 void sendAccData()
@@ -145,9 +152,11 @@ void sendAccData()
 	data[6] = (sensorData[ACC_Z] >> 8) & 0x0f;
 	AccMsg = CAN_createMessage_uint(CAN_ADR_ACC,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &AccMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &AccMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
 
 void sendGyroData()
@@ -164,9 +173,10 @@ void sendGyroData()
 	data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
 	GyroMsg = CAN_createMessage_uint(CAN_ADR_GYRO,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &GyroMsg);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &GyroMsg);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
 
 void sendBrakeDiscTemp()
@@ -183,7 +193,8 @@ void sendBrakeDiscTemp()
 	data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
 	BrakeDisc = CAN_createMessage_uint(CAN_ADR_BRAKE_DISC_TEMP,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
-	transmitStatus = CAN_Transmit(CAN1, &BrakeDisc);
-	while (transmitStatus == CAN_TxStatus_NoMailBox)
-		;
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &BrakeDisc);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }

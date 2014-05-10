@@ -170,16 +170,19 @@ void saveRawADCData()
 		sensorData[OIL_PRESSURE] = rawAnalogState[AN_OIL_PRESSURE];
 		sensorData[OIL_TEMPRATURE] = rawAnalogState[AN_OIL_TEMPRATURE];
 		sensorData[CYLINDER_POSITION] = rawAnalogState[AN_CYLINDER_POSITION];
+		sensorData[THROTTLE_POSITION]=rawAnalogState[AN_THROTTLE_POSITION];
 	}
 }
 
-uint8_t getGearPosition()
+
+
+int getGearPositionData()
 {
-	uint8_t scaledGear=convertData(sensorData[GEAR_POSITION])*1000;
+	return (int)(convertData(sensorData[GEAR_POSITION])*1000);
 
 }
 
 float convertData(int val)
 {
-	return val*(3.3/4096);
+	return (float)((((val)*3.3)/4095)*1.5);
 }

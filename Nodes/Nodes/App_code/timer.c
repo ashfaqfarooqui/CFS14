@@ -6,7 +6,7 @@
 
 //uint32_t Buffer1[SAMPLES] = 0;
 //uint32_t Buffer2[SAMPLES] = 0;
-uint8_t CaptureNumberLeft = CaptureNumberRight = 0;
+uint8_t CaptureNumberLeft =0, CaptureNumberRight = 0;
 uint16_t counterLeft = 0, TimeL, counterRight = 0, TimeR;
 void init_inputCapture(void)
 {
@@ -281,21 +281,20 @@ void init_pwm_config()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
 	/* GPIOC Configuration:*/
-	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN;	//TODO configure correct pin
+	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	/* Connect TIM3 pins to AF2 */
-	GPIO_PinAFConfig(GPIOC, FANOUT_PINSOURCE, GPIO_AF_TIM3);//TODO configure correct pin
-
+	/* Connect TIM8 pins  */
+	GPIO_PinAFConfig(GPIOC, FANOUT_PINSOURCE, GPIO_AF_TIM3);
 	/* Compute the prescaler value */
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = 665;
+	TIM_TimeBaseStructure.TIM_Period = 10000;
 	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;

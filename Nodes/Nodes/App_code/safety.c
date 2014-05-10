@@ -1,32 +1,44 @@
 #include "safety.h"
 
-void waterTempCheck()
+void safetyCheck()
 {
 	uint8_t temp = sensorData[WATER_TEMPRATURE];
+	uint8_t checkLight=1;
 	if (temp > 120)
 	{
 		shutDownEngine();
+
 	} else if (temp > 110)
 	{
 		setFanSpeed(MAX);
-		SwitchWarningLight(ON);
+
 	} else if (temp > 95)
 	{
 		setFanSpeed(90);
+		checkLight=0;
 	} else
 	{
+		checkLight=0;
 		setFanSpeed(75);
+	}
+	temp = sensorData[OIL_PRESSURE];
+	if (temp < 4)
+	{
+
+		shutDownEngine();
+	}
+
+	if(checkLight==1)
+	{
+		SwitchWarningLight(ON);
+	}else{
+		SwitchWarningLight(OFF);
 	}
 }
 
 void oilTempCheck()
 {
 
-	uint8_t temp = sensorData[OIL_PRESSURE];
-	if (temp > 120)
-	{
-		shutDownEngine();
-	}
 
 }
 
@@ -37,7 +49,7 @@ void shutDownEngine()
 }
 void setFanSpeed(uint8_t dutyCycle)
 {
-	uint16_t pwmSpeed = (dutyCycle * 665) / 100;
+	uint16_t pwmSpeed = (dutyCycle * 10000) / 100;
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;

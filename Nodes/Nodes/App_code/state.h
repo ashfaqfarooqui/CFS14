@@ -28,24 +28,29 @@
 #define FRONT_NODE_OFFSET 0
 #define REAR_NODE_OFFSET 8
 
+#define CAN_ID_ENGINE_RPM 0x280
+#define CAN_ID_COOLANT_TEMP 0x289
+#define CAN_ID_RPM 0x316
+#define CAN_ID_SWITCH_STATES 0x0325
 
 
 //ANALOG SENSOR
-#define AN_DAMPER_TRAVEL_FL 0
-#define AN_DAMPER_TRAVEL_FR	1
-#define AN_BRAKE_DISC_TEMP 2
-#define AN_BRAKE_PRESSURE_F 3
-#define AN_BRAKE_PRESSURE_R 4
-#define AN_STEERING_ANGLE 5
+#define AN_DAMPER_TRAVEL_FL 1
+#define AN_DAMPER_TRAVEL_FR	0
+#define AN_BRAKE_DISC_TEMP 3
+#define AN_BRAKE_PRESSURE_F 5
+#define AN_BRAKE_PRESSURE_R 2
+#define AN_STEERING_ANGLE 4
 
 
 
-#define AN_DAMPER_TRAVEL_RL 0
-#define AN_DAMPER_TRAVEL_RR	1
-#define AN_OIL_PRESSURE 2
-#define AN_OIL_TEMPRATURE 3
-#define AN_GEAR_POSITION 4
-#define AN_CYLINDER_POSITION 5
+#define AN_DAMPER_TRAVEL_RL 1
+#define AN_DAMPER_TRAVEL_RR	0
+#define AN_OIL_PRESSURE 3
+#define AN_OIL_TEMPRATURE 6
+#define AN_GEAR_POSITION 5
+#define AN_CYLINDER_POSITION 4
+#define AN_THROTTLE_POSITION 2
 
 //all sensors
 #define DAMPER_TRAVEL_FL 1
@@ -62,6 +67,7 @@
 #define GYRO_ROLL 14
 #define GYRO_PITCH 15
 #define GYRO_YAW 16
+#define THROTTLE_POSITION 17
 #define W_SPEED_FL 20
 #define W_SPEED_FR 21
 #define W_SPEED_RL 22
@@ -89,6 +95,11 @@
 #define WHEEL_TEMP_RR3 91
 
 
+
+
+
+#define KILL_ENGINE GPIO_Pin_8
+
 static unsigned int NODE = 0x00;
 
 
@@ -96,7 +107,11 @@ static unsigned int NODE = 0x00;
 extern int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
 extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE];
 extern unsigned int sensorData[150];
+extern unsigned int recievedStates;
 
+typedef enum {TRUE,FALSE} bol;
+extern bol AutoShiftState;
+extern bol TractionControlState;
 
 
 #endif

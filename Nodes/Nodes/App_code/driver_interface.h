@@ -3,23 +3,29 @@
 
 #include "stm32f4xx.h"
 #include "state.h"
+#include "can.h"
 
-#define FAST_SWITCH_DELAY 5 // 10ms
+#define FAST_SWITCH_DELAY 3 // 10ms
 #define MEDIUM_SWITCH_DELAY 10 // 20ms
 #define SLOW_SWITCH_DELAY 50 //100ms
 
 
-#define GEARUP GPIO_Pin_7
-#define GEARDOWN GPIO_Pin_8
-#define LAUNCH_CONTROL GPIO_Pin_15
-#define TRACTION_CONTROL GPIO_Pin_11
-#define DATALOGGER GPIO_Pin_10
+//#define GEARUP GPIO_Pin_5
+#define GEARUP GPIO_Pin_12
+#define GEARDOWN GPIO_Pin_4
+#define LAUNCH_CONTROL GPIO_Pin_12
+#define TRACTION_CONTROL GPIO_Pin_8
+#define DATALOGGER GPIO_Pin_7
 #define AUTOSHIFTING GPIO_Pin_12
-#define FANCONTROL GPIO_Pin_13
-#define E_CLUTCH GPIO_Pin_14
+#define FANCONTROL GPIO_Pin_12
+#define E_CLUTCH GPIO_Pin_10
 
 
-#define WARNINGLIGHT GPIO_Pin_14
+#define WARNINGLIGHT GPIO_Pin_15
+#define TRACTION_CONTROL_ACT GPIO_Pin_13
+#define LAUNCH_CONTROL_ACT GPIO_Pin_14
+
+
 
 #define INPUTPORT GPIOE
 #define OUTPUTPORT GPIOC
@@ -38,6 +44,7 @@
 
 #define ON 0x21
 #define OFF 0x22
+
 
 void init_driverInterface();
 void switchWarningLight(uint8_t );

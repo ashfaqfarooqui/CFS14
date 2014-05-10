@@ -160,18 +160,41 @@ CanRxMsg* getRXmsg()
 }
 void readMessages()
 {
-	if (CAN_GetFlagStatus(CAN1,CAN_FLAG_FMP0)==SET)
+	if (CAN_GetFlagStatus(CAN1, CAN_FLAG_FMP0) == SET)
+	{
+		CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
+		if (RxMessage.StdId == CAN_ID_ENGINE_RPM)
 		{
-			CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-			if(RxMessage.StdId==0x280)
-			{
-				sensorData[ENGINE_RPM]=0;
-				sensorData[ENGINE_RPM]|=RxMessage.Data[3];
-				sensorData[ENGINE_RPM]=(sensorData[ENGINE_RPM]<<8)|RxMessage.Data[2];
-				STM_EVAL_LEDToggle(LED_BLUE);
-			}
+			sensorData[ENGINE_RPM] = 0;
+			sensorData[ENGINE_RPM] |= RxMessage.Data[3];
+			sensorData[ENGINE_RPM] = (sensorData[ENGINE_RPM] << 8)
+					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 		}
+		if (RxMessage.StdId == CAN_ID_COOLANT_TEMP)
+		{
+			sensorData[WATER_TEMPRATURE] = 0;
+			sensorData[WATER_TEMPRATURE] |= RxMessage.Data[3];
+			sensorData[WATER_TEMPRATURE] = (sensorData[WATER_TEMPRATURE] << 8)
+					| RxMessage.Data[2];
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+		}
+		if (RxMessage.StdId == CAN_ID_RPM)
+			{
+				sensorData[1] = 0;
+				sensorData[1] |= RxMessage.Data[3];
+				sensorData[1] = (sensorData[1] << 8)
+						| RxMessage.Data[2];
+				CAN_FIFORelease(CAN1, CAN_FIFO0);
+			}
+		if (THIS_NODE == REAR_NODE && RxMessage.StdId == CAN_ID_SWITCH_STATES)
+		{
+			recievedStates = RxMessage.Data[0];
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+		}
+
+
+	}
 }
 
 void CAN1_RX0_IRQHandler()

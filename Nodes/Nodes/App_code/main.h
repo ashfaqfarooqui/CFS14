@@ -13,6 +13,7 @@
 #include "timer.h"
 #include "state.h"
 #include "DAQ.h"
+#include "gearshifting.h"
 //******************************************************************************
 
 //******************************************************************************
@@ -23,6 +24,7 @@
 //******************************************************************************
 void TimingDelay_Decrement(void);
 void createTaskDAQ(void);
+void initializeSystem();
 
 void vCANReceiver(void *pvParameters);
 void vSend50HzData(void *pvParameters);
@@ -35,6 +37,9 @@ void vUpdateSensors(void *pvParameters);
 
 void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);
+
+void vSafetyCheck(void *pvParameters);
+void vGearShifting(void *pvParameters);
 
 void vSendWheelSpeed(void *pvParameters);
 void vSendDamperTravel(void *pvParameters);
