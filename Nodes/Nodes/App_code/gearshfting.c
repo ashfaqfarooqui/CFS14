@@ -30,12 +30,9 @@ bool shiftDownSwitch = false;
 
 int launchControl = 0;
 bool autoShifting = false;
-float dutyCycle = 0;
+uint8_t dutyCycle = 0;
 int timeLastingConter = 0;
 int timeLasting = 0;
-uint16_t timeOn = 1;
-uint16_t timeOff = 1;
-//bool ElClutch = false;
 
 int shiftUpTime = 0;
 int shiftDownTime = 0;
@@ -74,10 +71,11 @@ void init_actuators()
 	/* Connect TIM3 pins  */
 	GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
 	/* Compute the prescaler value */
+	//SystemCoreClock = 42MHz, PrescalerValue = 1MHz
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = 10000;
+	TIM_TimeBaseStructure.TIM_Period = NEUTRAL_FREQUENCY;//frequency
 	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -85,12 +83,12 @@ void init_actuators()
 	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
 }
 
-void actuateShiftUpSolonoid(uint8_t dutyCycle)
+void actuateShiftUpSolonoid(uint8_t dutyCycle) //0-100
 {
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;
+	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * NEUTRAL_FREQUENCY) / 100;//frequency
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	TIM_OC2Init(TIM8, &TIM_OCInitStructure);
@@ -128,14 +126,6 @@ void gearShiftManager(void)
 	//LaunchControl();
 
 	GetGearPosition();
-
-	if (gearIsInPosition)
-	{
-		actuate(GPIOC, INPOSITION);
-	} else
-	{
-		release(GPIOC, INPOSITION);
-	}
 	
 	if (!gearIsInPosition)
 	{
@@ -288,12 +278,14 @@ void gearShiftManager(void)
 	//GoToNeutral();
 }
 
+
 int GetGearPosition()
 {
 	
 	int gear = 0;
 	
-	gearPositionSensorData = rawAnalogState[1];
+	gearPositionSensorData = (int)(convertData(sensorData[GEAR_POSITION])*1000);
+
 	
 	for (gear = 0; gear < 6; gear++)
 	{
@@ -320,13 +312,14 @@ int GetGearPosition()
 }
 
 void ShiftUp(int gearPosition)
+
 {
 	int gearPositionCurrent = 0;
 	int gearPositionMonitor = 0;
 
 	actuate(GPIOC, CUT_IGNITION);
 	//delay(1000);
-	actuate(GEAR_SHIFT_PORT, SHIFT_UP);
+	actuateShiftUpSolonoid(100);
 
 	for (;; gearPositionMonitor++)
 	{
@@ -346,10 +339,11 @@ void ShiftUp(int gearPosition)
 	}
 
 	//delay(1000);
-	release(GEAR_SHIFT_PORT, SHIFT_UP);
+	actuateShiftUpSolonoid(0);
 	release(GPIOC, CUT_IGNITION);
 	
 }
+
 void ShiftDown(int gearPosition)
 {
 	int gearPositionCurrent = 0;
@@ -361,7 +355,7 @@ void ShiftDown(int gearPosition)
 	
 	//shiftDownTime = shiftDownTime + 50;
 
-	actuate(GEAR_SHIFT_PORT, SHIFT_DOWN);
+	actuate(GPIOA, SHIFT_DOWN);
 
 	for (;; gearPositionMonitor++)
 	{
@@ -389,8 +383,8 @@ void ShiftDown(int gearPosition)
 		//}
 	}
 
-	release(GEAR_SHIFT_PORT, CLUTCH);
-	release(GEAR_SHIFT_PORT, SHIFT_DOWN);
+	release(GPIOA, CLUTCH);
+	release(GPIOA, SHIFT_DOWN);
 
 	return;
 }
@@ -399,38 +393,22 @@ void GoToNeutral(void)
 {
 	int gearPositionCurrent = 0;
 	int gearPositionMonitor = 0;
-	static int frequency = 10;
 	
-	float dutyCycleStep = 0.1;
-	int neutralTimeOut = 10000;
-	
-	timeOn = 1;
-	timeOff = 1;
-	dutyCycle = (double) (timeOn / frequency);
-	timeLasting = 0;
+	uint8_t dutyCycleStep = 10;
+
+	dutyCycle = 0;
 	timeLastingConter = 0;
-	//timeLasting = neutralTimeOut*dutyCycleStep*frequency/1000;
 	timeLasting = 10;
 
-	//actuate(GPIOC,GPIO_Pin_13);
-	//delay(1000);
-	actuate(GPIOC, CLUTCH);
+	actuate(GPIOA, CLUTCH);
 	
 	for (;; gearPositionMonitor++)
 	{
 
-		timeOn = (uint16_t)(1000 * dutyCycle / frequency);
-		timeOn = timeOn > 1 ? timeOn : 1;
-		timeOff = (uint16_t)(1000 / frequency) - timeOn;
-		timeOff = timeOff > 1 ? timeOff : 1;
-
 		if (timeLastingConter < timeLasting)
 		{
 			//simulate PWM output
-			actuate(GEAR_SHIFT_PORT, SHIFT_UP);
-			delay(timeOn);
-			release(GEAR_SHIFT_PORT, SHIFT_UP);
-			delay(timeOff);
+			actuateShiftUpSolonoid(dutyCycle);
 			timeLastingConter = (timeLastingConter + 1) % 10;
 		}
 
@@ -441,7 +419,8 @@ void GoToNeutral(void)
 
 		saveRawADCData();
 		gearPositionCurrent = GetGearPosition();
-		if (neutralToGear == false || dutyCycle > 1)
+
+		if (neutralToGear == false || dutyCycle == 100)
 		{
 			if (gearPositionCurrent != 1)
 			{
@@ -455,8 +434,8 @@ void GoToNeutral(void)
 
 	}
 
-	release(GEAR_SHIFT_PORT, SHIFT_UP);
-	release(GPIOC, CLUTCH);
+	actuateShiftUpSolonoid(0);
+	release(GPIOA, CLUTCH);
 }
 
 void ElClutch(int elClutch)

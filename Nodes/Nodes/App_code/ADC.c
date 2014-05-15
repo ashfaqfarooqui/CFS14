@@ -176,12 +176,6 @@ void saveRawADCData()
 
 
 
-int getGearPositionData()
-{
-	return (int)(convertData(sensorData[GEAR_POSITION])*1000);
-
-}
-
 float convertData(int val)
 {
 	return (float)((((val)*3.3)/4095)*1.5);
