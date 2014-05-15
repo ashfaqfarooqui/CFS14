@@ -12,7 +12,8 @@
 
 #define FAN_OUT_PIN GPIO_Pin_6
 #define FANOUT_PINSOURCE GPIO_PinSource6
-
+#define COOLANT_PUMP_PIN GPIO_Pin_7
+#define COOLANT_PUMP_PINSOURCE GPIO_PinSource7
 
 #define FRONT_NODE 1
 #define REAR_NODE 2
@@ -20,8 +21,8 @@
 #define ALL_NODE 0
 
 
-//#define THIS_NODE FRONT_NODE
-#define THIS_NODE REAR_NODE
+#define THIS_NODE FRONT_NODE
+//#define THIS_NODE REAR_NODE
 
 #define TESTMODE 0
 

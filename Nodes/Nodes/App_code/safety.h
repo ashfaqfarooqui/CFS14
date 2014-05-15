@@ -11,4 +11,5 @@
 void safetyCheck(void);
 void shutDownEngine(void);
 void setFanSpeed( uint8_t);
+void setCoolantPumpSpeed(uint8_t );
 #endif

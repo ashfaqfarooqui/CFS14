@@ -49,16 +49,30 @@ void shutDownEngine()
 }
 void setFanSpeed(uint8_t dutyCycle)
 {
-	uint16_t pwmSpeed = (dutyCycle * 10000) / 100;
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = pwmSpeed;
+	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
 
 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+
+	/* TIM3 enable counter */
+	TIM_Cmd(TIM3, ENABLE);
+}
+void setCoolantPumpSpeed(uint8_t dutyCycle)
+{
+	TIM_OCInitTypeDef TIM_OCInitStructure;
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+
+	TIM_OC2Init(TIM3, &TIM_OCInitStructure);
+
+	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
 
 	/* TIM3 enable counter */
 	TIM_Cmd(TIM3, ENABLE);

@@ -281,15 +281,16 @@ void init_pwm_config()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
 	/* GPIOC Configuration:*/
-	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN;
+	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN|COOLANT_PUMP_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	/* Connect TIM8 pins  */
+	/* Connect TIM3 pins  */
 	GPIO_PinAFConfig(GPIOC, FANOUT_PINSOURCE, GPIO_AF_TIM3);
+	GPIO_PinAFConfig(GPIOC, COOLANT_PUMP_PINSOURCE, GPIO_AF_TIM3);
 	/* Compute the prescaler value */
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 

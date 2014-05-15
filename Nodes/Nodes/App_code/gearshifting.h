@@ -14,9 +14,9 @@ typedef int bool;
 #define true 1
 #define false 0
 	
-#define CLUTCH GPIO_Pin_15
-#define SHIFT_UP GPIO_Pin_0
-#define SHIFT_DOWN GPIO_Pin_1
+#define CLUTCH GPIO_Pin_9 //PA9
+#define SHIFT_UP GPIO_Pin_7 //PC7
+#define SHIFT_DOWN GPIO_Pin_10 //PA10
 #define CUT_IGNITION GPIO_Pin_14
 #define NEUTRAL GPIO_Pin_13
 #define INPOSITION GPIO_Pin_6
@@ -67,7 +67,7 @@ void CutIgnition(void);
 void ElClutch(int);
 void AutoShifting(void);
 void LaunchControl(void);
-
+void actuateShiftUpSolonoid(uint8_t dutyCycle);
 
 
 #define GEAR_SHIFT_PORT GPIOE
