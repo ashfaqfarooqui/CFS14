@@ -39,14 +39,39 @@ int main(void)
 	xTaskCreate(vUpdateWheelSpeedRight,
 			(const signed char* )"Update wheel speed right", STACK_SIZE_MIN,
 			NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSafetyCheck, (const signed char* )"safety", STACK_SIZE_MIN,
-			NULL, tskIDLE_PRIORITY, NULL);
 
 	if (THIS_NODE == REAR_NODE)
 	{
 		xTaskCreate(vGearShifting, (const signed char* )"Gear shifting",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+
+		//DAQ
+		xTaskCreate(vSendGear, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendWaterTemp, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendAcc, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendGyro, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		
+	}
+	if (THIS_NODE == FRONT_NODE)
+	{
+		xTaskCreate(vSafetyCheck, (const signed char* )"safety", STACK_SIZE_MIN,
+				NULL, tskIDLE_PRIORITY, NULL);
+
+		//DAQ
+		xTaskCreate(vSendBrakeDisc, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendSteeringAngle, (const signed char* )"send 40Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendBreakPressureData,
+				(const signed char* )"send break pressure Data", STACK_SIZE_MIN,
+				NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendOilPressure, (const signed char* )"send 10Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+
 	}
 
 	vTaskStartScheduler();
@@ -59,22 +84,6 @@ void createTaskDAQ()
 	xTaskCreate(vSendWheelSpeed, (const signed char* )"send 50Hz Data",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vSendDamperTravel, (const signed char* )"send 50Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendBrakeDisc, (const signed char* )"send 40Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendSteeringAngle, (const signed char* )"send 40Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendGear, (const signed char* )"send 40Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendOilPressure, (const signed char* )"send 10Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendWaterTemp, (const signed char* )"send 40Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendAcc, (const signed char* )"send 40Hz Data", STACK_SIZE_MIN,
-			NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendGyro, (const signed char* )"send 40Hz Data",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSend5HzData, (const signed char* )"send 5Hz Data",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 }
@@ -95,6 +104,7 @@ void initializeSystem()
 	{
 		init_pwm_config();
 		setFanSpeed(50);
+		setCoolantPumpSpeed(50);
 	}
 }
 //******************************************************************************
@@ -110,7 +120,7 @@ void vSafetyCheck(void *pvParameters)
 {
 	while (1)
 	{
-		//safetyCheck();
+		safetyCheck();
 		vTaskDelay(5 / portTICK_RATE_MS);
 	}
 }
@@ -230,17 +240,12 @@ void vSendGyro(void *pvParameters)
 		vTaskDelay(100 / portTICK_RATE_MS);
 	}
 }
-void vSend5HzData(void *pvParameters)
+void vSendBreakPressureData(void *pvParameters)
 {
 	while (1)
 	{
 		sendBrakePressure(); //
 
-		if (TESTMODE)
-		{
-
-			//TODO firewall temp wheel temp
-		}
 		vTaskDelay(200 / portTICK_RATE_MS);
 	}
 }

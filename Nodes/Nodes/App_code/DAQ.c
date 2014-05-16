@@ -64,7 +64,7 @@ void sendBrakePressure()
 	data[2] = (sensorData[BRAKE_PRESSURE_F] >> 8) & 0x0f;
 	data[3] = (sensorData[BRAKE_PRESSURE_R]) & 0xff;
 	data[4] = (sensorData[BRAKE_PRESSURE_R] >> 8) & 0x0f;
-	BrakePressureMsg = CAN_createMessage_uint(CAN_ADR_BRAKE_PRESSURET,
+	BrakePressureMsg = CAN_createMessage_uint(CAN_ADR_BRAKE_PRESSURE,
 	CAN_RTR_Data, CAN_ID_STD, 5, &data[0]);
 	do
 	{
@@ -185,12 +185,9 @@ void sendBrakeDiscTemp()
 	uint8_t transmitStatus;
 	uint8_t data[7];
 	data[0] = 0;
-	data[1] = (sensorData[GYRO_ROLL]) & 0xff;
-	data[2] = (sensorData[GYRO_ROLL] >> 8) & 0x0f;
-	data[3] = (sensorData[GYRO_YAW]) & 0xff;
-	data[4] = (sensorData[GYRO_YAW] >> 8) & 0x0f;
-	data[5] = (sensorData[GYRO_PITCH]) & 0xff;
-	data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
+	data[1] = (sensorData[BRAKE_DISC_TEMP]) & 0xff;
+	data[2] = (sensorData[BRAKE_DISC_TEMP] >> 8) & 0x0f;
+
 	BrakeDisc = CAN_createMessage_uint(CAN_ADR_BRAKE_DISC_TEMP,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
 	do

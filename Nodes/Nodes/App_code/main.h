@@ -31,7 +31,7 @@ void vSend50HzData(void *pvParameters);
 void vSend50HzData1(void *pvParameters);
 void vSend40HzData(void *pvParameters);
 void vSend10HzData(void *pvParameters);
-void vSend5HzData(void *pvParameters);
+void vSendBreakPressureData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateSensors(void *pvParameters);
 
