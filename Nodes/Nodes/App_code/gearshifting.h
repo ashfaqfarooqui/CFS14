@@ -6,18 +6,15 @@
 #include "discoveryf4utils.h"
 
 #include "can.h"
+#include "timer.h"
 #include "ADC.h"
 #include "driver_interface.h"
 #include "state.h"
+#include "actuator.h"
 
 typedef int bool;
 #define true 1
 #define false 0
-	
-#define CLUTCH GPIO_Pin_9 //PA9
-#define SHIFT_UP GPIO_Pin_7 //PC7
-#define SHIFT_DOWN GPIO_Pin_6 //PC6
-#define CUT_IGNITION GPIO_Pin_15 //PC15
 
 #define MONITOR_TIME 500
 #define SWITCHHOLDINGTIME 100000
@@ -65,12 +62,6 @@ void CutIgnition(void);
 void ElClutch(int);
 void AutoShifting(void);
 void LaunchControl(void);
-void actuateShiftUpSolonoid(uint8_t dutyCycle);
 
-
-#define GEAR_SHIFT_PORT GPIOE
-void actuate(GPIO_TypeDef* port,uint16_t system);
-void release(GPIO_TypeDef* port,uint16_t system);
-void init_actuators();
 
 #endif
