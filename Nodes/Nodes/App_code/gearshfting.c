@@ -56,9 +56,9 @@ void init_actuators()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
 	
-	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION;
+	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION|SHIFT_DOWN;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = CLUTCH | SHIFT_DOWN;
+	GPIO_InitStructure.GPIO_Pin = CLUTCH ;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	GPIO_InitStructure.GPIO_Pin = SHIFT_UP;

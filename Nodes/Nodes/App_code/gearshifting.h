@@ -16,7 +16,7 @@ typedef int bool;
 	
 #define CLUTCH GPIO_Pin_9 //PA9
 #define SHIFT_UP GPIO_Pin_7 //PC7
-#define SHIFT_DOWN GPIO_Pin_10 //PA10
+#define SHIFT_DOWN GPIO_Pin_6 //PC6
 #define CUT_IGNITION GPIO_Pin_15 //PC15
 
 #define MONITOR_TIME 500
