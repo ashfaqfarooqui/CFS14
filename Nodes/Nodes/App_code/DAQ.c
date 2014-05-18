@@ -205,7 +205,7 @@ void sendCoolantTemp()
 	data[1] = (sensorData[WATER_TEMPRATURE]) & 0xff;
 	data[2] = (sensorData[WATER_TEMPRATURE] >> 8) & 0x0f;
 
-	BrakeDisc = CAN_createMessage_uint(CAN_ADR_WATER_TEMPRATURE,
+	CoolantTemp = CAN_createMessage_uint(CAN_ADR_WATER_TEMPRATURE,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
 	do
 	{

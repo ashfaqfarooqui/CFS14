@@ -142,7 +142,7 @@ void DMA2_Stream0_IRQHandler()
 	
 	if (DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) != RESET)
 	{
-		uint8_t i,j;
+		uint8_t i;
 		for (i = 0; i < 8; i++)
 		{
 			*(rawAnalogState+i)=processAdcSamples(i);
