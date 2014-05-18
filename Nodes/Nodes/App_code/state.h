@@ -100,10 +100,7 @@
 
 
 #define KILL_ENGINE GPIO_Pin_8
-#define CLUTCH GPIO_Pin_9 //PA9
-#define SHIFT_UP GPIO_Pin_7 //PC7
-#define SHIFT_DOWN GPIO_Pin_6 //PC10
-#define CUT_IGNITION GPIO_Pin_15 //PC15
+
 
 static unsigned int NODE = 0x00;
 

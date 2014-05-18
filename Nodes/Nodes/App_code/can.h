@@ -4,6 +4,7 @@
 #include "stm32f4xx_can.h"
 #include "discoveryf4utils.h"
 #include "state.h"
+#include "DAQ.h"
 
 
 

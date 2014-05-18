@@ -192,6 +192,13 @@ void readMessages()
 			recievedStates = RxMessage.Data[0];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 		}
+		if(THIS_NODE==FRONT_NODE && RxMessage.StdId==CAN_ADR_WATER_TEMPRATURE)
+		{
+			sensorData[WATER_TEMPRATURE]=RxMessage.Data[1];
+			sensorData[WATER_TEMPRATURE]|=(RxMessage.Data[2]<<8);
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+		}
+		CAN_FIFORelease(CAN1, CAN_FIFO0);
 
 
 	}
