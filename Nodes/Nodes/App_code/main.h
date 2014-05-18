@@ -15,6 +15,7 @@
 #include "DAQ.h"
 #include "gearshifting.h"
 #include "actuator.h"
+
 //******************************************************************************
 
 //******************************************************************************
@@ -40,6 +41,7 @@ void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);
 
 void vSafetyCheck(void *pvParameters);
+void vCoolingSystem(void *pvParameters);
 void vGearShifting(void *pvParameters);
 
 void vSendWheelSpeed(void *pvParameters);

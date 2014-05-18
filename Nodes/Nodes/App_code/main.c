@@ -54,12 +54,16 @@ int main(void)
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vSendGyro, (const signed char* )"send 40Hz Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendOilPressure, (const signed char* )"send 10Hz Data",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		
 	}
 	if (THIS_NODE == FRONT_NODE)
 	{
 		xTaskCreate(vSafetyCheck, (const signed char* )"safety", STACK_SIZE_MIN,
 				NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vCoolingSystem, (const signed char* )"cooling system",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 		//DAQ
 		xTaskCreate(vSendBrakeDisc, (const signed char* )"send 40Hz Data",
@@ -69,8 +73,6 @@ int main(void)
 		xTaskCreate(vSendBreakPressureData,
 				(const signed char* )"send break pressure Data", STACK_SIZE_MIN,
 				NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendOilPressure, (const signed char* )"send 10Hz Data",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 	}
 
@@ -103,11 +105,19 @@ void initializeSystem()
 	if (THIS_NODE == FRONT_NODE)
 	{
 		init_pwm_config();
-		setFanSpeed(50);
-		setCoolantPumpSpeed(50);
+		setFanSpeed(100);
+		setCoolantPumpSpeed(100);
 	}
 }
 //******************************************************************************
+void vCoolingSystem(void *pvParameters)
+{
+	while(1)
+	{
+		coolingControl();
+		vTaskDelay(250/portTICK_RATE_MS);
+	}
+}
 void vGearShifting(void *pvParameters)
 {
 	while (1)

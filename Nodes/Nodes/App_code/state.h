@@ -1,4 +1,4 @@
-/** Add all the #defines for all sensors and variables to be used.
+ /** Add all the #defines for all sensors and variables to be used.
  * Also declare the variables to be used.
  */
 #ifndef __STATE_H_
@@ -99,11 +99,8 @@
 
 
 
-#define KILL_ENGINE GPIO_Pin_8
-#define CLUTCH GPIO_Pin_9 //PA9
-#define SHIFT_UP GPIO_Pin_7 //PC7
-#define SHIFT_DOWN GPIO_Pin_6 //PC10
-#define CUT_IGNITION GPIO_Pin_15 //PC15
+#define KILL_ENGINE GPIO_Pin_8 //PA8
+
 
 static unsigned int NODE = 0x00;
 

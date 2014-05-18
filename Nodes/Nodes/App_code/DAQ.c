@@ -195,3 +195,20 @@ void sendBrakeDiscTemp()
 		transmitStatus = CAN_Transmit(CAN1, &BrakeDisc);
 	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
+
+void sendCoolantTemp()
+{
+	CanTxMsg CoolantTemp;
+	uint8_t transmitStatus;
+	uint8_t data[7];
+	data[0] = 0;
+	data[1] = (sensorData[WATER_TEMPRATURE]) & 0xff;
+	data[2] = (sensorData[WATER_TEMPRATURE] >> 8) & 0x0f;
+
+	CoolantTemp = CAN_createMessage_uint(CAN_ADR_WATER_TEMPRATURE,
+	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &CoolantTemp);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
+}
