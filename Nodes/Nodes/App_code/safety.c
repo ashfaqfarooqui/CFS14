@@ -22,6 +22,7 @@ void safetyCheck()
 		setFanSpeed(75);
 	}
 	temp = sensorData[OIL_PRESSURE];
+
 	if (temp < 4)
 	{
 

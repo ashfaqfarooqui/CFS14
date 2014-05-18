@@ -49,7 +49,7 @@ void gearShiftManager(void)
 	
 	//int shiftUpDelay;	
 
-	ElClutch(rawDigitalState[7]);
+	ElClutch(rawDigitalState[EC_POS]);
 
 	//LaunchControl();
 
@@ -76,7 +76,7 @@ void gearShiftManager(void)
 		sensorMonitor = 0;
 	}
 
-	if (!rawDigitalState[0] && !rawDigitalState[1])
+	if (!rawDigitalState[GEARUP_POS] && !rawDigitalState[GEARDOWN_POS])
 	{
 		shiftUpActive = false;
 		shiftDownActive = false;
@@ -87,7 +87,7 @@ void gearShiftManager(void)
 		return;
 	}
 
-	if (rawDigitalState[0])
+	if (rawDigitalState[GEARUP_POS])
 	{
 		
 		//GetGearPosition();
@@ -119,7 +119,7 @@ void gearShiftManager(void)
 		//TODO
 	}
 
-	while (rawDigitalState[1] == 1)
+	while (rawDigitalState[GEARDOWN_POS] == 1)
 	{
 		shiftDownHoldingTime++;
 		updateSwitches();
@@ -282,7 +282,7 @@ void ShiftDown(int gearPosition)
 	
 	//shiftDownTime = shiftDownTime + 50;
 
-	actuate(GPIOA, SHIFT_DOWN);
+	actuate(GPIOC, SHIFT_DOWN);
 
 	for (;; gearPositionMonitor++)
 	{
@@ -311,7 +311,7 @@ void ShiftDown(int gearPosition)
 	}
 
 	release(GPIOA, CLUTCH);
-	release(GPIOA, SHIFT_DOWN);
+	release(GPIOC, SHIFT_DOWN);
 
 	return;
 }
@@ -335,7 +335,9 @@ void GoToNeutral(void)
 		if (timeLastingConter < timeLasting)
 		{
 			//simulate PWM output
+			//xTaskGetTickCount();
 			actuateShiftUpSolonoid(dutyCycle);
+			delay(1000);
 			timeLastingConter = (timeLastingConter + 1) % 10;
 		}
 
@@ -389,15 +391,15 @@ void AutoShifting(void)
 
 void LaunchControl(void)
 {
-	if (rawDigitalState[1] == 1 && launchControl == 0)
+	if (rawDigitalState[LC_POS] == 1 && launchControl == 0)
 	{
 		launchControl = 1;
 		//TODO 1 actuate launch control to ECU
 		//actuate();
-		actuate(GPIOC, CLUTCH);
+		actuate(GPIOA, CLUTCH);
 	}
 
-	if (rawDigitalState[1] == 0 && launchControl == 1)
+	if (rawDigitalState[LC_POS] == 0 && launchControl == 1)
 	{
 		//just after release button
 		//TODO 2
