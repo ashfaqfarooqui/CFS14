@@ -49,7 +49,7 @@ void gearShiftManager(void)
 	
 	//int shiftUpDelay;	
 
-	ElClutch(rawDigitalState[EC_POS]);
+	ElClutch(ElectricClutchActuated);
 
 	//LaunchControl();
 
