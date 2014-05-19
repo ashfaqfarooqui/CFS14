@@ -111,9 +111,11 @@ extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE];
 extern unsigned int sensorData[150];
 extern unsigned int recievedStates;
 
+
 typedef enum {TRUE,FALSE} bol;
 extern bol AutoShiftState;
 extern bol TractionControlState;
-
+extern bol ElectricClutchActuated;
+extern bol LaunchControlActivated;
 
 #endif

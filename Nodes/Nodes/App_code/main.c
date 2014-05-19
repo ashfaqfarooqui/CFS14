@@ -31,7 +31,9 @@ int main(void)
 	createTaskDAQ();
 	xTaskCreate(vRecieveCan, (const signed char* )"Recieving Can",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vUpdateSensors, (const signed char* )"Update Sensors",
+	xTaskCreate(vUpdateInputs, (const signed char* )"Update digital and analog inputs",
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vPerformSwitchAction, (const signed char* )"perform switch action",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateWheelSpeedLeft,
 			(const signed char* )"Update wheel speed left", STACK_SIZE_MIN,
@@ -141,7 +143,7 @@ void vUpdateWheelSpeedLeft(void *pvParameters)
 
 		calculateWheelSpeedLeft();
 
-		vTaskDelay(0.5 / portTICK_RATE_MS);
+		vTaskDelay(4 / portTICK_RATE_MS);
 
 	}
 }
@@ -153,18 +155,26 @@ void vUpdateWheelSpeedRight(void *pvParameters)
 
 		calculateWheelSpeedRight();
 
-		vTaskDelay(0.5 / portTICK_RATE_MS);
+		vTaskDelay(4 / portTICK_RATE_MS);
 
 	}
 }
-void vUpdateSensors(void *pvParameters)
+void vUpdateInputs(void *pvParameters)
 {
 	while (1)
 	{
 		updateSwitches();
 		saveRawADCData();
-
-		vTaskDelay(1 / portTICK_RATE_MS);
+		vTaskDelay(2 / portTICK_RATE_MS);
+	}
+}
+void vPerformSwitchAction(void *pvParameters)
+{
+	while (1)
+	{
+		
+		switchAction();
+		vTaskDelay(2 / portTICK_RATE_MS);
 	}
 }
 void vRecieveCan(void *pvParameters)
@@ -172,7 +182,7 @@ void vRecieveCan(void *pvParameters)
 	while (1)
 	{
 		readMessages();
-		vTaskDelay(20 / portTICK_RATE_MS);
+		vTaskDelay(1 / portTICK_RATE_MS);
 	}
 }
 void vSendWheelSpeed(void *pvParameters)
@@ -198,7 +208,7 @@ void vSendGear(void *pvParameters)
 	while (1)
 	{
 		sendGear();
-		vTaskDelay(25 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 	}
 }
 void vSendSteeringAngle(void *pvParameters)
@@ -206,7 +216,7 @@ void vSendSteeringAngle(void *pvParameters)
 	while (1)
 	{
 		sendSteeringAngle();
-		vTaskDelay(25 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 	}
 }
 void vSendBrakeDisc(void *pvParameters)
@@ -215,7 +225,7 @@ void vSendBrakeDisc(void *pvParameters)
 	{
 		sendBrakeDiscTemp();
 
-		vTaskDelay(25 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 	}
 }
 void vSendOilPressure(void *pvParameters)

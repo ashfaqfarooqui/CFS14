@@ -16,6 +16,7 @@ void init_actuators()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_APB2Periph_TIM8,ENABLE);
 
 
 	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION | SHIFT_DOWN;
@@ -30,19 +31,22 @@ void init_actuators()
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	/* Connect TIM3 pins  */
+	/* Connect TIM8 pins  */
 	GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
 	/* Compute the prescaler value */
 	//SystemCoreClock = 42MHz, PrescalerValue = 1MHz
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = NEUTRAL_FREQUENCY;//frequency
+	TIM_TimeBaseStructure.TIM_Period = 10000;//1NEUTRAL_FREQUENCY;//frequency
 	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
 	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+	
+	actuateShiftUpSolonoid(90);
+
 }
 
 void actuateShiftUpSolonoid(uint8_t dutyCycle) //0-100
@@ -50,7 +54,7 @@ void actuateShiftUpSolonoid(uint8_t dutyCycle) //0-100
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * NEUTRAL_FREQUENCY) / 100;//frequency
+	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;//frequency
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	TIM_OC2Init(TIM8, &TIM_OCInitStructure);

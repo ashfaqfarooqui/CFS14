@@ -35,7 +35,8 @@ void vSend40HzData(void *pvParameters);
 void vSend10HzData(void *pvParameters);
 void vSendBreakPressureData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
-void vUpdateSensors(void *pvParameters);
+void vUpdateInputs(void *pvParameters);
+void vPerformSwitchAction(void *pvParameters);
 
 void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);

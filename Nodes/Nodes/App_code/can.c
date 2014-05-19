@@ -8,6 +8,7 @@
 #include "can.h"
 
 uint8_t TransmitMailbox = 0;
+bol FIFOReleased =FALSE;
 
 void CAN_configureFilter(uint8_t CAN_FilterNumber, uint8_t CAN_FilterMode,
 		uint8_t CAN_FilterScale, uint16_t CAN_FilterIdHigh,
@@ -160,6 +161,7 @@ CanRxMsg* getRXmsg()
 }
 void readMessages()
 {
+	FIFOReleased = FALSE;
 	if (CAN_GetFlagStatus(CAN1, CAN_FLAG_FMP0) == SET)
 	{
 		CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
@@ -170,6 +172,7 @@ void readMessages()
 			sensorData[ENGINE_RPM] = (sensorData[ENGINE_RPM] << 8)
 					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
 		}
 		if (RxMessage.StdId == CAN_ID_COOLANT_TEMP)
 		{
@@ -178,28 +181,34 @@ void readMessages()
 			sensorData[WATER_TEMPRATURE] = (sensorData[WATER_TEMPRATURE] << 8)
 					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
 		}
 		if (RxMessage.StdId == CAN_ID_RPM)
-			{
-				sensorData[1] = 0;
-				sensorData[1] |= RxMessage.Data[3];
-				sensorData[1] = (sensorData[1] << 8)
-						| RxMessage.Data[2];
-				CAN_FIFORelease(CAN1, CAN_FIFO0);
-			}
+		{
+			sensorData[1] = 0;
+			sensorData[1] |= RxMessage.Data[3];
+			sensorData[1] = (sensorData[1] << 8) | RxMessage.Data[2];
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
+		}
 		if (THIS_NODE == REAR_NODE && RxMessage.StdId == CAN_ID_SWITCH_STATES)
 		{
 			recievedStates = RxMessage.Data[0];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
 		}
-		if(THIS_NODE==FRONT_NODE && RxMessage.StdId==CAN_ADR_WATER_TEMPRATURE)
+		if (THIS_NODE == FRONT_NODE
+				&& RxMessage.StdId == CAN_ADR_WATER_TEMPRATURE)
 		{
-			sensorData[WATER_TEMPRATURE]=RxMessage.Data[1];
-			sensorData[WATER_TEMPRATURE]|=(RxMessage.Data[2]<<8);
+			sensorData[WATER_TEMPRATURE] = RxMessage.Data[1];
+			sensorData[WATER_TEMPRATURE] |= (RxMessage.Data[2] << 8);
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
+		}
+		if (FIFOReleased == FALSE)
+		{
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 		}
-		CAN_FIFORelease(CAN1, CAN_FIFO0);
-
 
 	}
 }
