@@ -41,7 +41,7 @@ NEUTRALLOW, GEAR1LOW, GEAR2LOW, GEAR3LOW, GEAR4LOW, GEAR5LOW, GEAR6LOW
 
 void gearShiftManager(void)
 {
-	
+
 	int shiftUpActiveTime = 0;
 	int shiftDownActiveTime = 0;
 
@@ -62,7 +62,7 @@ void gearShiftManager(void)
 	{
 		if (problem)
 		{
-			actuate(GPIOC, CLUTCH);
+			ActiveClutch();
 			sensorMonitor = 0;
 			problem = false;
 		}
@@ -70,7 +70,7 @@ void gearShiftManager(void)
 
 	if (sensorMonitor > MONITOR_TIME)
 	{
-		actuate(GPIOC, CLUTCH);
+		ActiveClutch();
 		problem = true;
 		//put it into higher position
 		sensorMonitor = 0;
@@ -244,9 +244,9 @@ void ShiftUp(int gearPosition)
 	int gearPositionCurrent = 0;
 	int gearPositionMonitor = 0;
 
-	actuate(GPIOC, CUT_IGNITION);
+	ActiveCutIgnition();
 	//delay(1000);
-	actuateShiftUpSolonoid(100);
+	ActuateShiftUp(100);
 
 	for (;; gearPositionMonitor++)
 	{
@@ -266,8 +266,8 @@ void ShiftUp(int gearPosition)
 	}
 
 	//delay(1000);
-	actuateShiftUpSolonoid(0);
-	release(GPIOC, CUT_IGNITION);
+	ActuateShiftUp(0);
+	InactiveCutIgnition();
 	
 }
 
@@ -276,13 +276,13 @@ void ShiftDown(int gearPosition)
 	int gearPositionCurrent = 0;
 	int gearPositionMonitor = 0;
 	
-	actuate(GPIOC, CLUTCH);
+	ActiveClutch();
 	
 	//delay(1000);
 	
 	//shiftDownTime = shiftDownTime + 50;
 
-	actuate(GPIOC, SHIFT_DOWN);
+	ActiveShiftDown();
 
 	for (;; gearPositionMonitor++)
 	{
@@ -310,8 +310,8 @@ void ShiftDown(int gearPosition)
 		//}
 	}
 
-	release(GPIOA, CLUTCH);
-	release(GPIOC, SHIFT_DOWN);
+	InactiveClutch();
+	InactiveShiftDown();
 
 	return;
 }
@@ -327,7 +327,7 @@ void GoToNeutral(void)
 	timeLastingConter = 0;
 	timeLasting = 10;
 
-	actuate(GPIOA, CLUTCH);
+	ActiveClutch();
 	
 	for (;; gearPositionMonitor++)
 	{
@@ -336,7 +336,7 @@ void GoToNeutral(void)
 		{
 			//simulate PWM output
 			//xTaskGetTickCount();
-			actuateShiftUpSolonoid(dutyCycle);
+			ActuateShiftUp(dutyCycle);
 			delay(1000);
 			timeLastingConter = (timeLastingConter + 1) % 10;
 		}
@@ -363,8 +363,8 @@ void GoToNeutral(void)
 
 	}
 
-	actuateShiftUpSolonoid(0);
-	release(GPIOA, CLUTCH);
+	ActuateShiftUp(0);
+	InactiveClutch();
 }
 
 void ElClutch(int elClutch)
@@ -372,11 +372,11 @@ void ElClutch(int elClutch)
 
 	if (elClutch == 1)
 	{
-		actuate(GPIOC, GPIO_Pin_15);
+		ActiveClutch();
 	}
 	if (elClutch == 0)
 	{
-		release(GPIOC, GPIO_Pin_15);
+		InactiveClutch();
 	}
 }
 
@@ -426,4 +426,28 @@ void LaunchControl(void)
 	 }
 	 */
 
+}
+
+void ActiveClutch(){
+	actuate(GPIOA,CLUTCH);
+}
+
+void InactiveClutch(){
+	release(GPIOA,CLUTCH);
+}
+
+void ActiveShiftDown(){
+	actuate(GPIOC,SHIFT_DOWN);
+}
+
+void InactiveShiftDown(){
+	release(GPIOC,SHIFT_DOWN);
+}
+
+void ActiveCutIgnition(){
+	actuate(GPIOC,CUT_IGNITION);
+}
+
+void InactiveCutIgnition(){
+	release(GPIOC,CUT_IGNITION);
 }
