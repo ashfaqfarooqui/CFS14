@@ -2,17 +2,29 @@
 
 void safetyCheck()
 {
-	uint8_t temp = sensorData[WATER_TEMPRATURE];
+	uint8_t clt_data = sensorData[WATER_TEMPRATURE];
+	float clt_voltage = convertData(clt_data);
+	float clt_temp = -29.2793*clt_voltage + 168.8014;
+
+	uint8_t olt_data = sensorData[OIL_TEMPRATURE];
+	float olt_voltage = convertData(olt_data);
+	float olt_temp = -38.1625*olt_voltage + 199.9477;
+
+	uint8_t olp_data = sensorData[OIL_PRESSURE];
+	float olp_voltage = convertData(olp_data);
+	float olp_pressure = 1.7489*olp_voltage - 0.3722;
+
 	uint8_t checkLight=1;
-	if (temp > 120)
+
+	if (clt_temp > 120)
 	{
 		shutDownEngine();
 
-	} else if (temp > 110)
+	} else if (clt_temp > 110)
 	{
 		setFanSpeed(MAX);
 
-	} else if (temp > 95)
+	} else if (clt_temp > 95)
 	{
 		setFanSpeed(90);
 		checkLight=0;
@@ -21,11 +33,15 @@ void safetyCheck()
 		checkLight=0;
 		setFanSpeed(75);
 	}
-	temp = sensorData[OIL_PRESSURE];
 
-	if (temp < 4)
+
+	if(olt_temp>120){
+		checkLight=1;
+	}
+
+	if (olp_pressure < 4)
 	{
-
+		checkLight=1;
 		shutDownEngine();
 	}
 

@@ -21,8 +21,8 @@
 #define ALL_NODE 0
 
 
-#define THIS_NODE FRONT_NODE
-//#define THIS_NODE REAR_NODE
+//#define THIS_NODE FRONT_NODE
+#define THIS_NODE REAR_NODE
 
 #define TESTMODE 0
 

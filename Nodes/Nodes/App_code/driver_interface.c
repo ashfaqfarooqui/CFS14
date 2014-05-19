@@ -107,7 +107,7 @@ void updateSwitches()
 	}
 	if (THIS_NODE == REAR_NODE)
 	{
-		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, GEARUP),
+		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARUP),
 		GEARUP_POS, FAST_SWITCH_DELAY);
 		digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
 		GEARDOWN_POS, FAST_SWITCH_DELAY);
@@ -176,14 +176,14 @@ void switchAction()
 		if (rawDigitalState[3] == SET)
 		{
 			switchState = switchState | 0x02; //TC-ON
-		} else if (rawDigitalState[2] == RESET)
+		} else if (rawDigitalState[3] == RESET)
 		{
 			switchState = switchState & 0xFD; //TC-off
 		}
 		if (rawDigitalState[4] == SET)
 		{
 			switchState = switchState | 0x04; //DL-ON
-		} else if (rawDigitalState[2] == RESET)
+		} else if (rawDigitalState[4] == RESET)
 		{
 			switchState = switchState & 0xFB; //DL-OFF
 		}
