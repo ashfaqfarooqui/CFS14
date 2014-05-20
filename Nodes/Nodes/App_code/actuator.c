@@ -28,7 +28,7 @@ void init_actuators()
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
 	/* Connect TIM8 pins  */
@@ -45,11 +45,11 @@ void init_actuators()
 
 	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
 	
-	actuateShiftUpSolonoid(90);
+	
 
 }
 
-void actuateShiftUpSolonoid(uint8_t dutyCycle) //0-100
+void ActuateShiftUp(uint8_t dutyCycle) //0-100
 {
 	TIM_OCInitTypeDef TIM_OCInitStructure;
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;

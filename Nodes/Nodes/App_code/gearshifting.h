@@ -67,6 +67,12 @@ void CutIgnition(void);
 void ElClutch(int);
 void AutoShifting(void);
 void LaunchControl(void);
+void ActiveClutch(void);
+void InactiveClutch(void);
+void ActiveShiftDown(void);
+void InactiveShiftDown(void);
+void ActiveCutIgnition(void);
+void InactiveCutIgnition(void);
 
 
 #endif
