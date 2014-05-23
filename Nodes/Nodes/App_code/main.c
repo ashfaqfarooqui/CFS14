@@ -275,6 +275,7 @@ void vRequestRPMData(void *pvParameters)
 		{
 			requestEngineRPM();//
 
+			requestTPS();
 			vTaskDelay(200 / portTICK_RATE_MS);
 		}
 }

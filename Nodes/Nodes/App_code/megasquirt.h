@@ -3,6 +3,7 @@
 #include "stm32f4xx_can.h"
 #include "stm32f4xx.h"
 
-
+void requestTPS();
+void requestEngineRPM();
 
 #endif

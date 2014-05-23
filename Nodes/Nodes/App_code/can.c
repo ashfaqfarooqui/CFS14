@@ -197,6 +197,10 @@ void readMessages()
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 			FIFOReleased = TRUE;
 		}
+		else if(THIS_NODE == REAR_NODE && RxMessage.ExtId!=0x00)
+			{
+				sensorData[ENGINE_RPM]=RxMessage.Data[0];
+			}
 		else if (THIS_NODE == FRONT_NODE)
 		{
 			if (RxMessage.StdId == CAN_ADR_WATER_TEMPRATURE)
@@ -220,10 +224,7 @@ void readMessages()
 				CAN_FIFORelease(CAN1, CAN_FIFO0);
 				FIFOReleased = TRUE;
 			}
-			else if(RxMessage.ExtId!=0x00)
-			{
-				sensorData[ENGINE_RPM]=RxMessage.Data[0];
-			}
+			
 		}
 		else if (FIFOReleased == FALSE)
 		{
