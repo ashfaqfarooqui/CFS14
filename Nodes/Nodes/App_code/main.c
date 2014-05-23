@@ -2,7 +2,7 @@
 #include "tests.h"
 
 //******************************************************************************
-uint16_t data;
+
 unsigned int sensorData[150] = {
 0
 };
@@ -174,7 +174,7 @@ void vPerformSwitchAction(void *pvParameters)
 	{
 		
 		switchAction();
-		vTaskDelay(2 / portTICK_RATE_MS);
+		vTaskDelay(25 / portTICK_RATE_MS);
 	}
 }
 void vRecieveCan(void *pvParameters)
@@ -268,6 +268,15 @@ void vSendBreakPressureData(void *pvParameters)
 
 		vTaskDelay(200 / portTICK_RATE_MS);
 	}
+}
+void vRequestRPMData(void *pvParameters)
+{
+	while (1)
+		{
+			requestEngineRPM();//
+
+			vTaskDelay(200 / portTICK_RATE_MS);
+		}
 }
 
 //******************************************************************************

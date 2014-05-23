@@ -1,9 +1,8 @@
 #ifndef __MEGASQUIRT_H_
 #define __MEGASQUIRT_H_
+#include "stm32f4xx_can.h"
+#include "stm32f4xx.h"
 
-#include "timer.h"
-#include "ADC.h"
-#include "driver_interface.h"
-#include "state.h"
+
 
 #endif

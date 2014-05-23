@@ -15,6 +15,7 @@
 #include "DAQ.h"
 #include "gearshifting.h"
 #include "actuator.h"
+#include "megasquirt.h"
 
 //******************************************************************************
 
@@ -37,6 +38,7 @@ void vSendBreakPressureData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateInputs(void *pvParameters);
 void vPerformSwitchAction(void *pvParameters);
+void vRequestRPMData(void *pvParameters);
 
 void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);

@@ -106,7 +106,7 @@ void updateSwitches()
 //		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, FANCONTROL),
 //		FC_POS, SLOW_SWITCH_DELAY);
 		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, E_CLUTCH),
-		EC_POS, SLOW_SWITCH_DELAY);
+		EC_POS, MEDIUM_SWITCH_DELAY);
 	}
 	if (THIS_NODE == REAR_NODE)
 	{
@@ -205,8 +205,8 @@ void switchAction()
 			switchState = switchState & 0xEF; //EC-OFF
 		}
 
-		if (previousSwitchStates != switchState)
-		{
+		//if (previousSwitchStates != switchState)
+		//{
 			switchStatesMsg = CAN_createMessage_uint(CAN_ID_SWITCH_STATES,
 			CAN_RTR_DATA, CAN_ID_STD, 1, &switchState);
 			do
@@ -214,11 +214,11 @@ void switchAction()
 				transmitStatus = CAN_Transmit(CAN1, &switchStatesMsg);
 			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 			previousSwitchStates = switchState;
-		}
+		//}
 	} else if (THIS_NODE == REAR_NODE)
 	{
-		if (previousRecievedStates != recievedStates)
-		{
+		//if (previousRecievedStates != recievedStates)
+		//{
 
 			if ((recievedStates & 0x01) == 0x01)
 			{
@@ -252,6 +252,6 @@ void switchAction()
 			}
 			//TODO actuate based on  switchData
 			previousRecievedStates = recievedStates;
-		}
+		//}
 	}
 }
