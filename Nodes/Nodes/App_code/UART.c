@@ -1,6 +1,6 @@
 #include "UART.h"
-#define NUMBER_OF_BYTES 5
-uint16_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0};
+#define NUMBER_OF_BYTES 12
+uint16_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0,0,0,0,0,0,0,0};
 void init_uart(uint32_t baudrate)
 {
 
@@ -28,7 +28,7 @@ void init_uart(uint32_t baudrate)
 
 	USART_InitStructure.USART_BaudRate = baudrate;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-	USART_InitStructure.USART_StopBits = USART_StopBits_2;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
 	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
 	USART_InitStructure.USART_HardwareFlowControl =

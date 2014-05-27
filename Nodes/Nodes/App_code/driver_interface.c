@@ -57,7 +57,7 @@ void init_driverInterface()
 	} else if (THIS_NODE == REAR_NODE)
 	{
 		//inputs
-		GPIO_InitStructure.GPIO_Pin = GEARDOWN; //make gear up pd12
+		GPIO_InitStructure.GPIO_Pin = GEARDOWN;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;

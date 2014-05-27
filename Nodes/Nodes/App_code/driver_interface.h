@@ -5,7 +5,7 @@
 #include "state.h"
 #include "can.h"
 
-#define FAST_SWITCH_DELAY 3 // 10ms
+#define FAST_SWITCH_DELAY 8 // 10ms
 #define MEDIUM_SWITCH_DELAY 10 // 20ms
 #define SLOW_SWITCH_DELAY 50 //100ms
 
