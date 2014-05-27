@@ -76,7 +76,7 @@ void safetyCheck()
 	void setFanSpeed(uint8_t dutyCycle)
 	{
 		TIM_OCInitTypeDef TIM_OCInitStructure;
-		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 		TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;
 		TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
@@ -91,7 +91,7 @@ void safetyCheck()
 	void setCoolantPumpSpeed(uint8_t dutyCycle)
 	{
 		TIM_OCInitTypeDef TIM_OCInitStructure;
-		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 		TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;
 		TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;

@@ -55,7 +55,7 @@ void init_actuators()
 void ActuateShiftUp(uint8_t dutyCycle) //0-100
 {
 	TIM_OCInitTypeDef TIM_OCInitStructure;
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_Pulse = (dutyCycle * 10000) / 100;//frequency
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
