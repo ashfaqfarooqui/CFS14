@@ -104,5 +104,5 @@ void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s)
 }
 uint16_t* getRecievedData()
 {
-	return &RxBuffer[0];
+	return RxBuffer;
 }

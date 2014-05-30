@@ -7,6 +7,7 @@ unsigned int sensorData[150] = {
 0
 };
 int main(void)
+
 {
 
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -24,17 +25,18 @@ int main(void)
 	 */
 	char *TransmitStatus;
 	uint8_t TransmitMailBox;
-
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); ///run this before running OS
 	initializeSystem();
 
 	createTaskDAQ();
 	xTaskCreate(vRecieveCan, (const signed char* )"Recieving Can",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vUpdateInputs, (const signed char* )"Update digital and analog inputs",
+	xTaskCreate(vUpdateInputs,
+			(const signed char* )"Update digital and analog inputs",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vPerformSwitchAction, (const signed char* )"perform switch action",
-			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vPerformSwitchAction,
+			(const signed char* )"perform switch action", STACK_SIZE_MIN, NULL,
+			tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateWheelSpeedLeft,
 			(const signed char* )"Update wheel speed left", STACK_SIZE_MIN,
 			NULL, tskIDLE_PRIORITY, NULL);
@@ -45,6 +47,8 @@ int main(void)
 	if (THIS_NODE == REAR_NODE)
 	{
 		xTaskCreate(vGearShifting, (const signed char* )"Gear shifting",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vIMUManager, (const signed char* )"IMU manager",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 		//DAQ
@@ -112,12 +116,20 @@ void initializeSystem()
 	}
 }
 //******************************************************************************
+void vIMUManager(void *pvParameters)
+{
+	while (1)
+	{
+		imuManager();
+		vTaskDelay(100 / portTICK_RATE_MS);
+	}
+}
 void vCoolingSystem(void *pvParameters)
 {
-	while(1)
+	while (1)
 	{
 		coolingControl();
-		vTaskDelay(250/portTICK_RATE_MS);
+		vTaskDelay(250 / portTICK_RATE_MS);
 	}
 }
 void vGearShifting(void *pvParameters)
@@ -272,12 +284,12 @@ void vSendBreakPressureData(void *pvParameters)
 void vRequestRPMData(void *pvParameters)
 {
 	while (1)
-		{
-			requestEngineRPM();//
+	{
+//			requestEngineRPM();//
 
-			requestTPS();
-			vTaskDelay(200 / portTICK_RATE_MS);
-		}
+//			requestTPS();
+		vTaskDelay(200 / portTICK_RATE_MS);
+	}
 }
 
 //******************************************************************************

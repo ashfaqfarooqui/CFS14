@@ -226,7 +226,7 @@ void readMessages()
 			}
 			
 		}
-		else if (FIFOReleased == FALSE)
+		 if (FIFOReleased == FALSE)
 		{
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 		}

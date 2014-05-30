@@ -14,7 +14,7 @@ void init_ADC(void);
 void DMA_Config(void);
 void NVIC_Config_adc(void);
 void saveRawADCData(void);
-float convertData(int);
+float convertData(uint8_t);
 int processAdcSamples(uint8_t );
 #define ADC_DR_ADDRESS    ((uint32_t)0x4001204C)
 
