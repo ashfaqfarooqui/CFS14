@@ -52,6 +52,7 @@
 #define AN_GEAR_POSITION 5
 #define AN_CYLINDER_POSITION 4
 #define AN_THROTTLE_POSITION 2
+#define AN_WATER_TEMP 7
 
 //all sensors
 #define DAMPER_TRAVEL_FL 1
@@ -109,6 +110,8 @@ static unsigned int NODE = 0x00;
 extern int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
 extern unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE];
 extern unsigned int sensorData[150];
+extern float IMUData[6];
+
 extern unsigned int recievedStates;
 
 

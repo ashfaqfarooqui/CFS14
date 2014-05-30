@@ -4,18 +4,18 @@ uint8_t previousRecievedStates = 0;
 uint8_t previousSwitchStates = 0x00;
 bol AutoShiftState = FALSE;
 bol TractionControlState = FALSE;
-bol ElectricClutchActuated=FALSE;
-bol LaunchControlActivated=FALSE;
+bol ElectricClutchActuated = FALSE;
+bol LaunchControlActivated = FALSE;
 short debounce[10] = {
 0
 };
-
 
 unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE] = {
 0
 };
 
 /** initialize the features of the driver interface*/
+char DLdata;
 void init_driverInterface()
 {
 	uint8_t i;
@@ -24,6 +24,7 @@ void init_driverInterface()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	if (THIS_NODE == FRONT_NODE)
 	{
 //Inputs
@@ -35,15 +36,11 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
 
-		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
-		GPIO_Init(GPIOD, &GPIO_InitStructure);
-
 		GPIO_InitStructure.GPIO_Pin = LAUNCH_CONTROL;
-		GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-		GPIO_InitStructure.GPIO_Pin = FANCONTROL;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
+		GPIO_Init(GPIOE, &GPIO_InitStructure);
 
 //outputs
 		GPIO_InitStructure.GPIO_Pin =
@@ -105,7 +102,7 @@ void updateSwitches()
 				SLOW_SWITCH_DELAY);
 //		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, FANCONTROL),
 //		FC_POS, SLOW_SWITCH_DELAY);
-		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, E_CLUTCH),
+		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
 		EC_POS, MEDIUM_SWITCH_DELAY);
 	}
 	if (THIS_NODE == REAR_NODE)
@@ -168,6 +165,7 @@ void switchAction()
 	{
 		uint8_t switchState = 0;
 		CanTxMsg switchStatesMsg;
+		CanTxMsg DLON;
 		uint8_t transmitStatus;
 		if (rawDigitalState[LC_POS] == SET)
 		{
@@ -185,10 +183,23 @@ void switchAction()
 		}
 		if (rawDigitalState[DL_POS] == SET)
 		{
-			switchState = switchState | 0x04; //DL-ON
+			DLdata = 0xff; //DL-ON
+			DLON = CAN_createMessage_uint(0x500,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &DLON);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
+
 		} else if (rawDigitalState[DL_POS] == RESET)
 		{
-			switchState = switchState & 0xFB; //DL-OFF
+			DLdata = 0x00; //DL-Off
+			DLON = CAN_createMessage_uint(0x500,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &DLON);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 		}
 		if (rawDigitalState[AS_POS] == SET)
 		{
@@ -207,51 +218,51 @@ void switchAction()
 
 		//if (previousSwitchStates != switchState)
 		//{
-			switchStatesMsg = CAN_createMessage_uint(CAN_ID_SWITCH_STATES,
-			CAN_RTR_DATA, CAN_ID_STD, 1, &switchState);
-			do
-			{
-				transmitStatus = CAN_Transmit(CAN1, &switchStatesMsg);
-			} while (transmitStatus == CAN_TxStatus_NoMailBox);
-			previousSwitchStates = switchState;
+		switchStatesMsg = CAN_createMessage_uint(CAN_ID_SWITCH_STATES,
+		CAN_RTR_DATA, CAN_ID_STD, 1, &switchState);
+		do
+		{
+			transmitStatus = CAN_Transmit(CAN1, &switchStatesMsg);
+		} while (transmitStatus == CAN_TxStatus_NoMailBox);
+		previousSwitchStates = switchState;
 		//}
 	} else if (THIS_NODE == REAR_NODE)
 	{
 		//if (previousRecievedStates != recievedStates)
 		//{
 
-			if ((recievedStates & 0x01) == 0x01)
-			{
-				LaunchControlActivated=TRUE;//LC-ON
-			} else
-			{
-				LaunchControlActivated=FALSE;//LC-OFF
-			}
+		if ((recievedStates & 0x01) == 0x01)
+		{
+			LaunchControlActivated = TRUE;		//LC-ON
+		} else
+		{
+			LaunchControlActivated = FALSE;		//LC-OFF
+		}
 
-			if ((recievedStates & 0x02) == 0x02)
-			{
-				TractionControlState = TRUE; //TC-ON
-			} else
-			{
-				TractionControlState = FALSE; //TC-OFF
-			}
+		if ((recievedStates & 0x02) == 0x02)
+		{
+			TractionControlState = TRUE; //TC-ON
+		} else
+		{
+			TractionControlState = FALSE; //TC-OFF
+		}
 
-			if ((recievedStates & 0x08) == 0x08)
-			{
-				AutoShiftState = TRUE; //AS-ON
-			} else
-			{
-				AutoShiftState = FALSE; //AS_OFF
-			}
-			if ((recievedStates & 0x10) == 0x10)
-			{
-				ElectricClutchActuated=TRUE;//EL lutch ON
-			} else
-			{
-				ElectricClutchActuated=FALSE;//ELCL off
-			}
-			//TODO actuate based on  switchData
-			previousRecievedStates = recievedStates;
+		if ((recievedStates & 0x08) == 0x08)
+		{
+			AutoShiftState = TRUE; //AS-ON
+		} else
+		{
+			AutoShiftState = FALSE; //AS_OFF
+		}
+		if ((recievedStates & 0x10) == 0x10)
+		{
+			ElectricClutchActuated = TRUE; //EL lutch ON
+		} else
+		{
+			ElectricClutchActuated = FALSE; //ELCL off
+		}
+		//TODO actuate based on  switchData
+		previousRecievedStates = recievedStates;
 		//}
 	}
 }

@@ -16,6 +16,7 @@
 #include "gearshifting.h"
 #include "actuator.h"
 #include "megasquirt.h"
+#include "IMU.h"
 
 //******************************************************************************
 
@@ -46,6 +47,7 @@ void vUpdateWheelSpeedRight(void *pvParameters);
 void vSafetyCheck(void *pvParameters);
 void vCoolingSystem(void *pvParameters);
 void vGearShifting(void *pvParameters);
+void vIMUManager(void *pvParameters);
 
 void vSendWheelSpeed(void *pvParameters);
 void vSendDamperTravel(void *pvParameters);
