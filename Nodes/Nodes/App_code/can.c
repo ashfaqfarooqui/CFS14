@@ -173,8 +173,7 @@ void readMessages()
 					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 			FIFOReleased = TRUE;
-		}
-		else if (RxMessage.StdId == CAN_ID_COOLANT_TEMP)
+		} else if (RxMessage.StdId == CAN_ID_COOLANT_TEMP)
 		{
 			sensorData[WATER_TEMPRATURE] = 0;
 			sensorData[WATER_TEMPRATURE] |= RxMessage.Data[3];
@@ -182,25 +181,34 @@ void readMessages()
 					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 			FIFOReleased = TRUE;
-		}
-		else if (RxMessage.StdId == CAN_ID_RPM)
+		} else if (RxMessage.StdId == CAN_ID_RPM)
 		{
-			sensorData[1] = 0;
-			sensorData[1] |= RxMessage.Data[3];
-			sensorData[1] = (sensorData[1] << 8) | RxMessage.Data[2];
+			sensorData[ENGINE_RPM] = 0;
+			sensorData[ENGINE_RPM] |= RxMessage.Data[3];
+			sensorData[ENGINE_RPM] = (sensorData[ENGINE_RPM] << 8)
+					| RxMessage.Data[2];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 			FIFOReleased = TRUE;
-		}
-		else if (THIS_NODE == REAR_NODE && RxMessage.StdId == CAN_ID_SWITCH_STATES)
+		} else if (THIS_NODE == REAR_NODE
+				&& RxMessage.StdId == CAN_ID_SWITCH_STATES)
 		{
 			recievedStates = RxMessage.Data[0];
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 			FIFOReleased = TRUE;
-		}
-		else if(THIS_NODE == REAR_NODE && RxMessage.ExtId!=0x00)
+		} else if (THIS_NODE == REAR_NODE && RxMessage.StdId == 0x503)
+		{
+			if (RxMessage.Data[0] == 0xff)
 			{
-				sensorData[ENGINE_RPM]=RxMessage.Data[0];
+				ElectricClutchActuated = TRUE;
+			} else if (RxMessage.Data[0] == 0x00)
+			{
+				ElectricClutchActuated = FALSE;
 			}
+			CAN_FIFORelease(CAN1, CAN_FIFO0);
+			FIFOReleased = TRUE;
+
+		}
+
 		else if (THIS_NODE == FRONT_NODE)
 		{
 			if (RxMessage.StdId == CAN_ADR_WATER_TEMPRATURE)
@@ -209,15 +217,13 @@ void readMessages()
 				sensorData[WATER_TEMPRATURE] |= (RxMessage.Data[2] << 8);
 				CAN_FIFORelease(CAN1, CAN_FIFO0);
 				FIFOReleased = TRUE;
-			}
-			else if (RxMessage.StdId == CAN_ADR_OIL_PRESSURE)
+			} else if (RxMessage.StdId == CAN_ADR_OIL_PRESSURE)
 			{
 				sensorData[OIL_PRESSURE] = RxMessage.Data[1];
 				sensorData[OIL_PRESSURE] |= (RxMessage.Data[2] << 8);
 				CAN_FIFORelease(CAN1, CAN_FIFO0);
 				FIFOReleased = TRUE;
-			}
-			else if (RxMessage.StdId == CAN_ADR_OIL_TEMPRATURE)
+			} else if (RxMessage.StdId == CAN_ADR_OIL_TEMPRATURE)
 			{
 				sensorData[OIL_TEMPRATURE] = RxMessage.Data[1];
 				sensorData[OIL_TEMPRATURE] |= (RxMessage.Data[2] << 8);
@@ -226,7 +232,8 @@ void readMessages()
 			}
 			
 		}
-		 if (FIFOReleased == FALSE)
+
+		if (FIFOReleased == FALSE)
 		{
 			CAN_FIFORelease(CAN1, CAN_FIFO0);
 		}

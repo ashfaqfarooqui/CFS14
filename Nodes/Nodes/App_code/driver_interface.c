@@ -15,7 +15,7 @@ unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE] = {
 };
 
 /** initialize the features of the driver interface*/
-char DLdata;
+char DLdata,ecldata;
 void init_driverInterface()
 {
 	uint8_t i;
@@ -165,14 +165,33 @@ void switchAction()
 	{
 		uint8_t switchState = 0;
 		CanTxMsg switchStatesMsg;
-		CanTxMsg DLON;
+		CanTxMsg DLON,ecl;
 		uint8_t transmitStatus;
 		if (rawDigitalState[LC_POS] == SET)
 		{
-			switchState = switchState | 0x01; //LC-ON
+//			switchState = switchState | 0x01; //LC-ON
+			switchState = switchState | 0x10;
+						ecldata=0xff;
+						ecl = CAN_createMessage_uint(0x503,
+						CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
+						do
+						{
+							transmitStatus = CAN_Transmit(CAN1, &ecl);
+						} while (transmitStatus == CAN_TxStatus_NoMailBox);
+
+
 		} else if (rawDigitalState[LC_POS] == RESET)
 		{
-			switchState = switchState & 0xFE; //LC-OFF
+//			switchState = switchState & 0xFE; //LC-OFF
+			switchState = switchState & 0xEF;
+			ecldata=0x00;
+									ecl = CAN_createMessage_uint(0x503,
+									CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
+									do
+									{
+										transmitStatus = CAN_Transmit(CAN1, &ecl);
+									} while (transmitStatus == CAN_TxStatus_NoMailBox);
+
 		}
 		if (rawDigitalState[TC_POS] == SET)
 		{
@@ -210,10 +229,10 @@ void switchAction()
 		}
 		if (rawDigitalState[EC_POS] == SET)
 		{
-			switchState = switchState | 0x10; //EC-OFF
+//			switchState = switchState | 0x10; //EC-OFF
 		} else if (rawDigitalState[EC_POS] == RESET)
 		{
-			switchState = switchState & 0xEF; //EC-OFF
+//			switchState = switchState & 0xEF; //EC-OFF
 		}
 
 		//if (previousSwitchStates != switchState)
@@ -256,10 +275,10 @@ void switchAction()
 		}
 		if ((recievedStates & 0x10) == 0x10)
 		{
-			ElectricClutchActuated = TRUE; //EL lutch ON
+//			ElectricClutchActuated = TRUE; //EL lutch ON
 		} else
 		{
-			ElectricClutchActuated = FALSE; //ELCL off
+//			ElectricClutchActuated = FALSE; //ELCL off
 		}
 		//TODO actuate based on  switchData
 		previousRecievedStates = recievedStates;
