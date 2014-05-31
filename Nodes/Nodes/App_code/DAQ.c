@@ -16,8 +16,8 @@ void sendWheelSpeed()
 		data[2] = (sensorData[W_SPEED_FR]) & 0xff;
 	} else if (THIS_NODE == REAR_NODE)
 	{
-		data[1] = (sensorData[W_SPEED_FL]) & 0xff;
-		data[2] = (sensorData[W_SPEED_FR]) & 0xff;
+		data[1] = (sensorData[W_SPEED_RL]) & 0xff;
+		data[2] = (sensorData[W_SPEED_RR]) & 0xff;
 	}
 	wheelSpeedMsg = CAN_createMessage_uint(CAN_ADR_WHEEL_SPEED, CAN_RTR_Data,
 	CAN_ID_STD, 3, &data[0]);
@@ -35,16 +35,16 @@ void sendDamperPosition()
 
 	if (THIS_NODE == FRONT_NODE)
 	{
-		data[2] = (sensorData[DAMPER_TRAVEL_FL]) & 0xff;
-		data[1] = ((sensorData[DAMPER_TRAVEL_FL] >> 8) & 0x0f);
-		data[4] = (sensorData[DAMPER_TRAVEL_FR]) & 0xff;
-		data[3] = ((sensorData[DAMPER_TRAVEL_FR] >> 8) & 0x0f);
+		data[1] = (sensorData[DAMPER_TRAVEL_FL]) & 0xff;
+		data[2] = ((sensorData[DAMPER_TRAVEL_FL] >> 8) & 0x0f);
+		data[3] = (sensorData[DAMPER_TRAVEL_FR]) & 0xff;
+		data[4] = ((sensorData[DAMPER_TRAVEL_FR] >> 8) & 0x0f);
 	} else if (THIS_NODE == REAR_NODE)
 	{
-		data[2] = (sensorData[DAMPER_TRAVEL_RL]) & 0xff;
-		data[1] = ((sensorData[DAMPER_TRAVEL_RL] >> 8) & 0x0f);
-		data[4] = (sensorData[DAMPER_TRAVEL_RR]) & 0xff;
-		data[3] = ((sensorData[DAMPER_TRAVEL_RR] >> 8) & 0x0f);
+		data[1] = (sensorData[DAMPER_TRAVEL_RL]) & 0xff;
+		data[2] = ((sensorData[DAMPER_TRAVEL_RL] >> 8) & 0x0f);
+		data[3] = (sensorData[DAMPER_TRAVEL_RR]) & 0xff;
+		data[4] = ((sensorData[DAMPER_TRAVEL_RR] >> 8) & 0x0f);
 	}
 	DamperPosMsg = CAN_createMessage_uint(CAN_ADR_DAMPER_POSITION, CAN_RTR_Data,
 	CAN_ID_STD, 5, &data[0]);
@@ -77,9 +77,10 @@ void sendOilPressure()
 	CanTxMsg OilPressureMsg;
 	uint8_t transmitStatus;
 	uint8_t data[3];
-	data[0] = 0;
-	data[1] = (sensorData[OIL_PRESSURE]) & 0xff;
-	data[2] = (sensorData[OIL_PRESSURE] >> 8) & 0x0f;
+	data[0] = 0xf0;
+	data[1] = 0xf0;
+	data[2]=0xf0;
+
 	OilPressureMsg = CAN_createMessage_uint(CAN_ADR_OIL_PRESSURE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
 	do
@@ -94,8 +95,8 @@ void sendOilTemprature()
 	uint8_t transmitStatus;
 	uint8_t data[3];
 	data[0] = 0;
-	data[1] = (sensorData[OIL_TEMPRATURE]) & 0xff;
-	data[2] = (sensorData[OIL_TEMPRATURE] >> 8) & 0x0f;
+	data[1] = (sensorData[OIL_PRESSURE]) & 0xff;
+	data[2] = (sensorData[OIL_PRESSURE] >> 8) & 0x0f;
 	OilTempratureMsg = CAN_createMessage_uint(CAN_ADR_OIL_TEMPRATURE,
 	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
 	do
@@ -110,11 +111,9 @@ void sendGear()
 	uint8_t transmitStatus;
 	uint8_t data[4];
 	data[0] = 0;
-	//data[1] =;
-//	data[2] =;
-	//data[3] =;
+	data[1] =GetGearPosition();
 	GearMsg = CAN_createMessage_uint(CAN_ADR_SHIFTING,
-	CAN_RTR_Data, CAN_ID_STD, 4, &data[0]);
+	CAN_RTR_Data, CAN_ID_STD, 2, &data[0]);
 	do
 	{
 		transmitStatus = CAN_Transmit(CAN1, &GearMsg);

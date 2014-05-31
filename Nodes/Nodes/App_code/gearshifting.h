@@ -39,7 +39,7 @@ typedef int bool;
 #define GEAR5 0x4475
 #define GEAR6 0x1159
 
-#define RANGE 150
+#define RANGE 180
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)

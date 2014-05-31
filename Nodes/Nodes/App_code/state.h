@@ -31,7 +31,7 @@
 
 #define CAN_ID_ENGINE_RPM 0x280
 #define CAN_ID_COOLANT_TEMP 0x289
-#define CAN_ID_RPM 0x316
+#define CAN_ID_RPM 1520
 #define CAN_ID_SWITCH_STATES 0x0325
 
 
