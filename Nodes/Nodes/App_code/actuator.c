@@ -22,7 +22,7 @@ void init_actuators()
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION | SHIFT_DOWN|SHIFT_DOWN;
+	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION | SHIFT_DOWN|SHIFT_UP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = CLUTCH;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -31,23 +31,23 @@ void init_actuators()
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 //	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-//	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 //	GPIO_Init(GPIOC, &GPIO_InitStructure);
+//
+//	/* Connect TIM8 pins  */
+//	GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
+//	/* Compute the prescaler value */
+//	//SystemCoreClock = 42MHz, PrescalerValue = 1MHz
+//	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
+//
+//	/* Time base configuration */
+//	TIM_TimeBaseStructure.TIM_Period = 10000;//1NEUTRAL_FREQUENCY;//frequency
+//	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+//	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+//	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+//
+//	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
 
-	/* Connect TIM8 pins  */
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM8);
-	/* Compute the prescaler value */
-	//SystemCoreClock = 42MHz, PrescalerValue = 1MHz
-	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
-
-	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = 10000;//1NEUTRAL_FREQUENCY;//frequency
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-
-	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
-	
 	
 
 }
@@ -66,6 +66,7 @@ void ActuateShiftUp(uint8_t dutyCycle) //0-100
 
 	/* TIM3 enable counter */
 	TIM_Cmd(TIM8, ENABLE);
+
 }
 
 void actuate(GPIO_TypeDef* port, uint16_t system)

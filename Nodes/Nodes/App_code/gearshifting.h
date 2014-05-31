@@ -17,9 +17,9 @@ typedef int bool;
 #define false 0
 
 #define CLUTCH GPIO_Pin_9 //PA9
-#define SHIFT_UP GPIO_Pin_7 //PC7
-#define SHIFT_DOWN GPIO_Pin_6 //PC6
-#define CUT_IGNITION GPIO_Pin_15 //PC15
+#define SHIFT_UP GPIO_Pin_6 //PC6
+#define SHIFT_DOWN GPIO_Pin_7 //PC7
+#define CUT_IGNITION GPIO_Pin_14 //PC15
 
 #define MONITOR_TIME 500
 #define SWITCHHOLDINGTIME 100000
@@ -30,16 +30,16 @@ typedef int bool;
 #define MIN_GEAR_POSITION 1
 
 
-#define NEUTRAL 0x0927//2.343V//0xE7
-#define RANGE_NEUTRAL 10
-#define GEAR1 0x07CB//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
-#define GEAR2 0x0A98//2.712V//0x11C//0x90//0x12E
-#define GEAR3 0x0D6F//3.439V//3.0xB1//0x1BB
-#define GEAR4 3814
-#define GEAR5 4475
-#define GEAR6 1159
+#define NEUTRAL 0x07E7//2.343V//0xE7
+#define RANGE_NEUTRAL 100
+#define GEAR1 0x06BF//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
+#define GEAR2 0x0912//2.712V//0x11C//0x90//0x12E
+#define GEAR3 0x0B6A//3.439V//3.0xB1//0x1BB
+#define GEAR4 0x3814
+#define GEAR5 0x4475
+#define GEAR6 0x1159
 
-#define RANGE 50
+#define RANGE 150
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
@@ -64,11 +64,13 @@ void ShiftUp(int);
 void ShiftDown(int);
 void GoToNeutral(void);
 void CutIgnition(void);
-void ElClutch(int);
+void ElClutch(bol);
 void AutoShifting(void);
 void LaunchControl(void);
 void ActiveClutch(void);
 void InactiveClutch(void);
+void ActiveShiftUp(void);
+void InactiveShiftUp(void);
 void ActiveShiftDown(void);
 void InactiveShiftDown(void);
 void ActiveCutIgnition(void);
