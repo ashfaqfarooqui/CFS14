@@ -30,12 +30,8 @@ int timeLasting = 0;
 int shiftUpTime = 0;
 int shiftDownTime = 0;
 
-const unsigned short shiftLevelsHigh[7] = {
-NEUTRALHIGH, GEAR1HIGH, GEAR2HIGH, GEAR3HIGH, GEAR4HIGH, GEAR5HIGH, GEAR6HIGH
-};
-const unsigned short shiftLevelsLow[7] = {
-NEUTRALLOW, GEAR1LOW, GEAR2LOW, GEAR3LOW, GEAR4LOW, GEAR5LOW, GEAR6LOW
-};
+const unsigned short shiftLevelsHigh[7] = {NEUTRALHIGH, GEAR1HIGH, GEAR2HIGH, GEAR3HIGH, GEAR4HIGH, GEAR5HIGH, GEAR6HIGH};
+const unsigned short shiftLevelsLow[7] = {NEUTRALLOW, GEAR1LOW, GEAR2LOW, GEAR3LOW, GEAR4LOW, GEAR5LOW, GEAR6LOW};
 
 /***************************************/
 
@@ -130,6 +126,7 @@ void gearShiftManager(void)
 	if (shiftDownSwitch == true)
 	{
 		shiftDownSwitch = false;
+		/*
 		if (shiftDownHoldingTime > SWITCHHOLDINGTIME)
 		{
 			//holding shift down for long time mean go to neutral
@@ -153,7 +150,8 @@ void gearShiftManager(void)
 			}
 
 		} else
-		{		//want to shift down
+		{*/
+		//want to shift down
 			shiftDownHoldingTime = 0;
 			//GetGearPosition();
 			if (gearIsInPosition)
@@ -180,7 +178,7 @@ void gearShiftManager(void)
 				return;
 			}
 
-		}
+		//}
 	}
 
 	if (shiftUpActive)
@@ -211,7 +209,7 @@ int GetGearPosition()
 	
 	int gear = 0;
 	
-	gearPositionSensorData = (int)(convertData(sensorData[GEAR_POSITION])*1000);
+	gearPositionSensorData = sensorData[GEAR_POSITION];
 
 	
 	for (gear = 0; gear < 6; gear++)
@@ -246,7 +244,8 @@ void ShiftUp(int gearPosition)
 
 	ActiveCutIgnition();
 	//delay(1000);
-	ActuateShiftUp(100);
+	//ActuateShiftUp(100);
+	ActiveShiftUp();
 
 	for (;; gearPositionMonitor++)
 	{
@@ -266,7 +265,8 @@ void ShiftUp(int gearPosition)
 	}
 
 	//delay(1000);
-	ActuateShiftUp(0);
+	//ActuateShiftUp(0);
+	InactiveShiftUp();
 	InactiveCutIgnition();
 	
 }
@@ -367,14 +367,14 @@ void GoToNeutral(void)
 	InactiveClutch();
 }
 
-void ElClutch(int elClutch)
+void ElClutch(bol elClutch)
 {
 
-	if (elClutch == 1)
+	if (elClutch == TRUE)
 	{
 		ActiveClutch();
 	}
-	if (elClutch == 0)
+	if (elClutch == FALSE)
 	{
 		InactiveClutch();
 	}
@@ -436,6 +436,13 @@ void InactiveClutch(){
 	release(GPIOA,CLUTCH);
 }
 
+void ActiveShiftUp(){
+	actuate(GPIOC,SHIFT_UP);
+}
+
+void InactiveShiftUp(){
+	release(GPIOC,SHIFT_UP);
+}
 void ActiveShiftDown(){
 	actuate(GPIOC,SHIFT_DOWN);
 }
