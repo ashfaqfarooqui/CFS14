@@ -22,10 +22,12 @@ void init_actuators()
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION | SHIFT_DOWN|SHIFT_UP;
+	GPIO_InitStructure.GPIO_Pin = SHIFT_DOWN|SHIFT_UP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = CLUTCH;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION;
+	GPIO_Init(GPIOE, &GPIO_InitStructure);
 
 //	GPIO_InitStructure.GPIO_Pin = SHIFT_UP;
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;

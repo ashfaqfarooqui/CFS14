@@ -19,9 +19,9 @@ typedef int bool;
 #define CLUTCH GPIO_Pin_9 //PA9
 #define SHIFT_UP GPIO_Pin_6 //PC6
 #define SHIFT_DOWN GPIO_Pin_7 //PC7
-#define CUT_IGNITION GPIO_Pin_14 //PC15
+#define CUT_IGNITION GPIO_Pin_1 //PE1
 
-#define MONITOR_TIME 500
+#define MONITOR_TIME 300000
 #define SWITCHHOLDINGTIME 100000
 #define LAUCH_CONTROL_CLUTCH_ON_DELAY 150
 #define NEUTRAL_FREQUENCY 10
@@ -40,11 +40,12 @@ typedef int bool;
 #define GEAR6 0x1159
 
 #define RANGE 180
+#define RANGE_FIRST_HIGH 100
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
 #define GEAR1LOW (GEAR1 - RANGE)
-#define GEAR1HIGH (GEAR1 + RANGE)
+#define GEAR1HIGH (GEAR1 + RANGE_FIRST_HIGH)
 #define GEAR2LOW (GEAR2 - RANGE)
 #define GEAR2HIGH (GEAR2 + RANGE)
 #define GEAR3LOW (GEAR3 - RANGE)
@@ -64,7 +65,7 @@ void ShiftUp(int);
 void ShiftDown(int);
 void GoToNeutral(void);
 void CutIgnition(void);
-void ElClutch(bol);
+void ElClutch(int);
 void AutoShifting(void);
 void LaunchControl(void);
 void ActiveClutch(void);

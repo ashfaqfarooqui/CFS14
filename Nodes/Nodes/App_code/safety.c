@@ -1,19 +1,22 @@
 #include "safety.h"
-float olp_pressure;
-float olp_voltage;
+float olp_pressure = 0;
+float olp_voltage = 0;
+float clt_temp = 0;
+float olt_temp = 0;
 void safetyCheck()
 {
 	uint8_t checkLight = 0;
 	uint8_t clt_data = sensorData[WATER_TEMPRATURE];
 	float clt_voltage = convertData(clt_data);
-	float clt_temp = -29.2793 * clt_voltage + 168.8014;
-
+	
 	uint8_t olt_data = sensorData[OIL_TEMPRATURE];
 	float olt_voltage = convertData(olt_data);
-	float olt_temp = -38.1625 * olt_voltage + 199.9477;
-
+	
 	uint8_t olp_data = sensorData[OIL_PRESSURE];
-	 olp_voltage = (float)(((1.1407*(float)(sensorData[OIL_PRESSURE]))/1000)-0.0312);
+	olp_voltage = (float)(((1.1407*(float)(sensorData[OIL_PRESSURE]))/1000)-0.0312);
+	
+	clt_temp = -29.2793 * clt_voltage + 168.8014;
+	olt_temp = -38.1625 * olt_voltage + 199.9477;
 	olp_pressure = 2.5 * olp_voltage -2;
 	
 

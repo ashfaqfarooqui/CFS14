@@ -6,6 +6,7 @@ bol AutoShiftState = FALSE;
 bol TractionControlState = FALSE;
 bol ElectricClutchActuated = FALSE;
 bol LaunchControlActivated = FALSE;
+bol ElClutchActuated = FALSE;
 short debounce[10] = {
 0
 };
@@ -60,8 +61,22 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
-		GPIO_InitStructure.GPIO_Pin = GEARUP;
-		GPIO_Init(GPIOD, &GPIO_InitStructure);
+		
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
+		
+		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
+		GPIO_Init(GPIOE, &GPIO_InitStructure);
+		
+		/*
+		GPIO_InitStructure.GPIO_Pin =
+		TRACTION_CONTROL | AUTOSHIFTING | DATALOGGER;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
+		*/
 
 	}
 
@@ -90,16 +105,13 @@ void updateSwitches()
 	{
 
 		digIn[2] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, LAUNCH_CONTROL),
-		LC_POS,
-		SLOW_SWITCH_DELAY);
-		digIn[3] = debounceInput(
-				!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), TC_POS,
-				SLOW_SWITCH_DELAY);
+		LC_POS,SLOW_SWITCH_DELAY);
+		digIn[3] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), 
+		TC_POS,SLOW_SWITCH_DELAY);
 		digIn[4] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, DATALOGGER),
 		DL_POS, SLOW_SWITCH_DELAY);
-		digIn[5] = debounceInput(
-				!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), AS_POS,
-				SLOW_SWITCH_DELAY);
+		digIn[5] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), 
+		AS_POS, SLOW_SWITCH_DELAY);
 //		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, FANCONTROL),
 //		FC_POS, SLOW_SWITCH_DELAY);
 		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
@@ -107,10 +119,20 @@ void updateSwitches()
 	}
 	if (THIS_NODE == REAR_NODE)
 	{
-		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARUP),
-		GEARUP_POS, FAST_SWITCH_DELAY);
+		//digIn[0] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, GEARUP),
+		//GEARUP_POS, FAST_SWITCH_DELAY);
+		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8),
+		DL_POS, FAST_SWITCH_DELAY);
 		digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
-		GEARDOWN_POS, FAST_SWITCH_DELAY);
+		GEARDOWN_POS, FAST_SWITCH_DELAY);		
+		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
+		EC_POS,FAST_SWITCH_DELAY);
+		
+		if(digIn[7] == 1){
+			ElClutchActuated = TRUE;
+		}else{
+			ElClutchActuated = FALSE;
+		}
 	}
 
 	for (i = 0; i < NUMBER_OF_DIGITAL_IN_PER_NODE; i++)
