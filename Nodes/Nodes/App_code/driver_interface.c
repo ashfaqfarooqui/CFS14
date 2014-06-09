@@ -6,7 +6,6 @@ bol AutoShiftState = FALSE;
 bol TractionControlState = FALSE;
 bol ElectricClutchActuated = FALSE;
 bol LaunchControlActivated = FALSE;
-bol ElClutchActuated = FALSE;
 short debounce[10] = {
 0
 };
@@ -16,7 +15,8 @@ unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE] = {
 };
 
 /** initialize the features of the driver interface*/
-char DLdata,ecldata;
+uint8_t DLdata[];
+char  ecldata;
 void init_driverInterface()
 {
 	uint8_t i;
@@ -32,9 +32,9 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Pin =
 		TRACTION_CONTROL | AUTOSHIFTING | DATALOGGER;
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
 
 		GPIO_InitStructure.GPIO_Pin = LAUNCH_CONTROL;
@@ -69,14 +69,14 @@ void init_driverInterface()
 		GPIO_Init(GPIOE, &GPIO_InitStructure);
 		
 		/*
-		GPIO_InitStructure.GPIO_Pin =
-		TRACTION_CONTROL | AUTOSHIFTING | DATALOGGER;
-		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
-		*/
+		 GPIO_InitStructure.GPIO_Pin =
+		 TRACTION_CONTROL | AUTOSHIFTING | DATALOGGER;
+		 GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+		 GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+		 GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+		 GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		 GPIO_Init(INPUTPORT, &GPIO_InitStructure);
+		 */
 
 	}
 
@@ -105,17 +105,19 @@ void updateSwitches()
 	{
 
 		digIn[2] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, LAUNCH_CONTROL),
-		LC_POS,SLOW_SWITCH_DELAY);
-		digIn[3] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL), 
-		TC_POS,SLOW_SWITCH_DELAY);
+		LC_POS, SLOW_SWITCH_DELAY);
+		digIn[3] = debounceInput(
+				!GPIO_ReadInputDataBit(INPUTPORT, TRACTION_CONTROL),
+				TC_POS, SLOW_SWITCH_DELAY);
 		digIn[4] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, DATALOGGER),
 		DL_POS, SLOW_SWITCH_DELAY);
-		digIn[5] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING), 
-		AS_POS, SLOW_SWITCH_DELAY);
+		digIn[5] = debounceInput(
+				!GPIO_ReadInputDataBit(INPUTPORT, AUTOSHIFTING),
+				AS_POS, SLOW_SWITCH_DELAY);
 //		digIn[6] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, FANCONTROL),
 //		FC_POS, SLOW_SWITCH_DELAY);
-		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
-		EC_POS, MEDIUM_SWITCH_DELAY);
+//		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
+//		EC_POS, MEDIUM_SWITCH_DELAY);
 	}
 	if (THIS_NODE == REAR_NODE)
 	{
@@ -124,15 +126,15 @@ void updateSwitches()
 		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8),
 		DL_POS, FAST_SWITCH_DELAY);
 		digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
-		GEARDOWN_POS, FAST_SWITCH_DELAY);		
+		GEARDOWN_POS, FAST_SWITCH_DELAY);
 		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
-		EC_POS,FAST_SWITCH_DELAY);
+		EC_POS, MEDIUM_SWITCH_DELAY);
 		
-		if(digIn[7] == 1){
-			ElClutchActuated = TRUE;
-		}else{
-			ElClutchActuated = FALSE;
-		}
+//		if(digIn[7] == 1){
+//			ElClutchActuated = TRUE;
+//		}else{
+//			ElClutchActuated = FALSE;
+//		}
 	}
 
 	for (i = 0; i < NUMBER_OF_DIGITAL_IN_PER_NODE; i++)
@@ -187,32 +189,31 @@ void switchAction()
 	{
 		uint8_t switchState = 0;
 		CanTxMsg switchStatesMsg;
-		CanTxMsg DLON,ecl;
+		CanTxMsg DLON, ecl;
 		uint8_t transmitStatus;
 		if (rawDigitalState[LC_POS] == SET)
 		{
 //			switchState = switchState | 0x01; //LC-ON
-			switchState = switchState | 0x10;
-						ecldata=0xff;
-						ecl = CAN_createMessage_uint(0x503,
-						CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-						do
-						{
-							transmitStatus = CAN_Transmit(CAN1, &ecl);
-						} while (transmitStatus == CAN_TxStatus_NoMailBox);
-
+//			switchState = switchState | 0x10;
+//			ecldata = 0xff;
+//			ecl = CAN_createMessage_uint(0x503,
+//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
+//			do
+//			{
+//				transmitStatus = CAN_Transmit(CAN1, &ecl);
+//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 		} else if (rawDigitalState[LC_POS] == RESET)
 		{
-//			switchState = switchState & 0xFE; //LC-OFF
-			switchState = switchState & 0xEF;
-			ecldata=0x00;
-									ecl = CAN_createMessage_uint(0x503,
-									CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-									do
-									{
-										transmitStatus = CAN_Transmit(CAN1, &ecl);
-									} while (transmitStatus == CAN_TxStatus_NoMailBox);
+////			switchState = switchState & 0xFE; //LC-OFF
+//			switchState = switchState & 0xEF;
+//			ecldata = 0x00;
+//			ecl = CAN_createMessage_uint(0x503,
+//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
+//			do
+//			{
+//				transmitStatus = CAN_Transmit(CAN1, &ecl);
+//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 		}
 		if (rawDigitalState[TC_POS] == SET)
@@ -224,9 +225,9 @@ void switchAction()
 		}
 		if (rawDigitalState[DL_POS] == SET)
 		{
-			DLdata = 0xff; //DL-ON
+			DLdata[0] = 0xff; //DL-ON
 			DLON = CAN_createMessage_uint(0x500,
-			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata);
+			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata[0]);
 			do
 			{
 				transmitStatus = CAN_Transmit(CAN1, &DLON);
@@ -234,9 +235,9 @@ void switchAction()
 
 		} else if (rawDigitalState[DL_POS] == RESET)
 		{
-			DLdata = 0x00; //DL-Off
+			DLdata[0] = 0x00; //DL-Off
 			DLON = CAN_createMessage_uint(0x500,
-			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata);
+			CAN_RTR_DATA, CAN_ID_STD, 1, &DLdata[0]);
 			do
 			{
 				transmitStatus = CAN_Transmit(CAN1, &DLON);
@@ -295,12 +296,14 @@ void switchAction()
 		{
 			AutoShiftState = FALSE; //AS_OFF
 		}
-		if ((recievedStates & 0x10) == 0x10)
+		if (rawDigitalState[EC_POS] == SET)
 		{
-//			ElectricClutchActuated = TRUE; //EL lutch ON
-		} else
+			ElectricClutchActuated=TRUE;
+			//			switchState = switchState | 0x10; //EC-OFF
+		} else if (rawDigitalState[EC_POS] == RESET)
 		{
-//			ElectricClutchActuated = FALSE; //ELCL off
+			ElectricClutchActuated=FALSE;
+			//			switchState = switchState & 0xEF; //EC-OFF
 		}
 		//TODO actuate based on  switchData
 		previousRecievedStates = recievedStates;
