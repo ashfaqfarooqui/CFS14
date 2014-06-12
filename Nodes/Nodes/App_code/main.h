@@ -39,7 +39,7 @@ void vSendBreakPressureData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateInputs(void *pvParameters);
 void vPerformSwitchAction(void *pvParameters);
-void vRequestRPMData(void *pvParameters);
+//void vRequestRPMData(void *pvParameters);
 
 void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);

@@ -171,9 +171,9 @@ void readMessages()
 			if (RxMessage.StdId == CAN_ID_ENGINE_RPM)
 			{
 				sensorData[ENGINE_RPM] = 0;
-				sensorData[ENGINE_RPM] |= RxMessage.Data[3];
+				sensorData[ENGINE_RPM] |= RxMessage.Data[6];
 				sensorData[ENGINE_RPM] = (sensorData[ENGINE_RPM] << 8)
-						| RxMessage.Data[2];
+						| RxMessage.Data[7];
 				CAN_FIFORelease(CAN1, CAN_FIFO0);
 				FIFOReleased = TRUE;
 			} else if (RxMessage.StdId == CAN_ID_COOLANT_TEMP)

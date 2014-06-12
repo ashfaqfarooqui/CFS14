@@ -6,7 +6,7 @@
 
 //uint32_t Buffer1[SAMPLES] = 0;
 //uint32_t Buffer2[SAMPLES] = 0;
-uint8_t CaptureNumberLeft =0, CaptureNumberRight = 0;
+uint8_t CaptureNumberLeft = 0, CaptureNumberRight = 0;
 uint16_t counterLeft = 0, TimeL, counterRight = 0, TimeR;
 void init_inputCapture(void)
 {
@@ -281,7 +281,7 @@ void init_pwm_config()
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
 	/* GPIOC Configuration:*/
-	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN|COOLANT_PUMP_PIN;
+	GPIO_InitStructure.GPIO_Pin = FAN_OUT_PIN | COOLANT_PUMP_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;

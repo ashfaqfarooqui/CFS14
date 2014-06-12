@@ -281,16 +281,16 @@ void vSendBreakPressureData(void *pvParameters)
 		vTaskDelay(200 / portTICK_RATE_MS);
 	}
 }
-void vRequestRPMData(void *pvParameters)
-{
-	while (1)
-	{
-//			requestEngineRPM();//
-
-//			requestTPS();
-		vTaskDelay(200 / portTICK_RATE_MS);
-	}
-}
+//void vRequestRPMData(void *pvParameters)
+//{
+//	while (1)
+//	{
+////			requestEngineRPM();//
+//
+////			requestTPS();
+//		vTaskDelay(200 / portTICK_RATE_MS);
+//	}
+//}
 
 //******************************************************************************
 
