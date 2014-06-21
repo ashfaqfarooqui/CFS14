@@ -2,10 +2,11 @@
 #include "tests.h"
 
 //******************************************************************************
-
+int i = 0;
 unsigned int sensorData[150] = {
 0
 };
+
 int main(void)
 
 {
@@ -83,7 +84,7 @@ int main(void)
 	}
 
 	vTaskStartScheduler();
-	vTaskDelay(900 / portTICK_RATE_MS);
+	vTaskDelay(90 / portTICK_RATE_MS);
 
 }
 //******************************************************************************
@@ -100,27 +101,34 @@ void initializeSystem()
 
 	init_uart(115200);
 	init_inputCapture();
-	init_actuators();
 	init_CAN_Communication();
 	CAN_ReceiverInit(&RxMessage);
 	CAN_configureFilter(0, CAN_FilterMode_IdMask, CAN_FilterScale_32bit, 0x0000,
 			0x0000, 0x0000, 0x0000, 0, ENABLE);
 
+	init_pwm_config();
 	init_driverInterface();
 	init_ADC();
 	if (THIS_NODE == FRONT_NODE)
 	{
-		init_pwm_config();
-		setFanSpeed(100);
-		setCoolantPumpSpeed(100);
+		setFanSpeed(700);
+		setCoolantPumpSpeed(500);
+	} else
+	{
+		
+		ActuateShiftUp(2000);
+		ActuateShiftDown(2000);
 	}
+	
 }
 //******************************************************************************
 void vIMUManager(void *pvParameters)
 {
 	while (1)
 	{
+		
 		imuManager();
+		
 		vTaskDelay(100 / portTICK_RATE_MS);
 	}
 }
@@ -136,7 +144,9 @@ void vGearShifting(void *pvParameters)
 {
 	while (1)
 	{
+		
 		gearShiftManager();
+		
 		vTaskDelay(5 / portTICK_RATE_MS);
 	}
 }
@@ -281,16 +291,5 @@ void vSendBreakPressureData(void *pvParameters)
 		vTaskDelay(200 / portTICK_RATE_MS);
 	}
 }
-//void vRequestRPMData(void *pvParameters)
-//{
-//	while (1)
-//	{
-////			requestEngineRPM();//
-//
-////			requestTPS();
-//		vTaskDelay(200 / portTICK_RATE_MS);
-//	}
-//}
-
 //******************************************************************************
 

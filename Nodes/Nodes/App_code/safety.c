@@ -20,19 +20,19 @@ void coolingControl()
 	float clt_temp = sensorData[WATER_TEMPRATURE];
 	if (clt_temp <= 55)
 	{
-		setCoolantPumpSpeed(70);
-		setFanSpeed(30);
+		setCoolantPumpSpeed(1500);
+		setFanSpeed(1000);
 	} else if (clt_temp > 55 && clt_temp < 85)
 	{
-		setCoolantPumpSpeed(90);
-		setFanSpeed(70);
+		setCoolantPumpSpeed(1900);
+		setFanSpeed(1500);
 	} else if (clt_temp >= 85 && clt_temp < 105)
 	{
-		setCoolantPumpSpeed(100);
-		setFanSpeed(90);
+		setCoolantPumpSpeed(2000);
+		setFanSpeed(1900);
 	} else
 	{
-		setFanSpeed(100);
+		setFanSpeed(2000);
 	}
 
 }
