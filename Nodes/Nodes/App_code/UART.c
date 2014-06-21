@@ -1,6 +1,6 @@
 #include "UART.h"
 #define NUMBER_OF_BYTES 12
-uint16_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0,0,0,0,0,0,0,0};
 void init_uart(uint32_t baudrate)
 {
 
@@ -53,7 +53,7 @@ void UART_DMA_Config()
 	DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
 	DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_1QuarterFull;
 	DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&(UART4->DR));
@@ -102,7 +102,7 @@ void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s)
 	}
 
 }
-uint16_t* getRecievedData()
+uint8_t* getRecievedData()
 {
 	return RxBuffer;
 }

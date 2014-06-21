@@ -5,9 +5,9 @@
 #include "state.h"
 #include "can.h"
 
-#define FAST_SWITCH_DELAY 10 // 10ms
-#define MEDIUM_SWITCH_DELAY 5 // 20ms
-#define SLOW_SWITCH_DELAY 50 //100ms
+#define FAST_SWITCH_DELAY 20 //
+#define MEDIUM_SWITCH_DELAY 5 //
+#define SLOW_SWITCH_DELAY 50 //
 
 
 //#define GEARUP GPIO_Pin_5
@@ -49,7 +49,7 @@
 
 
 void init_driverInterface();
-void switchWarningLight(uint8_t );
+ void switchWarningLight(bol);
 void switchAction(void);
 void setSwitchStates(uint8_t);
 unsigned char debounceInput(int , int , int  );
