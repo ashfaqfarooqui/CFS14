@@ -86,13 +86,13 @@ void init_driverInterface()
 	}
 }
 
-void SwitchWarningLight(uint8_t ONOFF)
+void switchWarningLight(bol ONOFF)
 {
-	if (ONOFF == ON)
+	if (ONOFF == TRUE)
 	{
 		GPIO_SetBits(OUTPUTPORT,
 		WARNINGLIGHT);
-	} else if (ONOFF == OFF)
+	} else if (ONOFF == FALSE)
 	{
 		GPIO_ResetBits(OUTPUTPORT,
 		WARNINGLIGHT);

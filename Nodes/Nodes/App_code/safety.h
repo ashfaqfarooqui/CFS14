@@ -3,6 +3,7 @@
 
 #include "can.h"
 #include "driver_interface.h"
+#include "state.h"
 
 #define MAX 100
 #define OIL 0x01
@@ -12,7 +13,8 @@
 
 void safetyCheck(void);
 void shutDownEngine(void);
-void setFanSpeed( uint8_t);
-void setCoolantPumpSpeed(uint8_t );
+void setFanSpeed( uint16_t);
+void setCoolantPumpSpeed(uint16_t );
 void coolingControl();
+bol isEngineSafe();
 #endif

@@ -29,8 +29,8 @@
 #define FRONT_NODE_OFFSET 0
 #define REAR_NODE_OFFSET 8
 
-#define CAN_ID_ENGINE_RPM 0x280
-#define CAN_ID_COOLANT_TEMP 0x289
+#define CAN_ID_ENGINE_RPM 1520
+#define CAN_ID_COOLANT_TEMP 1522
 #define CAN_ID_RPM 1520
 #define CAN_ID_SWITCH_STATES 0x0325
 
@@ -120,5 +120,6 @@ extern bol AutoShiftState;
 extern bol TractionControlState;
 extern bol ElectricClutchActuated;
 extern bol LaunchControlActivated;
+extern bol checkLight;
 
 #endif

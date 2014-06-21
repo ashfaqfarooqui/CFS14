@@ -6,6 +6,7 @@
 #include "discoveryf4utils.h"
 #include "state.h"
 
+#define PERIOD 2000
 
 //void init_Timer(void);
 //void init_counter(void);

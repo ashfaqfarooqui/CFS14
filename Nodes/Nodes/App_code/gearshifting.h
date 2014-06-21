@@ -21,6 +21,7 @@ typedef int bool;
 #define SHIFT_DOWN GPIO_Pin_7 //PC7
 #define CUT_IGNITION GPIO_Pin_1 //PE1
 
+
 #define MONITOR_TIME 300000
 #define SWITCHHOLDINGTIME 100000
 #define LAUCH_CONTROL_CLUTCH_ON_DELAY 150
@@ -65,7 +66,7 @@ void ShiftUp(int);
 void ShiftDown(int);
 void GoToNeutral(void);
 void CutIgnition(void);
-void ElClutch(int);
+void ElClutch(bol);
 void AutoShifting(void);
 void LaunchControl(void);
 void ActiveClutch(void);
