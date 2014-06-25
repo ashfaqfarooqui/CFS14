@@ -48,6 +48,7 @@ void vSafetyCheck(void *pvParameters);
 void vCoolingSystem(void *pvParameters);
 void vGearShifting(void *pvParameters);
 void vIMUManager(void *pvParameters);
+void vLaunchControl(void *pvParameters);
 
 void vSendWheelSpeed(void *pvParameters);
 void vSendDamperTravel(void *pvParameters);

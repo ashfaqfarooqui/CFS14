@@ -16,7 +16,7 @@ unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE] = {
 
 /** initialize the features of the driver interface*/
 uint8_t DLdata[];
-char  ecldata;
+char ecldata;
 void init_driverInterface()
 {
 	uint8_t i;
@@ -40,8 +40,8 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Pin = LAUNCH_CONTROL;
 		GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
-		GPIO_Init(GPIOE, &GPIO_InitStructure);
+//		GPIO_InitStructure.GPIO_Pin = DATALOGGER;
+//		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 //outputs
 		GPIO_InitStructure.GPIO_Pin =
@@ -59,7 +59,7 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
 		
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
@@ -141,6 +141,10 @@ void updateSwitches()
 	{
 		*(rawDigitalState + i) = digIn[i];
 	}
+	if(rawDigitalState[GEARDOWN_POS] || rawDigitalState[GEARUP_POS])
+	{
+		startTimer();
+	}
 
 }
 
@@ -187,33 +191,33 @@ void switchAction()
 {
 	if (THIS_NODE == FRONT_NODE)
 	{
-		uint8_t switchState = 0;
+		uint8_t switchState = 0, LctrlData;
 		CanTxMsg switchStatesMsg;
-		CanTxMsg DLON, ecl;
+		CanTxMsg DLON,  Lctrl;
 		uint8_t transmitStatus;
-		if (rawDigitalState[LC_POS] == SET)
+		if (rawDigitalState[5] == SET)
 		{
 //			switchState = switchState | 0x01; //LC-ON
 //			switchState = switchState | 0x10;
-//			ecldata = 0xff;
-//			ecl = CAN_createMessage_uint(0x503,
-//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-//			do
-//			{
-//				transmitStatus = CAN_Transmit(CAN1, &ecl);
-//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
+			LctrlData = 0xff;
+			Lctrl = CAN_createMessage_uint(LAUNCH_BUTTON_ID,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &LctrlData);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &Lctrl);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
-		} else if (rawDigitalState[LC_POS] == RESET)
+		} else if (rawDigitalState[5] == RESET)
 		{
 ////			switchState = switchState & 0xFE; //LC-OFF
 //			switchState = switchState & 0xEF;
-//			ecldata = 0x00;
-//			ecl = CAN_createMessage_uint(0x503,
-//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-//			do
-//			{
-//				transmitStatus = CAN_Transmit(CAN1, &ecl);
-//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
+			LctrlData = 0x11;
+			Lctrl = CAN_createMessage_uint(LAUNCH_BUTTON_ID,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &LctrlData);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &Lctrl);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 		}
 		if (rawDigitalState[TC_POS] == SET)
@@ -273,13 +277,13 @@ void switchAction()
 		//if (previousRecievedStates != recievedStates)
 		//{
 
-		if ((recievedStates & 0x01) == 0x01)
-		{
-			LaunchControlActivated = TRUE;		//LC-ON
-		} else
-		{
-			LaunchControlActivated = FALSE;		//LC-OFF
-		}
+//		if ((recievedStates & 0x01) == 0x01)
+//		{
+//			LaunchControlActivated = TRUE;		//LC-ON
+//		} else
+//		{
+//			LaunchControlActivated = FALSE;		//LC-OFF
+//		}
 
 		if ((recievedStates & 0x02) == 0x02)
 		{
@@ -298,11 +302,11 @@ void switchAction()
 		}
 		if (rawDigitalState[EC_POS] == SET)
 		{
-			ElectricClutchActuated=TRUE;
+			ElectricClutchActuated = TRUE;
 			//			switchState = switchState | 0x10; //EC-OFF
 		} else if (rawDigitalState[EC_POS] == RESET)
 		{
-			ElectricClutchActuated=FALSE;
+			ElectricClutchActuated = FALSE;
 			//			switchState = switchState & 0xEF; //EC-OFF
 		}
 		//TODO actuate based on  switchData

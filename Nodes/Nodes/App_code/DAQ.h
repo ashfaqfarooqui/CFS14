@@ -27,6 +27,10 @@
 #define CAN_FRONT_NODE_FILTER 0x40
 #define CAN_REAR_NODE_FILTER 0x20
 
+#define SHIFT_DIRECTION_UP 0x40
+#define SHIFT_DIRECTION_DOWN 0x20
+
+
 
 #if THIS_NODE==FRONT_NODE
 #define CAN_NODE_FILTER CAN_FRONT_NODE_FILTER
@@ -41,7 +45,7 @@ void sendWheelSpeed(void);
 void sendDamperPosition(void);
 void sendBrakePressure(void);
 void sendOilPressure(void);
-
+void sendGearTime(uint8_t shiftDirection);
 
 
 #endif

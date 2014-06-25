@@ -8,16 +8,20 @@ void sendWheelSpeed()
 {
 	CanTxMsg wheelSpeedMsg;
 	uint8_t transmitStatus;
-	uint8_t data[3];
+	uint8_t data[5];
 	data[0] = CAN_NODE_FILTER;
 	if (THIS_NODE == FRONT_NODE)
 	{
-		data[1] = (sensorData[W_SPEED_FL]) & 0xff;
-		data[2] = (sensorData[W_SPEED_FR]) & 0xff;
+		data[2] = (sensorData[W_SPEED_FL]) & 0xff;
+		data[1] = ((sensorData[W_SPEED_FL] >> 8) & 0x0f);
+		data[4] = (sensorData[W_SPEED_FR]) & 0xff;
+		data[3] = ((sensorData[W_SPEED_FR] >> 8) & 0x0f);
 	} else if (THIS_NODE == REAR_NODE)
 	{
-		data[1] = (sensorData[W_SPEED_RL]) & 0xff;
-		data[2] = (sensorData[W_SPEED_RR]) & 0xff;
+		data[2] = (sensorData[W_SPEED_RL]) & 0xff;
+		data[1] = ((sensorData[W_SPEED_RL] >> 8) & 0x0f);
+		data[4] = (sensorData[W_SPEED_RR]) & 0xff;
+		data[3] = ((sensorData[W_SPEED_RR] >> 8) & 0x0f);
 	}
 	wheelSpeedMsg = CAN_createMessage_uint(CAN_ADR_WHEEL_SPEED, CAN_RTR_Data,
 	CAN_ID_STD, 3, &data[0]);
@@ -164,12 +168,12 @@ void sendGyroData()
 	uint8_t transmitStatus;
 	uint8_t data[7];
 	data[0] = 0;
-	data[1] = (sensorData[GYRO_ROLL]) & 0xff;
-	data[2] = (sensorData[GYRO_ROLL] >> 8) & 0x0f;
-	data[3] = (sensorData[GYRO_YAW]) & 0xff;
-	data[4] = (sensorData[GYRO_YAW] >> 8) & 0x0f;
-	data[5] = (sensorData[GYRO_PITCH]) & 0xff;
-	data[6] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
+	data[2] = (sensorData[GYRO_ROLL]) & 0xff;
+	data[1] = (sensorData[GYRO_ROLL] >> 8) & 0x0f;
+	data[4] = (sensorData[GYRO_YAW]) & 0xff;
+	data[3] = (sensorData[GYRO_YAW] >> 8) & 0x0f;
+	data[6] = (sensorData[GYRO_PITCH]) & 0xff;
+	data[5] = (sensorData[GYRO_PITCH] >> 8) & 0x0f;
 	GyroMsg = CAN_createMessage_uint(CAN_ADR_GYRO,
 	CAN_RTR_Data, CAN_ID_STD, 7, &data[0]);
 	do
@@ -192,6 +196,23 @@ void sendBrakeDiscTemp()
 	do
 	{
 		transmitStatus = CAN_Transmit(CAN1, &BrakeDisc);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
+}
+void sendGearTime(uint8_t shiftDirection)
+{
+	CanTxMsg GearTime;
+	uint8_t transmitStatus;
+	uint8_t data[7];
+	uint16_t time = getTimerValue();
+	data[0] = shiftDirection;
+	data[2] = (time) & 0xff;
+	data[1] = (time >> 8) & 0x0f;
+
+	GearTime = CAN_createMessage_uint(CAN_ADR_GEAR,
+	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &GearTime);
 	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 }
 

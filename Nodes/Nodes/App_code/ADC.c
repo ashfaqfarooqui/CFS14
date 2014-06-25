@@ -1,11 +1,13 @@
 #include "ADC.h"
 
+
 int rawAnalogState[NUMBER_OF_ANALOG_IN_PER_NODE];
 
 
 /* Private variables ---------------------------------------------------------*/
 __IO uint16_t RAW_ADC[80];
 uint16_t ADCValues[8];
+
 void init_ADC(void)
 {
 	GPIO_InitTypeDef GPIO_AdcInit;
@@ -149,6 +151,7 @@ void DMA2_Stream0_IRQHandler()
 		}
 		DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
 	}
+	
 }
 
 void saveRawADCData()

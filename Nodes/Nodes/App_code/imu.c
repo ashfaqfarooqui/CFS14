@@ -2,7 +2,7 @@
 
 
 
-char cmdData[3];
+char cmdData[4];
 float IMUData[6]={0,0,0,0,0,0};
 float *rxData;
 bol accDataRequested=FALSE;
@@ -12,9 +12,10 @@ void requestGyroData()
 {
 	if (gyroDataRequested == FALSE && accDataRequested == FALSE)
 	{
-		cmdData[0] =START_PACKET;
-		cmdData[1] = GYRO_CMD;
-		cmdData[2] = GYRO_CMD;
+		cmdData[0] =0xf7;//START_PACKET;
+		cmdData[1] = 0x43;//GYRO_CMD;
+		//cmdData[2]=0x04;
+		cmdData[2] = 0x43;//GYRO_CMD;
 		USART_puts_char(UART4, &cmdData[0]);
 		//gyroDataRequested = TRUE;
 	}

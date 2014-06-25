@@ -41,7 +41,7 @@ typedef int bool;
 #define GEAR6 0x1159
 
 #define RANGE 180
-#define RANGE_FIRST_HIGH 100
+#define RANGE_FIRST_HIGH 120
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
@@ -68,7 +68,7 @@ void GoToNeutral(void);
 void CutIgnition(void);
 void ElClutch(bol);
 void AutoShifting(void);
-void LaunchControl(void);
+//void LaunchControl(void);
 void ActiveClutch(void);
 void InactiveClutch(void);
 void ActiveShiftUp(void);
