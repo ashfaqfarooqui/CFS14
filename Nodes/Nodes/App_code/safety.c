@@ -16,110 +16,106 @@ void safetyCheck()
 
 void coolingControl()
 {
-	
-	float clt_temp = sensorData[WATER_TEMPRATURE];
-	if (clt_temp <= 55)
+	uint8_t speed = 100;
+	clt_temp = ((((float) sensorData[WATER_TEMPRATURE] / 10 - 32) * 5) / 9);
+	if (clt_temp >= 96)
 	{
-		setCoolantPumpSpeed(1500);
-		setFanSpeed(1000);
-	} else if (clt_temp > 55 && clt_temp < 85)
+		//setCoolantPumpSpeed(100);
+		speed = 0;
+//	} else if (clt_temp < 100 && clt_temp > 105)
+//	{
+//		//	setCoolantPumpSpeed(50);
+//		speed = 10;
+	} else if (clt_temp > 90 && clt_temp < 95)
 	{
-		setCoolantPumpSpeed(1900);
-		setFanSpeed(1500);
-	} else if (clt_temp >= 85 && clt_temp < 105)
+		//	setCoolantPumpSpeed(25);
+		speed = 40;
+	} else if (clt_temp <90  && clt_temp > 86)
 	{
-		setCoolantPumpSpeed(2000);
-		setFanSpeed(1900);
-	} else
-	{
-		setFanSpeed(2000);
+		speed = 80;
 	}
+	if (clt_temp < 70)
+	{
+		speed = 100;
+	}
+	setFanSpeed(speed);
+
+	///P controler
+//	setTemp=90;
+//	error=clt_temp-setTemp;
+//	if(error>0)
+//	{
+//
+//	}
 
 }
 
 bol isEngineSafe()
 {
 	
-	//	uint8_t clt_data = sensorData[WATER_TEMPRATURE];
-	//	float clt_voltage = convertData(clt_data);
 	bol chkligt = FALSE;
 
-	uint8_t olp_data = sensorData[OIL_PRESSURE];
+	clt_temp = ((float) (((sensorData[WATER_TEMPRATURE] / 10) - 32) * 5) / 9);
+//	if (clt_temp > 99)
+//	{
+//		if (sensorData[ENGINE_RPM] > 6000)
+//		{
+//			if (sensorData[OIL_PRESSURE] < 827)
+//			{
+//				chkligt = TRUE;
+//			} else
+//			{
+//				chkligt = FALSE;
+//
+//			}
+//		} else
+//		{
+//			if (sensorData[OIL_PRESSURE] < 1)
+//			{
+//				chkligt = TRUE;
+//			} else
+//			{
+//				chkligt = FALSE;
+//
+//			}
+//		}
+//	} else
+//	{
+//		if (sensorData[ENGINE_RPM] < 6000)
+//		{
+//			if (sensorData[OIL_PRESSURE] < 4)
+//			{
+//				chkligt = TRUE;
+//			} else
+//			{
+//				chkligt = FALSE;
+//
+//			}
+//		} else
+//		{
+//			if (sensorData[OIL_PRESSURE] < 6)
+//			{
+//				chkligt = TRUE;
+//			} else
+//			{
+//				chkligt = FALSE;
+//
+//			}
+//		}
+//
+//	}
 
-	clt_temp = (sensorData[WATER_TEMPRATURE] - 32) * (5 / 9);
-	if (clt_temp > 99)
+	if (clt_temp > 105)
 	{
-		if (sensorData[ENGINE_RPM] > 6000)
-		{
-			if (sensorData[OIL_PRESSURE] < 827)
-			{
-				chkligt = TRUE;
-			} else
-			{
-				chkligt = FALSE;
-
-			}
-		} else
-		{
-			if (sensorData[OIL_PRESSURE] < 1)
-			{
-				chkligt = TRUE;
-			} else
-			{
-				chkligt = FALSE;
-
-			}
-		}
-	} else
-	{
-		if (sensorData[ENGINE_RPM] < 6000)
-		{
-			if (sensorData[OIL_PRESSURE] < 4)
-			{
-				chkligt = TRUE;
-			} else
-			{
-				chkligt = FALSE;
-
-			}
-		} else
-		{
-			if (sensorData[OIL_PRESSURE] < 6)
-			{
-				chkligt = TRUE;
-			} else
-			{
-				chkligt = FALSE;
-
-			}
-		}
-
+		chkligt = TRUE;
 	}
-
+	
+	if (sensorData[OIL_PRESSURE] < 1400 && sensorData[ENGINE_RPM] > 5500)
+	{
+		chkligt = TRUE;
+	}
 	return chkligt;
 
-	//	if (clt_temp > 110)
-	//	{
-	//		checkLight = TRUE;
-	//	} else if (clt_temp < 110)
-	//	{
-	//		checkLight = FALSE;
-	//	}
-	//
-	//	if (olp_pressure < 3)
-	//	{
-	//		checkLight = TRUE;
-	//	} else if (olp_pressure >= 3)
-	//	{
-	//		checkLight = FALSE;
-	//	}
-	//	if (checkLight == TRUE)
-	//	{
-	//		SwitchWarningLight(TRUE);
-	//	} else
-	//	{
-	//		SwitchWarningLight(FALSE);
-	//	}
 }
 void shutDownEngine()
 {

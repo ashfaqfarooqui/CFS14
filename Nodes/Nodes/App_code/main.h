@@ -40,6 +40,7 @@ void vSendBreakPressureData(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateInputs(void *pvParameters);
 void vPerformSwitchAction(void *pvParameters);
+void vUpdateADC(void *pvParameters);
 
 void vUpdateWheelSpeedLeft(void *pvParameters);
 void vUpdateWheelSpeedRight(void *pvParameters);
@@ -48,6 +49,7 @@ void vSafetyCheck(void *pvParameters);
 void vCoolingSystem(void *pvParameters);
 void vGearShifting(void *pvParameters);
 void vIMUManager(void *pvParameters);
+void vLaunchControl(void *pvParameters);
 
 void vSendWheelSpeed(void *pvParameters);
 void vSendDamperTravel(void *pvParameters);

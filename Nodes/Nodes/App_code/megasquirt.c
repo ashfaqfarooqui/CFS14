@@ -9,39 +9,24 @@
 /********** GLOBAL DEFINATION **********/
 
 /***************************************/
- unsigned short data[3]={0,0,0};
-unsigned short transmitStatus=0;
-void requestEngineRPM()
+
+void launchControl()
 {
-	
-	CanTxMsg TxMessage;
-	TxMessage.IDE = CAN_Id_Extended;
-	TxMessage.RTR = CAN_RTR_REMOTE;
-	TxMessage.ExtId = 0xDA02D00;
-	TxMessage.DLC = 3;
-	data[0] = 0x08;
-	data[1] = 0x00;
-	data[2] = 0xE0;
-	do
+	int kp = 25;
+	int kd = 25;
+	int error;
+	if (LaunchControlActivated == TRUE)
 	{
-		transmitStatus = CAN_Transmit(CAN1, &TxMessage);
-	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
-}
-void requestTPS()
-{
+		ElClutch((ElectricClutchActuated==TRUE) || (LaunchControlActivated==TRUE));
+		error = sensorData[ENGINE_RPM] - SET_RPM;
+		if (error > 400)
+		{
+			cutIgnition(PERIOD_CUT_IGNITION * kp / 100);
+		}
 
-	CanTxMsg TxMessage;
-	TxMessage.IDE = CAN_Id_Extended;
-	TxMessage.RTR = CAN_RTR_REMOTE;
-	TxMessage.ExtId = 0xDA02103;
-	TxMessage.DLC = 3;
-	data[0] = 0x08;
-	data[1] = 0x00;
-	data[2] = 0xE0;
-	do
+	} else
 	{
-		transmitStatus = CAN_Transmit(CAN1, &TxMessage);
-	} while (transmitStatus == CAN_TxStatus_NoMailBox);
-
+		cutIgnition(PERIOD_CUT_IGNITION);
+	}
 }

@@ -1,17 +1,15 @@
 #include "timer.h"
 #define SAMPLES 10
 
-/** This code will configure timer 2 so that it runs for a time period of one second whcih
- * will be used to calculate the freq for freq-sensors**/
-
 //uint32_t Buffer1[SAMPLES] = 0;
 //uint32_t Buffer2[SAMPLES] = 0;
 uint8_t CaptureNumberLeft = 0, CaptureNumberRight = 0;
 uint16_t counterLeft = 0, TimeL, counterRight = 0, TimeR;
 void init_inputCapture(void)
 {
+	
 	GPIO_InitTypeDef GPIO_InitStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
+
 	TIM_ICInitTypeDef TIM_ICInitStructure;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	/* TIM1 clock enable */
@@ -33,13 +31,13 @@ void init_inputCapture(void)
 	/* Connect TIM pins to AF2 */
 	GPIO_PinAFConfig(GPIOE, GPIO_PinSource9, GPIO_AF_TIM1);
 	GPIO_PinAFConfig(GPIOE, GPIO_PinSource11, GPIO_AF_TIM1);
+
 //timer base config
 	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1; //Control with dead zone.
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //Counter direction
-	TIM_TimeBaseInitStructure.TIM_Prescaler = 84 - 1; //Timer clock = sysclock /(TIM_Prescaler+1) = 2M
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 336 - 1; //Timer clock = sysclock /(TIM_Prescaler+1)  500KHz
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInitStructure.TIM_Period = 0xFFFF;
-	//Period = (TIM counter clock / TIM output clock) - 1 = 40Hz
 	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);
 
 	//timer channel configuration
@@ -194,7 +192,7 @@ void delay(uint16_t delay)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 	tim = (uint16_t) delay * (42000) / 41999;
 
-	timerInitStructure.TIM_Prescaler = 42000 - 1; //1MHz
+	timerInitStructure.TIM_Prescaler = 42000 - 1;
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	timerInitStructure.TIM_Period = tim;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -297,8 +295,14 @@ void init_pwm_config()
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = 2000;
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+	if(THIS_NODE==FRONT_NODE)
+	{
+		TIM_TimeBaseStructure.TIM_Period = PERIOD_FAN;
+	}else
+	{
+		TIM_TimeBaseStructure.TIM_Period = PERIOD_GEAR;
+	}
+	TIM_TimeBaseStructure.TIM_Prescaler = 1680-1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -308,7 +312,6 @@ void init_pwm_config()
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_Pulse = 1500;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
 	
 	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
@@ -324,6 +327,34 @@ void init_pwm_config()
 	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
 	
 	TIM_ARRPreloadConfig(TIM3, ENABLE);
-	TIM_Cmd(TIM3,ENABLE);
+	TIM_Cmd(TIM3, ENABLE);
 
 }
+void init_gearShiftTimer()
+{
+	TIM_TimeBaseInitTypeDef timerInitStructure;
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	timerInitStructure.TIM_Prescaler = 1680 - 1;   //100Khz
+	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	timerInitStructure.TIM_Period = 1;
+	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+	TIM_TimeBaseInit(TIM4, &timerInitStructure);
+}
+
+void startTimer()
+{
+	TIM4->ARR=0xffff;
+	TIM_Cmd(TIM4,ENABLE);
+}
+void stopTimer()
+{
+	TIM4->ARR=0;
+	TIM_Cmd(TIM4,ENABLE);
+}
+uint16_t getTimerValue()
+{
+	uint16_t tim=TIM4->CNT;
+	return tim;
+}
+
+

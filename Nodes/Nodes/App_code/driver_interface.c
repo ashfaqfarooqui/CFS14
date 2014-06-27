@@ -6,6 +6,8 @@ bol AutoShiftState = FALSE;
 bol TractionControlState = FALSE;
 bol ElectricClutchActuated = FALSE;
 bol LaunchControlActivated = FALSE;
+bol shiftDownSwitch = FALSE;
+bol shiftUpSwitch = FALSE;
 short debounce[10] = {
 0
 };
@@ -16,16 +18,21 @@ unsigned int rawDigitalState[NUMBER_OF_DIGITAL_IN_PER_NODE] = {
 
 /** initialize the features of the driver interface*/
 uint8_t DLdata[];
-char  ecldata;
+uint8_t timerDown = 0;
+uint8_t timerUp = 0;
+char ecldata;
 void init_driverInterface()
 {
 	uint8_t i;
 	GPIO_InitTypeDef GPIO_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+	EXTI_InitTypeDef EXTI_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 	if (THIS_NODE == FRONT_NODE)
 	{
 //Inputs
@@ -40,8 +47,8 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Pin = LAUNCH_CONTROL;
 		GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
-		GPIO_Init(GPIOE, &GPIO_InitStructure);
+//		GPIO_InitStructure.GPIO_Pin = DATALOGGER;
+//		GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 //outputs
 		GPIO_InitStructure.GPIO_Pin =
@@ -59,7 +66,7 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 		GPIO_Init(INPUTPORT, &GPIO_InitStructure);
 		
 		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
@@ -68,6 +75,25 @@ void init_driverInterface()
 		GPIO_InitStructure.GPIO_Pin = E_CLUTCH;
 		GPIO_Init(GPIOE, &GPIO_InitStructure);
 		
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource8);
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource4);
+		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource10);
+		EXTI_InitStructure.EXTI_Line = EXTI_Line8;
+		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+		EXTI_Init(&EXTI_InitStructure);
+		EXTI_InitStructure.EXTI_Line = EXTI_Line4;
+		EXTI_Init(&EXTI_InitStructure);
+		
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+		NVIC_Init(&NVIC_InitStructure);
+		NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+		NVIC_Init(&NVIC_InitStructure);
+
 		/*
 		 GPIO_InitStructure.GPIO_Pin =
 		 TRACTION_CONTROL | AUTOSHIFTING | DATALOGGER;
@@ -85,7 +111,38 @@ void init_driverInterface()
 		rawDigitalState[i] = 0;
 	}
 }
+void EXTI9_5_IRQHandler(void) //right pedal
+{
+	if (EXTI_GetITStatus(EXTI_Line8) != RESET) //check if EXTI line is asserted
+	{
+//		rawDigitalState[GEARUP_POS] = 1;
+		timerUp++;
+		if (ti merUp > 6)
+		{
+			shiftUpSwitch = TRUE;
+			timerUp = 0;
+		}
+		EXTI_ClearFlag(EXTI_Line8); //clear interrupt
 
+	}
+	EXTI_ClearITPendingBit(EXTI_Line8);
+}
+void EXTI4_IRQHandler(void) //left pedal
+{
+	if (EXTI_GetITStatus(EXTI_Line4) != RESET) //check if EXTI line is asserted
+	{
+//		rawDigitalState[GEARDOWN_POS] = 1;
+		timerDown++;
+		if (timerDown > 6)
+		{
+			shiftDownSwitch = TRUE;
+			timerDown = 0;
+		}
+		EXTI_ClearFlag(EXTI_Line4); //clear interrupt
+
+	}
+	EXTI_ClearITPendingBit(EXTI_Line4);
+}
 void switchWarningLight(bol ONOFF)
 {
 	if (ONOFF == TRUE)
@@ -124,10 +181,10 @@ void updateSwitches()
 		//digIn[0] = debounceInput(!GPIO_ReadInputDataBit(GPIOD, GEARUP),
 		//GEARUP_POS, FAST_SWITCH_DELAY);
 		digIn[0] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8),
-		DL_POS, FAST_SWITCH_DELAY);
+		GEARUP_POS, FAST_SWITCH_DELAY);
 		digIn[1] = debounceInput(!GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN),
 		GEARDOWN_POS, FAST_SWITCH_DELAY);
-		digIn[7] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
+		digIn[2] = debounceInput(!GPIO_ReadInputDataBit(GPIOE, E_CLUTCH),
 		EC_POS, MEDIUM_SWITCH_DELAY);
 		
 //		if(digIn[7] == 1){
@@ -140,6 +197,12 @@ void updateSwitches()
 	for (i = 0; i < NUMBER_OF_DIGITAL_IN_PER_NODE; i++)
 	{
 		*(rawDigitalState + i) = digIn[i];
+	}
+	if (rawDigitalState[GEARDOWN_POS] == 1 || rawDigitalState[GEARUP_POS] == 1)
+	{
+		startTimer();
+		sensorData[SWITCHSTATE] = (rawDigitalState[GEARDOWN_POS] << 4
+				| rawDigitalState[GEARUP_POS]);
 	}
 
 }
@@ -187,33 +250,33 @@ void switchAction()
 {
 	if (THIS_NODE == FRONT_NODE)
 	{
-		uint8_t switchState = 0;
+		uint8_t switchState = 0, LctrlData;
 		CanTxMsg switchStatesMsg;
-		CanTxMsg DLON, ecl;
+		CanTxMsg DLON, Lctrl;
 		uint8_t transmitStatus;
-		if (rawDigitalState[LC_POS] == SET)
+		if (rawDigitalState[5] == SET)
 		{
 //			switchState = switchState | 0x01; //LC-ON
 //			switchState = switchState | 0x10;
-//			ecldata = 0xff;
-//			ecl = CAN_createMessage_uint(0x503,
-//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-//			do
-//			{
-//				transmitStatus = CAN_Transmit(CAN1, &ecl);
-//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
+			LctrlData = 0xff;
+			Lctrl = CAN_createMessage_uint(LAUNCH_BUTTON_ID,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &LctrlData);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &Lctrl);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
-		} else if (rawDigitalState[LC_POS] == RESET)
+		} else if (rawDigitalState[5] == RESET)
 		{
 ////			switchState = switchState & 0xFE; //LC-OFF
 //			switchState = switchState & 0xEF;
-//			ecldata = 0x00;
-//			ecl = CAN_createMessage_uint(0x503,
-//			CAN_RTR_DATA, CAN_ID_STD, 1, &ecldata);
-//			do
-//			{
-//				transmitStatus = CAN_Transmit(CAN1, &ecl);
-//			} while (transmitStatus == CAN_TxStatus_NoMailBox);
+			LctrlData = 0x11;
+			Lctrl = CAN_createMessage_uint(LAUNCH_BUTTON_ID,
+			CAN_RTR_DATA, CAN_ID_STD, 1, &LctrlData);
+			do
+			{
+				transmitStatus = CAN_Transmit(CAN1, &Lctrl);
+			} while (transmitStatus == CAN_TxStatus_NoMailBox);
 
 		}
 		if (rawDigitalState[TC_POS] == SET)
@@ -250,13 +313,6 @@ void switchAction()
 		{
 			switchState = switchState & 0xF7; //AS-OFF
 		}
-		if (rawDigitalState[EC_POS] == SET)
-		{
-//			switchState = switchState | 0x10; //EC-OFF
-		} else if (rawDigitalState[EC_POS] == RESET)
-		{
-//			switchState = switchState & 0xEF; //EC-OFF
-		}
 
 		//if (previousSwitchStates != switchState)
 		//{
@@ -273,13 +329,13 @@ void switchAction()
 		//if (previousRecievedStates != recievedStates)
 		//{
 
-		if ((recievedStates & 0x01) == 0x01)
-		{
-			LaunchControlActivated = TRUE;		//LC-ON
-		} else
-		{
-			LaunchControlActivated = FALSE;		//LC-OFF
-		}
+//		if ((recievedStates & 0x01) == 0x01)
+//		{
+//			LaunchControlActivated = TRUE;		//LC-ON
+//		} else
+//		{
+//			LaunchControlActivated = FALSE;		//LC-OFF
+//		}
 
 		if ((recievedStates & 0x02) == 0x02)
 		{
@@ -298,11 +354,11 @@ void switchAction()
 		}
 		if (rawDigitalState[EC_POS] == SET)
 		{
-			ElectricClutchActuated=TRUE;
+			ElectricClutchActuated = TRUE;
 			//			switchState = switchState | 0x10; //EC-OFF
 		} else if (rawDigitalState[EC_POS] == RESET)
 		{
-			ElectricClutchActuated=FALSE;
+			ElectricClutchActuated = FALSE;
 			//			switchState = switchState & 0xEF; //EC-OFF
 		}
 		//TODO actuate based on  switchData

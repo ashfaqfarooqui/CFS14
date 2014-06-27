@@ -31,17 +31,26 @@ typedef int bool;
 #define MIN_GEAR_POSITION 1
 
 
-#define NEUTRAL 0x07E7//2.343V//0xE7
+//#define NEUTRAL 0x07E7//2.343V//0xE7
 #define RANGE_NEUTRAL 100
-#define GEAR1 0x06BF//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
-#define GEAR2 0x0912//2.712V//0x11C//0x90//0x12E
-#define GEAR3 0x0B6A//3.439V//3.0xB1//0x1BB
-#define GEAR4 0x3814
-#define GEAR5 0x4475
-#define GEAR6 0x1159
+//#define GEAR1 0x06BF//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
+//#define GEAR2 0x0912//2.712V//0x11C//0x90//0x12E
+//#define GEAR3 0x0B6A//3.439V//3.0xB1//0x1BB
+//#define GEAR4 0x3814
+//#define GEAR5 0x4475
+//#define GEAR6 0x1159
 
-#define RANGE 180
-#define RANGE_FIRST_HIGH 100
+
+#define NEUTRAL 0xEBC
+#define GEAR1	0xD9B
+#define GEAR2	0x22A
+#define GEAR3	0x479
+#define GEAR4	0x6Be
+#define GEAR5	0x910
+#define GEAR6	0xB50
+
+#define RANGE 150
+#define RANGE_FIRST_HIGH 70
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
@@ -67,8 +76,8 @@ void ShiftDown(int);
 void GoToNeutral(void);
 void CutIgnition(void);
 void ElClutch(bol);
-void AutoShifting(void);
-void LaunchControl(void);
+void autoShiftManager(void);
+//void LaunchControl(void);
 void ActiveClutch(void);
 void InactiveClutch(void);
 void ActiveShiftUp(void);
@@ -77,6 +86,7 @@ void ActiveShiftDown(void);
 void InactiveShiftDown(void);
 void ActiveCutIgnition(void);
 void InactiveCutIgnition(void);
+void actuateShift();
 
 
 #endif

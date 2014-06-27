@@ -5,8 +5,8 @@
 #include "state.h"
 #include "can.h"
 
-#define FAST_SWITCH_DELAY 20 //
-#define MEDIUM_SWITCH_DELAY 5 //
+#define FAST_SWITCH_DELAY 1 //
+#define MEDIUM_SWITCH_DELAY 15 //
 #define SLOW_SWITCH_DELAY 50 //
 
 
@@ -16,7 +16,7 @@
 
 #define LAUNCH_CONTROL GPIO_Pin_12//PD12
 #define TRACTION_CONTROL GPIO_Pin_7
-#define DATALOGGER GPIO_Pin_8
+#define DATALOGGER GPIO_Pin_8 //PB11
 #define AUTOSHIFTING GPIO_Pin_12
 #define E_CLUTCH GPIO_Pin_10//PE10
 
@@ -40,7 +40,7 @@
 #define DL_POS 4
 #define AS_POS 5
 #define FC_POS 6
-#define EC_POS 7
+#define EC_POS 2
 
 
 
