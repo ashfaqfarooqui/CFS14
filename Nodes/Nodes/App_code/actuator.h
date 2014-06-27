@@ -7,7 +7,7 @@
 
 #define CUT_IGNITION_PWM GPIO_Pin_1 //PB1
 #define CUT_IGNITION_PWM_PINSOURCE GPIO_PinSource1
-#define PERIOD_CUT_IGNITION 5000
+#define PERIOD_CUT_IGNITION 20000
 
 void init_actuators(void);
 void ActuateShiftUp(uint16_t dutyCycle);

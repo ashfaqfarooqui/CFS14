@@ -5,7 +5,7 @@
 #define __STATE_H_
 
 #define NUMBER_OF_NODES 2
-#define NUMBER_OF_DIGITAL_IN_PER_NODE 10
+#define NUMBER_OF_DIGITAL_IN_PER_NODE 6
 #define NUMBER_OF_ANALOG_IN_PER_NODE 8
 
 
@@ -98,7 +98,7 @@
 #define WHEEL_TEMP_RR2 90
 #define WHEEL_TEMP_RR3 91
 
-
+#define SWITCHSTATE 100
 
 
 
@@ -123,5 +123,7 @@ extern bol TractionControlState;
 extern bol ElectricClutchActuated;
 extern bol LaunchControlActivated;
 extern bol checkLight;
+extern bol shiftDownSwitch;
+extern bol shiftUpSwitch;
 
 #endif

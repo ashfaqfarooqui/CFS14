@@ -13,9 +13,9 @@ void sendWheelSpeed()
 	if (THIS_NODE == FRONT_NODE)
 	{
 		data[2] = (sensorData[W_SPEED_FL]) & 0xff;
-		data[1] = ((sensorData[W_SPEED_FL] >> 8) & 0x0f);
+		data[1] = ((sensorData[W_SPEED_FL] >> 8) & 0xff);
 		data[4] = (sensorData[W_SPEED_FR]) & 0xff;
-		data[3] = ((sensorData[W_SPEED_FR] >> 8) & 0x0f);
+		data[3] = ((sensorData[W_SPEED_FR] >> 8) & 0xff);
 	} else if (THIS_NODE == REAR_NODE)
 	{
 		data[2] = (sensorData[W_SPEED_RL]) & 0xff;
@@ -114,10 +114,13 @@ void sendGear()
 	CanTxMsg GearMsg;
 	uint8_t transmitStatus;
 	uint8_t data[4];
+	uint8_t gear;
+	gear=GetGearPosition();
 	data[0] = 0;
-	data[1] = GetGearPosition();
+	data[2] = gear & 0xff;
+	data[1]=(gear>>8) &0x0f;
 	GearMsg = CAN_createMessage_uint(CAN_ADR_SHIFTING,
-	CAN_RTR_Data, CAN_ID_STD, 2, &data[0]);
+	CAN_RTR_Data, CAN_ID_STD,3, &data[0]);
 	do
 	{
 		transmitStatus = CAN_Transmit(CAN1, &GearMsg);
@@ -214,5 +217,22 @@ void sendGearTime(uint8_t shiftDirection)
 	{
 		transmitStatus = CAN_Transmit(CAN1, &GearTime);
 	} while (transmitStatus == CAN_TxStatus_NoMailBox);
+}
+void sendSwitchState()
+{
+	CanTxMsg switchStates;
+	uint8_t transmitStatus;
+	uint8_t data[7];
+	data[0] = 0;
+	data[2] = (sensorData[SWITCHSTATE]) & 0xff;
+	data[1] = (sensorData[SWITCHSTATE] >> 8) & 0x0f;
+
+	switchStates = CAN_createMessage_uint(CAN_ADR_SWITCHSTATE,
+	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &switchStates);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
+	sensorData[SWITCHSTATE]=0;
 }
 

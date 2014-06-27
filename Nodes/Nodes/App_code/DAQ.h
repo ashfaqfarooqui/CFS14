@@ -22,6 +22,7 @@
 #define CAN_ADR_MAP 0x144
 #define CAN_ADR_GEAR 0x146
 #define CAN_ADR_TIRE_TEMP 0x136
+#define CAN_ADR_SWITCHSTATE 0x200
 
 
 #define CAN_FRONT_NODE_FILTER 0x40
@@ -46,6 +47,7 @@ void sendDamperPosition(void);
 void sendBrakePressure(void);
 void sendOilPressure(void);
 void sendGearTime(uint8_t shiftDirection);
+void sendSwitchState();
 
 
 #endif

@@ -16,24 +16,37 @@ void safetyCheck()
 
 void coolingControl()
 {
-	
-	float clt_temp = (sensorData[WATER_TEMPRATURE] - 32) * (5 / 9);
-	if (clt_temp <= 55)
+	uint8_t speed = 100;
+	clt_temp = ((((float) sensorData[WATER_TEMPRATURE] / 10 - 32) * 5) / 9);
+	if (clt_temp >= 96)
 	{
-		setCoolantPumpSpeed(7500);
-		setFanSpeed(5000);
-	} else if (clt_temp > 55 && clt_temp < 85)
+		//setCoolantPumpSpeed(100);
+		speed = 0;
+//	} else if (clt_temp < 100 && clt_temp > 105)
+//	{
+//		//	setCoolantPumpSpeed(50);
+//		speed = 10;
+	} else if (clt_temp > 90 && clt_temp < 95)
 	{
-		setCoolantPumpSpeed(9000);
-		setFanSpeed(7500);
-	} else if (clt_temp >= 85 && clt_temp < 105)
+		//	setCoolantPumpSpeed(25);
+		speed = 40;
+	} else if (clt_temp <90  && clt_temp > 86)
 	{
-		setCoolantPumpSpeed(10000);
-		setFanSpeed(9000);
-	} else
-	{
-		setFanSpeed(10000);
+		speed = 80;
 	}
+	if (clt_temp < 70)
+	{
+		speed = 100;
+	}
+	setFanSpeed(speed);
+
+	///P controler
+//	setTemp=90;
+//	error=clt_temp-setTemp;
+//	if(error>0)
+//	{
+//
+//	}
 
 }
 
@@ -42,7 +55,7 @@ bol isEngineSafe()
 	
 	bol chkligt = FALSE;
 
-		clt_temp = ((float) (((sensorData[WATER_TEMPRATURE]/10) - 32) * 5 )/ 9);
+	clt_temp = ((float) (((sensorData[WATER_TEMPRATURE] / 10) - 32) * 5) / 9);
 //	if (clt_temp > 99)
 //	{
 //		if (sensorData[ENGINE_RPM] > 6000)
@@ -97,7 +110,7 @@ bol isEngineSafe()
 		chkligt = TRUE;
 	}
 	
-	if (sensorData[OIL_PRESSURE] < 1400&& sensorData[ENGINE_RPM]>5500)
+	if (sensorData[OIL_PRESSURE] < 1400 && sensorData[ENGINE_RPM] > 5500)
 	{
 		chkligt = TRUE;
 	}

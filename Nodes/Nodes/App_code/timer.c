@@ -295,8 +295,14 @@ void init_pwm_config()
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = PERIOD;
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+	if(THIS_NODE==FRONT_NODE)
+	{
+		TIM_TimeBaseStructure.TIM_Period = PERIOD_FAN;
+	}else
+	{
+		TIM_TimeBaseStructure.TIM_Period = PERIOD_GEAR;
+	}
+	TIM_TimeBaseStructure.TIM_Prescaler = 1680-1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -350,4 +356,5 @@ uint16_t getTimerValue()
 	uint16_t tim=TIM4->CNT;
 	return tim;
 }
+
 

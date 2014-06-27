@@ -1,9 +1,3 @@
-/*
- * gearshfting.c
- *
- *  Created on: Mar 17, 2014
- *      Author: Zeyang Geng
- */
 #include "gearshifting.h"
 
 /********** GLOBAL DEFINATION **********/
@@ -21,9 +15,8 @@ bool shiftUpActive = false;
 bool shiftDownActive = false;
 bool goToNeutralActive = false;
 
-bool shiftDownSwitch = false;
+//bool shiftDownSwitch = false;
 
-//int launchControl = 0;
 bool autoShifting = false;
 uint8_t dutyCycle = 0;
 int timeLastingConter = 0;
@@ -63,7 +56,9 @@ void gearShiftManager(void)
 	//int shiftUpDelay;	
 
 	InactiveCutIgnition();
-	ElClutch((ElectricClutchActuated==TRUE) || (LaunchControlActivated==TRUE));
+	ElClutch(
+			(ElectricClutchActuated == TRUE)
+					|| (LaunchControlActivated == TRUE));
 
 	//LaunchControl();
 
@@ -81,6 +76,8 @@ void gearShiftManager(void)
 			InactiveShiftDown();
 			sensorMonitor = 0;
 			problem = false;
+			shiftUpSwitch = FALSE;
+			shiftDownSwitch = FALSE;
 		}
 	}
 
@@ -92,7 +89,7 @@ void gearShiftManager(void)
 		sensorMonitor = 0;
 	}
 
-	if (!rawDigitalState[GEARUP_POS] && !rawDigitalState[GEARDOWN_POS])
+	if (shiftDownSwitch == FALSE && shiftUpSwitch == FALSE)
 	{
 		shiftUpActive = false;
 		shiftDownActive = false;
@@ -103,10 +100,11 @@ void gearShiftManager(void)
 		return;
 	}
 
-	if (rawDigitalState[GEARUP_POS])
+	if (shiftUpSwitch == TRUE)
 	{
 		
 		//GetGearPosition();
+		shiftUpSwitch = FALSE;
 
 		if (gearIsInPosition)
 		{
@@ -137,17 +135,18 @@ void gearShiftManager(void)
 		//TODO
 	}
 
-	while (rawDigitalState[GEARDOWN_POS] == 1)
-	{
-		shiftDownHoldingTime++;
-		updateSwitches();
-		shiftDownSwitch = true;
-		
-	}
+//	while (rawDigitalState[GEARDOWN_POS] == 1)
+//	{
+//		shiftDownHoldingTime++;
+//		updateSwitches();
+//		shiftDownSwitch = true;
+//
+//	}
 
-	if (shiftDownSwitch == true)
+	if (shiftDownSwitch == TRUE)
 	{
-		shiftDownSwitch = false;
+		shiftDownSwitch = FALSE;
+//		shiftDownSwitch = false;
 		/*
 		 if (shiftDownHoldingTime > SWITCHHOLDINGTIME)
 		 {
@@ -174,7 +173,7 @@ void gearShiftManager(void)
 		 } else
 		 {*/
 		//want to shift down
-		shiftDownHoldingTime = 0;
+//		shiftDownHoldingTime = 0;
 		//GetGearPosition();
 		if (gearIsInPosition)
 		{
@@ -206,8 +205,14 @@ void gearShiftManager(void)
 		//}
 	}
 
+	actuateShift();
+}
+void actuateShift()
+{
 	if (shiftUpActive)
 	{
+		shiftUpSwitch = FALSE;
+		shiftDownSwitch = FALSE;
 		ShiftUp(gearPosition);
 		stopTimer();
 		sendGearTime(SHIFT_DIRECTION_UP);
@@ -216,6 +221,8 @@ void gearShiftManager(void)
 
 	if (shiftDownActive)
 	{
+		shiftUpSwitch = FALSE;
+		shiftDownSwitch = FALSE;
 		ShiftDown(gearPosition);
 		stopTimer();
 		sendGearTime(SHIFT_DIRECTION_DOWN);
@@ -226,14 +233,6 @@ void gearShiftManager(void)
 	{
 		GoToNeutral();
 	}
-	/*
-	 if(digIn[3] == 1){
-	 AutoShifting();
-	 }
-	 */
-
-	//GoToNeutral();
-	//}
 }
 int GetGearPosition()
 {
@@ -257,6 +256,13 @@ int GetGearPosition()
 			gearIsInPosition = false;
 			break;
 		}
+		if (gear == 2 && gearPositionSensorData > 0xf00
+				&& gearPositionSensorData < 0xfE0)
+		{
+			gearPosition = gear;
+			gearIsInPosition = true;
+			break;
+		}
 	}
 	//	gear = 0;
 
@@ -272,8 +278,8 @@ void ShiftUp(int gearPositionDeliver)
 
 	flagShiftUp = true;
 	ActiveCutIgnition();
-	ActuateShiftUp(PERIOD);
-//		ActiveShiftUp();
+//	ActuateShiftUp(PERIOD_GEAR);
+	ActiveShiftUp();
 	
 	for (;; gearPositionMonitor++)
 	{
@@ -298,8 +304,8 @@ void ShiftUp(int gearPositionDeliver)
 
 	flagOutOfMonitoring = true;
 	//delay(1000);
-	ActuateShiftUp(0);
-//		InactiveShiftUp();
+//	ActuateShiftUp(0);
+	InactiveShiftUp();
 	InactiveCutIgnition();
 
 	flagReleaseShiftUp = true;
@@ -316,12 +322,11 @@ void ShiftDown(int gearPositionDeliver)
 	delay(80);
 
 	//shiftDownTime = shiftDownTime + 50;
-	ActuateShiftDown(PERIOD);
-//		ActiveShiftDown();
+//	ActuateShiftDown(PERIOD_GEAR);
+	ActiveShiftDown();
 	
 	for (;; gearPositionMonitor++)
 	{
-		updateSwitches();
 		saveRawADCData();
 		gearPositionCurrent = GetGearPosition();
 		//shiftDownTime = shiftDownTime + 50;
@@ -358,60 +363,60 @@ void ShiftDown(int gearPositionDeliver)
 
 	}
 	InactiveClutch();
-//		InactiveShiftDown();
-	ActuateShiftDown(0);
+	InactiveShiftDown();
+//	ActuateShiftDown(0);
 	return;
 }
 
 void GoToNeutral(void)
 {
-	int gearPositionCurrent = 0;
-	int gearPositionMonitor = 0;
-
-	uint8_t dutyCycleStep = 400;
-
-	dutyCycle = 0;
-	timeLastingConter = 0;
-	timeLasting = 10;
-
-	ActiveClutch();
-
-	for (;; gearPositionMonitor++)
-	{
-
-		if (timeLastingConter < timeLasting)
-		{
-			//simulate PWM output
-			//xTaskGetTickCount();
-			ActuateShiftUp(dutyCycle);
-			delay(1000);
-			timeLastingConter = (timeLastingConter + 1) % 10;
-		}
-
-		if (timeLastingConter == 9)
-		{
-			dutyCycle = dutyCycle + dutyCycleStep;
-		}
-
-		saveRawADCData();
-		gearPositionCurrent = GetGearPosition();
-
-		if (neutralToGear == false || dutyCycle == 100)
-		{
-			if (gearPositionCurrent != 1)
-			{
-				break;
-			}
-		}
-		//if(gearPositionMonitor > MONITOR_TIME){
-		//	gearPositionMonitor = 0;
-		//
-		//}
-
-	}
-	
-	ActuateShiftUp(0);
-	InactiveClutch();
+//	int gearPositionCurrent = 0;
+//	int gearPositionMonitor = 0;
+//
+//	uint8_t dutyCycleStep = 400;
+//
+//	dutyCycle = 0;
+//	timeLastingConter = 0;
+//	timeLasting = 10;
+//
+//	ActiveClutch();
+//
+//	for (;; gearPositionMonitor++)
+//	{
+//
+//		if (timeLastingConter < timeLasting)
+//		{
+//			//simulate PWM output
+//			//xTaskGetTickCount();
+//			ActuateShiftUp(dutyCycle);
+//			delay(1000);
+//			timeLastingConter = (timeLastingConter + 1) % 10;
+//		}
+//
+//		if (timeLastingConter == 9)
+//		{
+//			dutyCycle = dutyCycle + dutyCycleStep;
+//		}
+//
+//		saveRawADCData();
+//		gearPositionCurrent = GetGearPosition();
+//
+//		if (neutralToGear == false || dutyCycle == 100)
+//		{
+//			if (gearPositionCurrent != 1)
+//			{
+//				break;
+//			}
+//		}
+//		//if(gearPositionMonitor > MONITOR_TIME){
+//		//	gearPositionMonitor = 0;
+//		//
+//		//}
+//
+//	}
+//
+//	ActuateShiftUp(0);
+//	InactiveClutch();
 }
 
 void ElClutch(bol elClutch)
@@ -429,51 +434,18 @@ void ElClutch(bol elClutch)
 	}
 }
 
-void AutoShifting(void)
+void autoShiftManager(void)
 {
 	//TODO
-
-
+	if ((sensorData[W_SPEED_FL] * 93) / 100 > 10)
+	{
+		if (sensorData[ENGINE_RPM] > 13000)
+		{
+			shiftUpActive = true;
+		}
+	}
+	actuateShift();
 }
-
-//void LaunchControl(void)
-//{
-//	if (rawDigitalState[LC_POS] == 1 && launchControl == 0)
-//	{
-//		launchControl = 1;
-//		//TODO 1 actuate launch control to ECU
-//		//actuate();
-//		actuate(GPIOA, CLUTCH);
-//	}
-//
-//	if (rawDigitalState[LC_POS] == 0 && launchControl == 1)
-//	{
-//		//just after release button
-//		//TODO 2
-//		//lauchControl == 2;//car going to move
-//		release(GPIOC, CLUTCH);
-//		//TODO 2
-//		//clutchDelay = LAUCH_CONTROL_CLUTCH_ON_DELAY;
-//		delay(150);
-//		//TODO 1
-//		//release();
-//		launchControl = 0;
-//	}
-//
-//	//TODO 2
-//	/*
-//	 if(rawDigitalState[1] == 0 && launchControl == 2){
-//	 if(clutchDelay){
-//	 clutchDelay--;
-//	 }else{
-//	 launchControl = 0;
-//	 //TODO 1
-//	 //release();
-//	 }
-//	 }
-//	 */
-//
-//}
 
 void ActiveClutch()
 {

@@ -6,8 +6,8 @@
 #include "discoveryf4utils.h"
 #include "state.h"
 
-#define PERIOD 10000
-
+#define PERIOD_FAN 100
+#define PERIOD_GEAR 10000
 //void init_Timer(void);
 //void init_counter(void);
 void init_pwm_config(void);
@@ -21,6 +21,5 @@ void delay(uint16_t);
 void startTimer();
 void stopTimer();
 uint16_t getTimerValue();
-void init_gearShiftTimer();
 
 #endif
