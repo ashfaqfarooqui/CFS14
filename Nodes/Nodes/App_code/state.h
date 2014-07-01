@@ -23,8 +23,8 @@
 #define ALL_NODE 0
 
 
-#define THIS_NODE FRONT_NODE
-//#define THIS_NODE REAR_NODE
+//#define THIS_NODE FRONT_NODE
+#define THIS_NODE REAR_NODE
 
 #define TESTMODE 0
 
@@ -125,5 +125,8 @@ extern bol LaunchControlActivated;
 extern bol checkLight;
 extern bol shiftDownSwitch;
 extern bol shiftUpSwitch;
+extern bol neutralSwitch;
+extern bol ToNeutral;
+extern bol autoShiftSwitch;
 
 #endif

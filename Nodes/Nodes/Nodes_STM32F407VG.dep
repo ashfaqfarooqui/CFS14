@@ -71,9 +71,9 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
-F (.\stm32f4xx_it.c)(0x534FF64E)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\stm32f4xx_it.o --omf_browse .\uv4build\stm32f4xx_it.crf --depend .\uv4build\stm32f4xx_it.d)
+F (.\stm32f4xx_it.c)(0x53AC4029)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\stm32f4xx_it.o --omf_browse .\uv4build\stm32f4xx_it.crf --depend .\uv4build\stm32f4xx_it.d)
 I (stm32f4xx_it.h)(0x52D9554F)
-F (.\App_code\can.c)(0x5378A637)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\can.o --omf_browse .\uv4build\can.crf --depend .\uv4build\can.d)
+F (.\App_code\can.c)(0x53AA27BA)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\can.o --omf_browse .\uv4build\can.crf --depend .\uv4build\can.d)
 I (App_code\can.h)(0x5378A588)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -110,10 +110,10 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\DAQ.h)(0x5378A5A6)
-F (.\App_code\main.c)(0x5378AA8D)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\main.o --omf_browse .\uv4build\main.crf --depend .\uv4build\main.d)
-I (App_code\main.h)(0x5378AC0A)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\DAQ.h)(0x53AEF28D)
+F (.\App_code\main.c)(0x53B1724E)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\main.o --omf_browse .\uv4build\main.crf --depend .\uv4build\main.d)
+I (App_code\main.h)(0x53B071A1)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
@@ -149,16 +149,18 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\UART.h)(0x534FE063)
+I (App_code\UART.h)(0x53B1BC3D)
 I (App_code\can.h)(0x5378A588)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\ADC.h)(0x53761156)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\ADC.h)(0x5388AC0D)
 I (..\Nodes\stm32f4xx_it.h)(0x52D9554F)
-I (App_code\driver_interface.h)(0x536D2302)
-I (App_code\timer.h)(0x53515408)
-I (App_code\gearshifting.h)(0x5378AAEF)
-I (App_code\actuator.h)(0x5378AADD)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+I (App_code\timer.h)(0x53AF2352)
+I (App_code\gearshifting.h)(0x53AF1612)
+I (App_code\actuator.h)(0x53AC974E)
+I (App_code\megasquirt.h)(0x53AAE5CA)
+I (App_code\IMU.h)(0x53A6BFD6)
 I (.\FreeRTOS\Source\include\FreeRTOS.h)(0x52D9554B)
 I (C:\Keil\ARM\ARMCC\include\stddef.h)(0x51C819B4)
 I (.\FreeRTOS\Source\include\projdefs.h)(0x52D9554B)
@@ -171,9 +173,9 @@ I (.\FreeRTOS\Source\include\task.h)(0x52D9554B)
 I (.\FreeRTOS\Source\include\list.h)(0x52D9554B)
 I (.\FreeRTOS\Source\include\croutine.h)(0x52D9554B)
 I (App_code\tests.h)(0x534FC2A1)
-I (App_code\safety.h)(0x5378AA8D)
-F (.\App_code\UART.c)(0x5378A2F8)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\uart.o --omf_browse .\uv4build\uart.crf --depend .\uv4build\uart.d)
-I (App_code\UART.h)(0x534FE063)
+I (App_code\safety.h)(0x53AF2A70)
+F (.\App_code\UART.c)(0x53B1BC80)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\uart.o --omf_browse .\uv4build\uart.crf --depend .\uv4build\uart.d)
+I (App_code\UART.h)(0x53B1BC3D)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -208,8 +210,8 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
-F (.\App_code\driver_interface.c)(0x536D2B27)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\driver_interface.o --omf_browse .\uv4build\driver_interface.crf --depend .\uv4build\driver_interface.d)
-I (App_code\driver_interface.h)(0x536D2302)
+F (.\App_code\driver_interface.c)(0x53B270EA)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\driver_interface.o --omf_browse .\uv4build\driver_interface.crf --depend .\uv4build\driver_interface.d)
+I (App_code\driver_interface.h)(0x53AEF9CD)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
@@ -244,12 +246,12 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
+I (App_code\state.h)(0x53B26BC1)
 I (App_code\can.h)(0x5378A588)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\DAQ.h)(0x5378A5A6)
-F (.\App_code\ADC.c)(0x5378AA8D)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\adc.o --omf_browse .\uv4build\adc.crf --depend .\uv4build\adc.d)
-I (App_code\ADC.h)(0x53761156)
+I (App_code\DAQ.h)(0x53AEF28D)
+F (.\App_code\ADC.c)(0x53AA122E)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\adc.o --omf_browse .\uv4build\adc.crf --depend .\uv4build\adc.d)
+I (App_code\ADC.h)(0x5388AC0D)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x52D9554F)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -285,9 +287,9 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (..\Nodes\stm32f4xx_it.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
-F (.\App_code\safety.c)(0x5378AB63)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\safety.o --omf_browse .\uv4build\safety.crf --depend .\uv4build\safety.d)
-I (App_code\safety.h)(0x5378AA8D)
+I (App_code\state.h)(0x53B26BC1)
+F (.\App_code\safety.c)(0x53AF2BBF)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\safety.o --omf_browse .\uv4build\safety.crf --depend .\uv4build\safety.d)
+I (App_code\safety.h)(0x53AF2A70)
 I (App_code\can.h)(0x5378A588)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -324,11 +326,12 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\driver_interface.h)(0x536D2302)
-F (.\App_code\timer.c)(0x53724B08)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\timer.o --omf_browse .\uv4build\timer.crf --depend .\uv4build\timer.d)
-I (App_code\timer.h)(0x53515408)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+I (App_code\timer.h)(0x53AF2352)
+F (.\App_code\timer.c)(0x53B048D7)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\timer.o --omf_browse .\uv4build\timer.crf --depend .\uv4build\timer.d)
+I (App_code\timer.h)(0x53AF2352)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -364,7 +367,7 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
+I (App_code\state.h)(0x53B26BC1)
 F (.\App_code\tests.c)(0x534FDE3F)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\tests.o --omf_browse .\uv4build\tests.crf --depend .\uv4build\tests.d)
 I (App_code\tests.h)(0x534FC2A1)
 I (App_code\can.h)(0x5378A588)
@@ -403,14 +406,14 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\timer.h)(0x53515408)
-I (App_code\safety.h)(0x5378AA8D)
-I (App_code\driver_interface.h)(0x536D2302)
-F (.\App_code\DAQ.c)(0x5378AA54)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\daq.o --omf_browse .\uv4build\daq.crf --depend .\uv4build\daq.d)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\state.h)(0x5378AB7C)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\timer.h)(0x53AF2352)
+I (App_code\safety.h)(0x53AF2A70)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+F (.\App_code\DAQ.c)(0x53B155CA)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\daq.o --omf_browse .\uv4build\daq.crf --depend .\uv4build\daq.d)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\state.h)(0x53B26BC1)
 I (App_code\can.h)(0x5378A588)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -447,8 +450,8 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-F (.\App_code\gearshfting.c)(0x5378A2D6)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\gearshfting.o --omf_browse .\uv4build\gearshfting.crf --depend .\uv4build\gearshfting.d)
-I (App_code\gearshifting.h)(0x5378AAEF)
+F (.\App_code\gearshfting.c)(0x53B08520)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\gearshfting.o --omf_browse .\uv4build\gearshfting.crf --depend .\uv4build\gearshfting.d)
+I (App_code\gearshifting.h)(0x53AF1612)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
@@ -485,17 +488,17 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
 I (App_code\can.h)(0x5378A588)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\timer.h)(0x53515408)
-I (App_code\ADC.h)(0x53761156)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\timer.h)(0x53AF2352)
+I (App_code\ADC.h)(0x5388AC0D)
 I (..\Nodes\stm32f4xx_it.h)(0x52D9554F)
-I (App_code\driver_interface.h)(0x536D2302)
-I (App_code\actuator.h)(0x5378AADD)
-F (.\App_code\actuator.c)(0x5378A2D6)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\actuator.o --omf_browse .\uv4build\actuator.crf --depend .\uv4build\actuator.d)
-I (App_code\actuator.h)(0x5378AADD)
-I (App_code\state.h)(0x5378AB7C)
-I (App_code\timer.h)(0x53515408)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+I (App_code\actuator.h)(0x53AC974E)
+F (.\App_code\actuator.c)(0x53AF0A0A)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\actuator.o --omf_browse .\uv4build\actuator.crf --depend .\uv4build\actuator.d)
+I (App_code\actuator.h)(0x53AC974E)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\timer.h)(0x53AF2352)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
 I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
 I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
@@ -531,12 +534,95 @@ I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
 I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
-I (App_code\gearshifting.h)(0x5378AAEF)
+I (App_code\gearshifting.h)(0x53AF1612)
 I (App_code\can.h)(0x5378A588)
-I (App_code\DAQ.h)(0x5378A5A6)
-I (App_code\ADC.h)(0x53761156)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\ADC.h)(0x5388AC0D)
 I (..\Nodes\stm32f4xx_it.h)(0x52D9554F)
-I (App_code\driver_interface.h)(0x536D2302)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+F (.\App_code\megasquirt.c)(0x53AA2985)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\megasquirt.o --omf_browse .\uv4build\megasquirt.crf --depend .\uv4build\megasquirt.d)
+I (App_code\megasquirt.h)(0x53AAE5CA)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x52D9554F)
+I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
+I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
+I (.\Libraries\CMSIS\Include\core_cmInstr.h)(0x52D9554C)
+I (.\Libraries\CMSIS\Include\core_cmFunc.h)(0x52D9554C)
+I (.\Libraries\CMSIS\Include\core_cm4_simd.h)(0x52D9554C)
+I (.\Libraries\CMSIS\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x52D9554F)
+I (..\Nodes\stm32f4xx_conf.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_cryp.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_hash.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rng.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
+I (App_code\state.h)(0x53B26BC1)
+I (App_code\actuator.h)(0x53AC974E)
+I (App_code\timer.h)(0x53AF2352)
+I (.\STM32F4_Discovery\discoveryf4utils.h)(0x52D9554F)
+I (App_code\gearshifting.h)(0x53AF1612)
+I (App_code\can.h)(0x5378A588)
+I (App_code\DAQ.h)(0x53AEF28D)
+I (App_code\ADC.h)(0x5388AC0D)
+I (..\Nodes\stm32f4xx_it.h)(0x52D9554F)
+I (App_code\driver_interface.h)(0x53AEF9CD)
+F (.\App_code\imu.c)(0x53B171BA)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\imu.o --omf_browse .\uv4build\imu.crf --depend .\uv4build\imu.d)
+I (App_code\imu.h)(0x53A6BFD6)
+I (App_code\state.h)(0x53B26BC1)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h)(0x52D9554F)
+I (.\Libraries\CMSIS\ST\STM32F4xx\Include\stm32f4xx.h)(0x52D9554F)
+I (.\Libraries\CMSIS\Include\core_cm4.h)(0x52D9554C)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C819B4)
+I (.\Libraries\CMSIS\Include\core_cmInstr.h)(0x52D9554C)
+I (.\Libraries\CMSIS\Include\core_cmFunc.h)(0x52D9554C)
+I (.\Libraries\CMSIS\Include\core_cm4_simd.h)(0x52D9554C)
+I (.\Libraries\CMSIS\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x52D9554F)
+I (..\Nodes\stm32f4xx_conf.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_can.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_crc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_cryp.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dac.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dbgmcu.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dma.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_exti.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_flash.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_hash.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_gpio.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_i2c.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_iwdg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_pwr.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rcc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rng.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_rtc.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_sdio.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_spi.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_syscfg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_tim.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h)(0x52D9554F)
+I (.\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h)(0x52D9554F)
 F (.\FreeRTOS\Source\timers.c)(0x52D9554B)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\timers.o --omf_browse .\uv4build\timers.crf --depend .\uv4build\timers.d)
 I (C:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C819B4)
 I (.\FreeRTOS\Source\include\FreeRTOS.h)(0x52D9554B)
@@ -584,7 +670,7 @@ I (.\FreeRTOS\Source\include\task.h)(0x52D9554B)
 I (.\FreeRTOS\Source\include\list.h)(0x52D9554B)
 I (.\FreeRTOS\Source\include\queue.h)(0x52D9554B)
 I (.\FreeRTOS\Source\include\timers.h)(0x52D9554B)
-F (.\FreeRTOS\Source\tasks.c)(0x52D9554B)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\tasks.o --omf_browse .\uv4build\tasks.crf --depend .\uv4build\tasks.d)
+F (.\FreeRTOS\Source\tasks.c)(0x53AC7B5D)(-c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I.\Libraries\CMSIS\ST\STM32F4xx\Include -I.\Libraries\CMSIS\Include -I.\Libraries\STM32F4xx_StdPeriph_Driver\inc -I.\Utilities\STM32F4-Discovery -I..\Nodes -I.\FreeRTOS\Source\include -I.\Startup -I.\FreeRTOS\Source\portable\RVDS\ARM_CM4F -I.\FreeRTOS -I.\STM32F4_Discovery-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F4xx-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE="8000000" -DSTM32F40XX-o .\uv4build\tasks.o --omf_browse .\uv4build\tasks.crf --depend .\uv4build\tasks.d)
 I (C:\Keil\ARM\ARMCC\include\stdlib.h)(0x51C819B4)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C819B4)
 I (.\FreeRTOS\Source\include\FreeRTOS.h)(0x52D9554B)

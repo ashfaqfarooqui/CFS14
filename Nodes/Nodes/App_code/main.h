@@ -60,6 +60,9 @@ void vSendSteeringAngle(void *pvParameters);
 void vSendOilPressure(void *pvParameters);
 void vSendWaterTemp(void *pvParameters);
 void vSendGear(void *pvParameters);
+void vSendGearDataRaw(void *pvParameters);
+void vNeutralMgr(void *pvParameters);
+void vautoShiftMgr(void *pvParameters);
      
 #define STACK_SIZE_MIN	128	/* usStackDepth	- the stack size DEFINED IN WORDS.*/
 

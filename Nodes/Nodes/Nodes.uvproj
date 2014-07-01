@@ -479,9 +479,14 @@
               <FilePath>.\App_code\actuator.c</FilePath>
             </File>
             <File>
-              <FileName>initialize.c</FileName>
+              <FileName>megasquirt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\App_code\initialize.c</FilePath>
+              <FilePath>.\App_code\megasquirt.c</FilePath>
+            </File>
+            <File>
+              <FileName>imu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App_code\imu.c</FilePath>
             </File>
           </Files>
         </Group>

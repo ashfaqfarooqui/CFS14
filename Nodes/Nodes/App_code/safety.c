@@ -16,7 +16,7 @@ void safetyCheck()
 
 void coolingControl()
 {
-	uint8_t speed = 100;
+	uint16_t speed = PERIOD_FAN;
 	clt_temp = ((((float) sensorData[WATER_TEMPRATURE] / 10 - 32) * 5) / 9);
 	if (clt_temp >= 96)
 	{
@@ -29,14 +29,14 @@ void coolingControl()
 	} else if (clt_temp > 90 && clt_temp < 95)
 	{
 		//	setCoolantPumpSpeed(25);
-		speed = 40;
+		speed = (PERIOD_FAN*4)/10;
 	} else if (clt_temp <90  && clt_temp > 86)
 	{
-		speed = 80;
+		speed = (PERIOD_FAN*8)/10;
 	}
 	if (clt_temp < 70)
 	{
-		speed = 100;
+		speed = PERIOD_FAN;
 	}
 	setFanSpeed(speed);
 
@@ -123,8 +123,7 @@ void shutDownEngine()
 }
 void setFanSpeed(uint16_t dutyCycle)
 {
-	if (dutyCycle > TIM3->ARR)
-		dutyCycle = 0.98 * TIM3->ARR;
+	
 
 	TIM3->CCR1 = dutyCycle;
 }

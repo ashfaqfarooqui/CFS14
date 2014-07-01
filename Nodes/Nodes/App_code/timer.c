@@ -7,9 +7,9 @@ uint8_t CaptureNumberLeft = 0, CaptureNumberRight = 0;
 uint16_t counterLeft = 0, TimeL, counterRight = 0, TimeR;
 void init_inputCapture(void)
 {
-	
+	NVIC_InitTypeDef NVIC_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
-
+	
 	TIM_ICInitTypeDef TIM_ICInitStructure;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	/* TIM1 clock enable */
@@ -65,6 +65,27 @@ void init_inputCapture(void)
 	TIM_ClearFlag(TIM1, TIM_FLAG_CC1);
 	TIM_ClearFlag(TIM1, TIM_FLAG_CC2);
 
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
+	TIM_ITConfig(TIM1, TIM_IT_CC1, ENABLE);
+	TIM_ITConfig(TIM1, TIM_IT_CC2, ENABLE);
+
+}
+
+void TIM1_CC_IRQHandler(void)
+{
+	if(TIM_GetITStatus(TIM1, TIM_FLAG_CC1)==SET){
+	 calculateWheelSpeedLeft();
+	 TIM_ClearITPendingBit(TIM1,TIM_FLAG_CC1);
+	}
+	if(TIM_GetITStatus(TIM1,TIM_FLAG_CC2)==SET){
+		calculateWheelSpeedRight();
+		TIM_ClearITPendingBit(TIM1,TIM_FLAG_CC2);
+	}
 }
 
 void calculateWheelSpeedLeft()
@@ -295,14 +316,16 @@ void init_pwm_config()
 	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
 	/* Time base configuration */
-	if(THIS_NODE==FRONT_NODE)
+	if (THIS_NODE == FRONT_NODE)
 	{
 		TIM_TimeBaseStructure.TIM_Period = PERIOD_FAN;
-	}else
+		TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1;
+	} else
 	{
 		TIM_TimeBaseStructure.TIM_Period = PERIOD_GEAR;
+		TIM_TimeBaseStructure.TIM_Prescaler = 4200000 - 1;
 	}
-	TIM_TimeBaseStructure.TIM_Prescaler = 1680-1;
+
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -310,7 +333,7 @@ void init_pwm_config()
 
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = 1500;
+	TIM_OCInitStructure.TIM_Pulse = 0;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	
 	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
@@ -343,18 +366,17 @@ void init_gearShiftTimer()
 
 void startTimer()
 {
-	TIM4->ARR=0xffff;
-	TIM_Cmd(TIM4,ENABLE);
+	TIM4->ARR = 0xffff;
+	TIM_Cmd(TIM4, ENABLE);
 }
 void stopTimer()
 {
-	TIM4->ARR=0;
-	TIM_Cmd(TIM4,ENABLE);
+	TIM4->ARR = 0;
+	TIM_Cmd(TIM4, ENABLE);
 }
 uint16_t getTimerValue()
 {
-	uint16_t tim=TIM4->CNT;
+	uint16_t tim = TIM4->CNT;
 	return tim;
 }
-
 

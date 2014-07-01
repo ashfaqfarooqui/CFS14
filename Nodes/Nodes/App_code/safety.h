@@ -4,6 +4,7 @@
 #include "can.h"
 #include "driver_interface.h"
 #include "state.h"
+#include "timer.h"
 
 #define MAX 100
 #define OIL 0x01
