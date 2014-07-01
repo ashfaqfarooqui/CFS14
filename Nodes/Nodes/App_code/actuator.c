@@ -21,8 +21,8 @@ void init_actuators()
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_InitStructure.GPIO_Pin = SHIFT_DOWN | SHIFT_UP;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
+//	GPIO_InitStructure.GPIO_Pin = SHIFT_DOWN | SHIFT_UP;
+//	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = CLUTCH;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = CUT_IGNITION;
@@ -77,15 +77,14 @@ void initPWMCutIgnition()
 	/* Connect TIM3 pins  */
 	GPIO_PinAFConfig(GPIOB, CUT_IGNITION_PWM_PINSOURCE, GPIO_AF_TIM3);
 	/* Compute the prescaler value */
-	PrescalerValue = (uint16_t)((SystemCoreClock / 2) / 21000000) - 1;
 
-	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = PERIOD_CUT_IGNITION;
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+//	/* Time base configuration */
+//	TIM_TimeBaseStructure.TIM_Period = PERIOD_CUT_IGNITION;
+//	TIM_TimeBaseStructure.TIM_Prescaler = PERIOD_GEAR;
+//	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+//	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+//
+//	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 	
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -95,9 +94,9 @@ void initPWMCutIgnition()
 	TIM_OC4Init(TIM3, &TIM_OCInitStructure);
 
 	TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
-	TIM_ARRPreloadConfig(TIM3, ENABLE);
+//	TIM_ARRPreloadConfig(TIM3, ENABLE);
 	/* TIM3 enable counter */
-	TIM_Cmd(TIM3, ENABLE);
+//	TIM_Cmd(TIM3, ENABLE);
 }
 
 void cutIgnition(uint16_t dutyCycle)
@@ -107,15 +106,11 @@ void cutIgnition(uint16_t dutyCycle)
 
 void ActuateShiftUp(uint16_t dutyCycle) //0-100
 {
-	if (dutyCycle > TIM3->ARR)
-			dutyCycle = 0.98 * TIM3->ARR;
 		TIM3->CCR1=dutyCycle;
 
 }
 void ActuateShiftDown(uint16_t dutyCycle) //0-100
 {
-	if (dutyCycle > TIM3->ARR)
-			dutyCycle = 0.98 * TIM3->ARR;
 		
 	TIM3->CCR2=dutyCycle;
 		

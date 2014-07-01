@@ -8,6 +8,7 @@ bol ElectricClutchActuated = FALSE;
 bol LaunchControlActivated = FALSE;
 bol shiftDownSwitch = FALSE;
 bol shiftUpSwitch = FALSE;
+bol neutralSwitch = FALSE;
 short debounce[10] = {
 0
 };
@@ -80,7 +81,7 @@ void init_driverInterface()
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource10);
 		EXTI_InitStructure.EXTI_Line = EXTI_Line8;
 		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
 		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 		EXTI_Init(&EXTI_InitStructure);
 		EXTI_InitStructure.EXTI_Line = EXTI_Line4;
@@ -113,15 +114,22 @@ void init_driverInterface()
 }
 void EXTI9_5_IRQHandler(void) //right pedal
 {
+	uint8_t timer = 0;
 	if (EXTI_GetITStatus(EXTI_Line8) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARUP_POS] = 1;
-		timerUp++;
-		if (ti merUp > 6)
+		while (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+		{
+
+			timer++;
+
+		}
+		if (timer > 15)
 		{
 			shiftUpSwitch = TRUE;
-			timerUp = 0;
 		}
+		startTimer();
+		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x01);
 		EXTI_ClearFlag(EXTI_Line8); //clear interrupt
 
 	}
@@ -129,15 +137,22 @@ void EXTI9_5_IRQHandler(void) //right pedal
 }
 void EXTI4_IRQHandler(void) //left pedal
 {
+	uint8_t timer = 0;
 	if (EXTI_GetITStatus(EXTI_Line4) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARDOWN_POS] = 1;
-		timerDown++;
-		if (timerDown > 6)
+		while (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+		{
+
+			timer++;
+
+		}
+		if (timer > 15)
 		{
 			shiftDownSwitch = TRUE;
-			timerDown = 0;
 		}
+		startTimer();
+		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x10);
 		EXTI_ClearFlag(EXTI_Line4); //clear interrupt
 
 	}

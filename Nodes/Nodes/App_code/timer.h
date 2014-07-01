@@ -6,8 +6,8 @@
 #include "discoveryf4utils.h"
 #include "state.h"
 
-#define PERIOD_FAN 100
-#define PERIOD_GEAR 10000
+#define PERIOD_FAN 1000
+#define PERIOD_GEAR 250
 //void init_Timer(void);
 //void init_counter(void);
 void init_pwm_config(void);

@@ -1,6 +1,6 @@
 #include "UART.h"
 #define NUMBER_OF_BYTES 12
-uint8_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0,0,0,0,0,0,0,0};
+uint32_t RxBuffer[NUMBER_OF_BYTES]={0,0,0,0,0,0,0,0,0,0,0,0};
 void init_uart(uint32_t baudrate)
 {
 
@@ -102,7 +102,7 @@ void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s)
 	}
 
 }
-uint8_t* getRecievedData()
+uint32_t* getRecievedData()
 {
 	return RxBuffer;
 }

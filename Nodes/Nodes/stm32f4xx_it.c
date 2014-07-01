@@ -153,9 +153,9 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void EXTI0_IRQHandler(void)
-{
-}
+//void EXTI0_IRQHandler(void)
+//{
+//}
 
 /**
   * @brief  This function handles EXTI15_10_IRQ Handler.

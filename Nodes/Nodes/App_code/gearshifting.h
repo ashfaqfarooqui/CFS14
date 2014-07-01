@@ -87,6 +87,7 @@ void InactiveShiftDown(void);
 void ActiveCutIgnition(void);
 void InactiveCutIgnition(void);
 void actuateShift();
+void neutralMgr(void);
 
 
 #endif

@@ -9,6 +9,6 @@ void USART_puts_char(USART_TypeDef* USARTx, char *s);
 void USART_puts_int8(USART_TypeDef* USARTx, uint8_t *s);
 void USART_puts_int16(USART_TypeDef* USARTx, uint16_t *s);
 void UART_DMA_Config();
-uint8_t* getRecievedData();
+uint32_t* getRecievedData();
 
 #endif
