@@ -14,13 +14,13 @@ bool shiftUpActive = false;
 bool shiftDownActive = false;
 bol goToNeutral = FALSE;
 bol ToNeutral = FALSE;
-bol autoShiftSwitch = TRUE;
+bol autoShiftSwitch = FALSE;
 bol autoShiftBlocked = FALSE;
 
 //bool shiftDownSwitch = false;
-uint16_t blockingTime=0;
+uint16_t blockingTime = 0;
 bool autoShifting = false;
-uint16_t dutyCycle = 75;
+uint16_t dutyCycle = 20;
 int timeLastingConter = 0;
 int timeLasting = 0;
 
@@ -50,19 +50,12 @@ bool flagProblem = false;
 void gearShiftManager(void)
 {
 
-	int shiftUpActiveTime = 0;
-	int shiftDownActiveTime = 0;
-
 	unsigned int sensorMonitor = 0;
 	
-	//int shiftUpDelay;	
-
 	InactiveCutIgnition();
 	ElClutch(
 			(ElectricClutchActuated == TRUE)
 					|| (LaunchControlActivated == TRUE));
-
-	//LaunchControl();
 
 	GetGearPosition();
 	
@@ -134,50 +127,11 @@ void gearShiftManager(void)
 			return;
 		}
 
-		//shiftUpUsedTime = shiftUpUsedTime + HoldingTime;
-		//TODO
 	}
-
-//	while (rawDigitalState[GEARDOWN_POS] == 1)
-//	{
-//		shiftDownHoldingTime++;
-//		updateSwitches();
-//		shiftDownSwitch = true;
-//
-//	}
 
 	if (shiftDownSwitch == TRUE)
 	{
 		shiftDownSwitch = FALSE;
-//		shiftDownSwitch = false;
-		/*
-		 if (shiftDownHoldingTime > SWITCHHOLDINGTIME)
-		 {
-		 //holding shift down for long time mean go to neutral
-
-		 //GetGearPosition();
-
-		 if (gearIsInPosition)
-		 {
-		 if (gearPosition == 1)
-		 {		//in gear 1 and go to neutral
-		 shiftDownHoldingTime = 0;
-		 goToNeutralActive = true;
-		 shiftUpActive = false;
-		 shiftDownActive = false;
-		 }
-		 } else
-		 {
-		 problem = true;
-		 return;
-		 //Gear is not in position or driver want to go to neutral in other gear, maybe something wrong
-		 }
-
-		 } else
-		 {*/
-		//want to shift down
-//		shiftDownHoldingTime = 0;
-		//GetGearPosition();
 		if (gearIsInPosition)
 		{
 			if (gearPosition == 0)
@@ -210,7 +164,6 @@ void gearShiftManager(void)
 			return;
 		}
 
-		//}
 	}
 
 	actuateShift();
@@ -271,7 +224,6 @@ int GetGearPosition()
 			break;
 		}
 	}
-	//	gear = 0;
 
 	return gearPosition;
 
@@ -306,7 +258,6 @@ void ShiftUp(int gearPositionDeliver)
 			problem = true;
 			break;
 		}
-		//TODO
 	}
 
 	flagOutOfMonitoring = true;
@@ -328,7 +279,6 @@ void ShiftDown(int gearPositionDeliver)
 
 	delay(80);
 
-	//shiftDownTime = shiftDownTime + 50;
 	ActuateShiftDown(PERIOD_GEAR);
 //	ActiveShiftDown();
 	
@@ -336,7 +286,6 @@ void ShiftDown(int gearPositionDeliver)
 	{
 		saveRawADCData();
 		gearPositionCurrent = GetGearPosition();
-		//shiftDownTime = shiftDownTime + 50;
 
 		if (neutralToGear == false)
 		{
@@ -385,62 +334,20 @@ void neutralMgr(void)
 	}
 	if (gearPosition != 0)
 	{
-		ActuateShiftUp(dutyCycle);
-		dutyCycle = (dutyCycle + 10) % PERIOD_GEAR;
-	} else if (gearIsInPosition && gearPosition == 0)
+			ActuateShiftUp(dutyCycle);
+
+			dutyCycle = (dutyCycle + 2) % 85;
+	}
+	if (gearIsInPosition && gearPosition == 0)
 	{
 		ActuateShiftUp(0);
-		dutyCycle = 75;
+		
+		dutyCycle = 0;
 		neutralSwitch = FALSE;
 		ToNeutral = FALSE;
 	}
 
 }
-//	int gearPositionCurrent = 0;
-//
-//
-//	dutyCycle = 0;
-//	timeLastingConter = 0;
-//	timeLasting = 10;
-//
-//	ActiveClutch();
-//
-//	for (;; gearPositionMonitor++)
-//	{
-//
-//		if (timeLastingConter < timeLasting)
-//		{
-//			//simulate PWM output
-//			//xTaskGetTickCount();
-//			ActuateShiftUp(dutyCycle);
-//			delay(1000);
-//			timeLastingConter = (timeLastingConter + 1) % 10;
-//		}
-//
-//		if (timeLastingConter == 9)
-//		{
-//			dutyCycle = dutyCycle + dutyCycleStep;
-//		}
-//
-//		saveRawADCData();
-//		gearPositionCurrent = GetGearPosition();
-//
-//		if (neutralToGear == false || dutyCycle == 100)
-//		{
-//			if (gearPositionCurrent != 1)
-//			{
-//				break;
-//			}
-//		}
-//		//if(gearPositionMonitor > MONITOR_TIME){
-//		//	gearPositionMonitor = 0;
-//		//
-//		//}
-//
-//	}
-//
-//	ActuateShiftUp(0);
-//	InactiveClutch();
 
 void ElClutch(bol elClutch)
 {
@@ -477,7 +384,7 @@ void autoShiftManager(void)
 		if (blockingTime > 50000)
 		{
 			autoShiftBlocked = FALSE;
-			blockingTime=0;
+			blockingTime = 0;
 		}
 
 	}

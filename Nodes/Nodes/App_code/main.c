@@ -146,7 +146,7 @@ void vNeutralMgr(void *pvParameters)
 			neutralMgr();
 
 		}
-		vTaskDelay(800 / portTICK_RATE_MS);
+		vTaskDelay(20 / portTICK_RATE_MS);
 	}
 }
 
