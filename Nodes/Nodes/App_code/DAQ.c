@@ -19,9 +19,9 @@ void sendWheelSpeed()
 	} else if (THIS_NODE == REAR_NODE)
 	{
 		data[2] = (sensorData[W_SPEED_RL]) & 0xff;
-		data[1] = ((sensorData[W_SPEED_RL] >> 8) & 0x0f);
+		data[1] = ((sensorData[W_SPEED_RL] >> 8) & 0xff);
 		data[4] = (sensorData[W_SPEED_RR]) & 0xff;
-		data[3] = ((sensorData[W_SPEED_RR] >> 8) & 0x0f);
+		data[3] = ((sensorData[W_SPEED_RR] >> 8) & 0xff);
 	}
 	wheelSpeedMsg = CAN_createMessage_uint(CAN_ADR_WHEEL_SPEED, CAN_RTR_Data,
 	CAN_ID_STD, 3, &data[0]);
@@ -221,8 +221,9 @@ void sendGearTime(uint8_t shiftDirection)
 {
 	CanTxMsg GearTime;
 	uint8_t transmitStatus;
-	uint8_t data[7];
-	uint16_t time = getTimerValue();
+	uint8_t data[3];
+	uint16_t time=0;
+ time = getTimerValue();
 	data[0] = shiftDirection;
 	data[2] = (time) & 0xff;
 	data[1] = (time >> 8) & 0xff;

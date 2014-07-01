@@ -1,5 +1,5 @@
 #ifndef __DRIVER_INTERFACE_H
-#define __DRIVERINTERFACE_H_
+#define __DRIVER_INTERFACE_H_
 
 #include "stm32f4xx.h"
 #include "state.h"

@@ -78,13 +78,15 @@ void init_inputCapture(void)
 
 void TIM1_CC_IRQHandler(void)
 {
-	if(TIM_GetITStatus(TIM1, TIM_FLAG_CC1)==SET){
-	 calculateWheelSpeedLeft();
-	 TIM_ClearITPendingBit(TIM1,TIM_FLAG_CC1);
+	if (TIM_GetITStatus(TIM1, TIM_FLAG_CC1) == SET)
+	{
+		calculateWheelSpeedLeft();
+		TIM_ClearITPendingBit(TIM1, TIM_FLAG_CC1);
 	}
-	if(TIM_GetITStatus(TIM1,TIM_FLAG_CC2)==SET){
+	if (TIM_GetITStatus(TIM1, TIM_FLAG_CC2) == SET)
+	{
 		calculateWheelSpeedRight();
-		TIM_ClearITPendingBit(TIM1,TIM_FLAG_CC2);
+		TIM_ClearITPendingBit(TIM1, TIM_FLAG_CC2);
 	}
 }
 
@@ -230,42 +232,6 @@ void delay(uint16_t delay)
 	TIM_Cmd(TIM2, DISABLE);
 
 }
-/**
- void TIM2_IRQHandler()
- {
- if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
- {
- TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
- STM_EVAL_LEDToggle(LED_RED);
- }
- //TODO Get reading of counter
- //TODO reset counters
- //TODO put data into raw variables for the sensors, Calculate them when required to display
- }
- */
-/** configure the counters for each timer*/
-/**
- void init_counter()
- {
- GPIO_InitTypeDef GPIO_InitStructure;
- RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
-
- GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
- GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
- GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
- GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
- GPIO_Init(GPIOE, &GPIO_InitStructure);
-
- GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
- GPIO_Init(GPIOE, &GPIO_InitStructure);
-
- GPIO_PinAFConfig(GPIOE, GPIO_PinSource13, GPIO_AF_TIM1);
- GPIO_PinAFConfig(GPIOE, GPIO_PinSource14, GPIO_AF_TIM1);
-
- }
- */
 
 ////////////////////////////////////////////////////////////////////////////
 /*PWM*/
@@ -323,7 +289,7 @@ void init_pwm_config()
 	} else
 	{
 		TIM_TimeBaseStructure.TIM_Period = PERIOD_GEAR;
-		TIM_TimeBaseStructure.TIM_Prescaler = 4200000 - 1;
+		TIM_TimeBaseStructure.TIM_Prescaler = 8400000 - 1;
 	}
 
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
@@ -359,7 +325,7 @@ void init_gearShiftTimer()
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 	timerInitStructure.TIM_Prescaler = 1680 - 1;   //100Khz
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStructure.TIM_Period = 1;
+	timerInitStructure.TIM_Period = 0;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseInit(TIM4, &timerInitStructure);
 }
@@ -367,6 +333,7 @@ void init_gearShiftTimer()
 void startTimer()
 {
 	TIM4->ARR = 0xffff;
+	TIM4->CNT = 0;
 	TIM_Cmd(TIM4, ENABLE);
 }
 void stopTimer()
@@ -377,6 +344,7 @@ void stopTimer()
 uint16_t getTimerValue()
 {
 	uint16_t tim = TIM4->CNT;
+	TIM4->CNT = 0;
 	return tim;
 }
 
