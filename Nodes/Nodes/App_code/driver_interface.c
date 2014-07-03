@@ -122,6 +122,10 @@ void EXTI9_5_IRQHandler(void) //right pedal
 		{
 
 			timer++;
+			if (timer > 256)
+			{
+				break;
+			}
 
 		}
 		if (timer > 15)
@@ -145,6 +149,10 @@ void EXTI4_IRQHandler(void) //left pedal
 		{
 
 			timer++;
+			if (timer > 256)
+			{
+				break;
+			}
 
 		}
 		if (timer > 15)

@@ -30,10 +30,10 @@ int main(void)
 
 	createTaskDAQ();
 	xTaskCreate(vRecieveCan, (const signed char* )"Recieving Can",
-			STACK_SIZE_MIN, NULL, 3, NULL);
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateInputs,
 			(const signed char* )"Update digital and analog inputs",
-			STACK_SIZE_MIN, NULL, 3, NULL);
+			STACK_SIZE_MIN, NULL,tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateADC,
 			(const signed char* )"Update digital and analog inputs",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
@@ -50,9 +50,9 @@ int main(void)
 	if (THIS_NODE == REAR_NODE)
 	{
 		xTaskCreate(vautoShiftMgr, (const signed char* )"Gear shifting",
-						STACK_SIZE_MIN, NULL, 2, NULL);
+						STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vGearShifting, (const signed char* )"Gear shifting",
-				STACK_SIZE_MIN, NULL, 2, NULL);
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vIMUManager, (const signed char* )"IMU manager",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vLaunchControl, (const signed char* )"IMU manager",
@@ -156,7 +156,7 @@ void vSendGearDataRaw(void *pvParameters)
 	{
 
 		sendGearRaw();
-		vTaskDelay(800 / portTICK_RATE_MS);
+		vTaskDelay(1500 / portTICK_RATE_MS);
 	}
 }
 void vLaunchControl(void *pvParameters)
@@ -165,7 +165,7 @@ void vLaunchControl(void *pvParameters)
 	{
 
 		launchControl();
-		vTaskDelay(800 / portTICK_RATE_MS);
+		vTaskDelay(400 / portTICK_RATE_MS);
 	}
 }
 void vIMUManager(void *pvParameters)
@@ -183,7 +183,7 @@ void vCoolingSystem(void *pvParameters)
 	while (1)
 	{
 		coolingControl();
-		vTaskDelay(250 / portTICK_RATE_MS);
+		vTaskDelay(4000 / portTICK_RATE_MS);
 	}
 }
 void vautoShiftMgr(void *pvParameters)
@@ -212,29 +212,6 @@ void vSafetyCheck(void *pvParameters)
 		vTaskDelay(1000 / portTICK_RATE_MS);
 	}
 }
-//void vUpdateWheelSpeedLeft(void *pvParameters)
-//{
-//	while (1)
-//	{
-//
-//		calculateWheelSpeedLeft();
-//
-//		vTaskDelay(5 / portTICK_RATE_MS);
-//
-//	}
-//}
-//
-//void vUpdateWheelSpeedRight(void *pvParameters)
-//{
-//	while (1)
-//	{
-//
-//		calculateWheelSpeedRight();
-//
-//		vTaskDelay(5 / portTICK_RATE_MS);
-//
-//	}
-//}
 void vUpdateADC(void *pvParameters)
 {
 	while (1)
@@ -257,7 +234,7 @@ void vPerformSwitchAction(void *pvParameters)
 	{
 
 		switchAction();
-		vTaskDelay(5 / portTICK_RATE_MS);
+		vTaskDelay(20 / portTICK_RATE_MS);
 	}
 }
 void vRecieveCan(void *pvParameters)
@@ -274,7 +251,7 @@ void vSendWheelSpeed(void *pvParameters)
 	{
 
 		sendWheelSpeed(); //
-		vTaskDelay(10 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 	}
 }
 void vSendDamperTravel(void *pvParameters)
@@ -308,7 +285,7 @@ void vSendBrakeDisc(void *pvParameters)
 	{
 		sendBrakeDiscTemp();
 
-		vTaskDelay(250 / portTICK_RATE_MS);
+		vTaskDelay(500 / portTICK_RATE_MS);
 	}
 }
 void vSendOilPressure(void *pvParameters)
@@ -324,7 +301,7 @@ void vSendWaterTemp(void *pvParameters)
 	while (1)
 	{
 		sendOilTemprature();
-		vTaskDelay(250 / portTICK_RATE_MS);
+		vTaskDelay(500 / portTICK_RATE_MS);
 	}
 }
 void vSendAcc(void *pvParameters)

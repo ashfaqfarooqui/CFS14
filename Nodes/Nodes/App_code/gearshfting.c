@@ -354,12 +354,12 @@ void ElClutch(bol elClutch)
 
 	if (elClutch == TRUE)
 	{
-		ActiveClutch();
+		actuate(GPIOA, CLUTCH);
 		//flagElClutch = true;
 	}
 	if (elClutch == FALSE)
 	{
-		InactiveClutch();
+		release(GPIOA, CLUTCH);
 		//flagElClutch = false;
 	}
 }
