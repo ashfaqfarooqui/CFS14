@@ -1,8 +1,13 @@
 #include "main.h"
 #include "tests.h"
 
+
 //******************************************************************************
-int i = 0;
+static __IO uint32_t uwLsiFreq = 0;
+
+__IO uint32_t uwTimingDelay = 0;
+__IO uint32_t uwCaptureNumber = 0;
+__IO uint32_t uwPeriodValue = 0;
 unsigned int sensorData[150] = {
 0
 };
@@ -33,13 +38,15 @@ int main(void)
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateInputs,
 			(const signed char* )"Update digital and analog inputs",
-			STACK_SIZE_MIN, NULL,tskIDLE_PRIORITY, NULL);
+			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vUpdateADC,
 			(const signed char* )"Update digital and analog inputs",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	xTaskCreate(vPerformSwitchAction,
 			(const signed char* )"perform switch action", STACK_SIZE_MIN, NULL,
 			tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vIWDGUpdate, (const signed char* )"IWDG update", STACK_SIZE_MIN,
+			NULL, tskIDLE_PRIORITY, NULL);
 //	xTaskCreate(vUpdateWheelSpeedLeft,
 //			(const signed char* )"Update wheel speed left", STACK_SIZE_MIN,
 //			NULL, tskIDLE_PRIORITY, NULL);
@@ -49,29 +56,31 @@ int main(void)
 
 	if (THIS_NODE == REAR_NODE)
 	{
-		xTaskCreate(vautoShiftMgr, (const signed char* )"Gear shifting",
-						STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vautoShiftMgr, (const signed char* )"auto shifting",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vGearShifting, (const signed char* )"Gear shifting",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vIMUManager, (const signed char* )"IMU manager",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vLaunchControl, (const signed char* )"IMU manager",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vLaunchControl,
+				(const signed char* )"launch control manager", STACK_SIZE_MIN,
+				NULL, tskIDLE_PRIORITY, NULL);
 
 		//DAQ
-		xTaskCreate(vSendGear, (const signed char* )"send 40Hz Data",
+		xTaskCreate(vSendGear, (const signed char* )"send gear Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendWaterTemp, (const signed char* )"send 40Hz Data",
+		xTaskCreate(vSendWaterTemp, (const signed char* )"send oiltemp Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendAcc, (const signed char* )"send 40Hz Data",
+		xTaskCreate(vSendAcc, (const signed char* )"send acc Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendGyro, (const signed char* )"send 40Hz Data",
+		xTaskCreate(vSendGyro, (const signed char* )"send gyro Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendOilPressure, (const signed char* )"send 10Hz Data",
+		xTaskCreate(vSendOilPressure,
+				(const signed char* )"send oilpressure Data", STACK_SIZE_MIN,
+				NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vSendGearDataRaw, (const signed char* )"send gear raw Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendGearDataRaw, (const signed char* )"send 10Hz Data",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vNeutralMgr, (const signed char* )"send 10Hz Data",
+		xTaskCreate(vNeutralMgr, (const signed char* )"send neutral Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	}
 	if (THIS_NODE == FRONT_NODE)
@@ -79,6 +88,10 @@ int main(void)
 		xTaskCreate(vSafetyCheck, (const signed char* )"safety", STACK_SIZE_MIN,
 				NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vCoolingSystem, (const signed char* )"cooling system",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vCalculteBrakeBias, (const signed char* )"brakebias",
+				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vTelematics, (const signed char* )"telematics mgr",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 
 		//DAQ
@@ -99,15 +112,26 @@ int main(void)
 //******************************************************************************
 void createTaskDAQ()
 {
-	xTaskCreate(vSendWheelSpeed, (const signed char* )"send 50Hz Data",
+	xTaskCreate(vSendWheelSpeed, (const signed char* )"send wheelspeed Data",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-	xTaskCreate(vSendDamperTravel, (const signed char* )"send 50Hz Data",
+	xTaskCreate(vSendDamperTravel, (const signed char* )"send damper Data",
 			STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+
+}
+
+void initIWDG()
+{
+
+	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+	IWDG_SetPrescaler(IWDG_Prescaler_32);
+
+	IWDG_SetReload(0x0fff);
+	IWDG_Enable();
 
 }
 void initializeSystem()
 {
-
+	initIWDG();
 	init_uart(115200);
 	init_inputCapture();
 	init_CAN_Communication();
@@ -329,5 +353,33 @@ void vSendBreakPressureData(void *pvParameters)
 		vTaskDelay(20 / portTICK_RATE_MS);
 	}
 }
+void vCalculteBrakeBias(void *pvparameters)
+{
+	while (1)
+	{
+		calculateBrakeBias();
+		vTaskDelay(10000 / portTICK_RATE_MS);
+
+	}
+}
+
+void vTelematics(void *pvParameters)
+{
+	while (1)
+	{
+		telematicsMgr();
+
+		vTaskDelay(40 / portTICK_RATE_MS);
+	}
+}
+void vIWDGUpdate(void *pvParameters)
+{
+	while (1)
+	{
+		IWDG_ReloadCounter();
+		vTaskDelay(3000 / portTICK_RATE_MS);
+	}
+}
+
 //******************************************************************************
 
