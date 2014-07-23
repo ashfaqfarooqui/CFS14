@@ -117,23 +117,37 @@ void EXTI9_5_IRQHandler(void) //right pedal
 	if (EXTI_GetITStatus(EXTI_Line8) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARUP_POS] = 1;
-		while (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
-		{
+//		while (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+//		{
+//
+//			timer++;
+//			if (timer > 256)
+//			{
+//				break;
+//			}
+//
+//		}
+//		if (timer > 15)
+//		{
+//			shiftUpSwitch = TRUE;
+//		}
 
-			timer++;
-			if (timer > 256)
+		if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+		{
+			delay(20);
+			if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
 			{
-				break;
+				shiftUpSwitch = TRUE;
+				startTimer();
+				sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x01);
 			}
-
 		}
-		if (timer > 15)
-		{
-			shiftUpSwitch = TRUE;
-		}
+//		delay(5);
+//		if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+//		{
+//			shiftUpSwitch = TRUE;
+//		}
 
-		startTimer();
-		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x01);
 		EXTI_ClearFlag(EXTI_Line8); //clear interrupt
 
 	}
@@ -145,20 +159,32 @@ void EXTI4_IRQHandler(void) //left pedal
 	if (EXTI_GetITStatus(EXTI_Line4) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARDOWN_POS] = 1;
-		while (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+//		while (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+//		{
+//
+//			timer++;
+//			if (timer > 256)
+//			{
+//				break;
+//			}
+//
+//		}
+//
+//		if (timer > 4)
+//		{
+//			shiftDownSwitch = TRUE;
+//		}
+		if (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
 		{
-
-			timer++;
-			if (timer > 256)
+			delay(20);
+			if (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
 			{
-				break;
+				shiftDownSwitch = TRUE;
+				startTimer();
+				sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x10);
+
 			}
 
-		}
-
-		if (timer > 4)
-		{
-			shiftDownSwitch = TRUE;
 		}
 
 //		delay(5);
@@ -166,8 +192,7 @@ void EXTI4_IRQHandler(void) //left pedal
 //		{
 //			shiftUpSwitch = TRUE;
 //		}
-		startTimer();
-		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x10);
+
 		EXTI_ClearFlag(EXTI_Line4); //clear interrupt
 
 	}

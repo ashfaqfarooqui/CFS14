@@ -18,7 +18,7 @@ void launchControl()
 	if (LaunchControlActivated == TRUE)
 	{
 
-		ElClutch((ElectricClutchActuated==TRUE) || (LaunchControlActivated==TRUE));
+		ElClutch((ElectricClutchActuated==TRUE) /*|| (LaunchControlActivated==TRUE)*/);
 		error = sensorData[ENGINE_RPM] - SET_RPM;
 		//if (error > 400)
 		//{

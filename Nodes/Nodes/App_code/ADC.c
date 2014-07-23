@@ -172,7 +172,7 @@ void saveRawADCData()
 		sensorData[GEAR_POSITION] = rawAnalogState[AN_GEAR_POSITION];
 		sensorData[OIL_PRESSURE] = rawAnalogState[AN_OIL_PRESSURE];
 		sensorData[OIL_TEMPRATURE] = rawAnalogState[AN_OIL_TEMPRATURE];
-		//sensorData[CYLINDER_POSITION] = rawAnalogState[AN_CYLINDER_POSITION];
+		sensorData[CALIPER_TEMP] = rawAnalogState[AN_CALIPER_TEMP];
 	//	sensorData[THROTTLE_POSITION]=rawAnalogState[AN_THROTTLE_POSITION];
 		sensorData[WATER_TEMPRATURE]=rawAnalogState[AN_WATER_TEMP];
 	}

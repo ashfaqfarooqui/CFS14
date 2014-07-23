@@ -60,8 +60,8 @@ int main(void)
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vGearShifting, (const signed char* )"Gear shifting",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vIMUManager, (const signed char* )"IMU manager",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+//		xTaskCreate(vIMUManager, (const signed char* )"IMU manager",
+//				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vLaunchControl,
 				(const signed char* )"launch control manager", STACK_SIZE_MIN,
 				NULL, tskIDLE_PRIORITY, NULL);
@@ -71,17 +71,19 @@ int main(void)
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vSendWaterTemp, (const signed char* )"send oiltemp Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendAcc, (const signed char* )"send acc Data",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vSendGyro, (const signed char* )"send gyro Data",
-				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+//		xTaskCreate(vSendAcc, (const signed char* )"send acc Data",
+//				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+//		xTaskCreate(vSendGyro, (const signed char* )"send gyro Data",
+//				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vSendOilPressure,
 				(const signed char* )"send oilpressure Data", STACK_SIZE_MIN,
 				NULL, tskIDLE_PRIORITY, NULL);
 		xTaskCreate(vSendGearDataRaw, (const signed char* )"send gear raw Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
-		xTaskCreate(vNeutralMgr, (const signed char* )"send neutral Data",
+		xTaskCreate(vNeutralMgr, (const signed char* )"neutral Data",
 				STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
+		xTaskCreate(vsendCaliperTemp, (const signed char* )"send caliper temp Data",
+					STACK_SIZE_MIN, NULL, tskIDLE_PRIORITY, NULL);
 	}
 	if (THIS_NODE == FRONT_NODE)
 	{
@@ -164,16 +166,33 @@ void vNeutralMgr(void *pvParameters)
 {
 	while (1)
 	{
+		uint8_t try=0;
 		uint8_t gear = GetGearPosition();
 		if ((neutralSwitch == TRUE && gear == 1) || ToNeutral == TRUE)
 		{
 			neutralMgr();
+			try++;
+			if(try>5)
+			{
+				ToNeutral=FALSE;
+				neutralSwitch=FALSE;
+				try=0;
+			}
 
 		}
 		vTaskDelay(20 / portTICK_RATE_MS);
 	}
 }
 
+void vsendCaliperTemp(void *pvParameters)
+{
+	while (1)
+		{
+
+			sendCaliperTemp();
+			vTaskDelay(1500 / portTICK_RATE_MS);
+		}
+}
 void vSendGearDataRaw(void *pvParameters)
 {
 	while (1)

@@ -76,6 +76,17 @@ typedef int bool;
 #define GEAR5	0xfd5	//4053	//3873-4233
 #define GEAR6	0x453	//1107	//927-1287
 
+
+
+//#define NEUTRAL 1920    //1990	//1890-2090
+//#define RANGE_NEUTRAL 100
+//#define GEAR1	1633	//1680	//1780-1500
+//#define GEAR2	2209	//2287	//2467-2107
+//#define GEAR3	2761	//2878	//2698-3058
+//#define GEAR4	3329	//3248  //3428-3068
+//#define GEAR5	3680	//4053	//3873-4233
+//#define GEAR6	98	//1107	//927-1287
+
 #define RANGE 180
 #define RANGE_FIRST_HIGH 100
 

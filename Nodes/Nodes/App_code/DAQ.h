@@ -25,6 +25,7 @@
 #define CAN_ADR_SWITCHSTATE 0x200
 #define CAN_ADR_SHIFTING_RAW 0x158
 #define CAN_ADR_THROTTLE_POSITION 0x5f3
+#define CAN_ADR_CALIPER_TEMP 0x160
 
 
 #define CAN_FRONT_NODE_FILTER 0x40
@@ -50,6 +51,7 @@ void sendBrakePressure(void);
 void sendOilPressure(void);
 void sendGearTime(uint8_t shiftDirection);
 void sendSwitchState();
+void sendCaliperTemp();
 
 
 #endif

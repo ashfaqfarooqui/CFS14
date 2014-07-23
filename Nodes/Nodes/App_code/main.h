@@ -40,6 +40,7 @@ void vSend50HzData1(void *pvParameters);
 void vSend40HzData(void *pvParameters);
 void vSend10HzData(void *pvParameters);
 void vSendBreakPressureData(void *pvParameters);
+void vsendCaliperTemp(void *pvParameters);
 void vRecieveCan(void *pvParameters);
 void vUpdateInputs(void *pvParameters);
 void vPerformSwitchAction(void *pvParameters);

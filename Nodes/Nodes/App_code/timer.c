@@ -331,8 +331,8 @@ void init_gearShiftTimer()
 
 void startTimer()
 {
-	TIM4->ARR = 0xffff;
 	TIM4->CNT = 0;
+	TIM4->ARR = 0xffff;
 	TIM_Cmd(TIM4, ENABLE);
 }
 void stopTimer()
