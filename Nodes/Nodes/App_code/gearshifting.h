@@ -22,7 +22,7 @@ typedef int bool;
 #define CUT_IGNITION GPIO_Pin_1 //PE1
 
 
-#define MONITOR_TIME 300000
+#define MONITOR_TIME 500000
 #define SWITCHHOLDINGTIME 100000
 #define LAUCH_CONTROL_CLUTCH_ON_DELAY 150
 #define NEUTRAL_FREQUENCY 10
@@ -31,33 +31,71 @@ typedef int bool;
 #define MIN_GEAR_POSITION 1
 
 
-//#define NEUTRAL 0x07E7//2.343V//0xE7
+/**
+ * old values first sensor(June2014)
+ * //#define NEUTRAL 0x07E7//2.343V//0xE7
+* // #define RANGE_NEUTRAL 100
+* //#define GEAR1 0x06BF//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
+* //#define GEAR2 0x0912//2.712V//0x11C//0x90//0x12E
+* //#define GEAR3 0x0B6A//3.439V//3.0xB1//0x1BB
+* //#define GEAR4 0x3814
+* //#define GEAR5 0x4475
+* //#define GEAR6 0x1159
+ */
+
+
+/**
+ * Second calibration after changing sensor uptil silverstone UK //change in UK
+ */
+//#define NEUTRAL 0xEBC   //3772
+//#define RANGE_NEUTRAL 100
+//#define GEAR1	0xD9B	//3483
+//#define GEAR2	0x22A	// 554
+//#define GEAR3	0x479   //1145
+//#define GEAR4	0x6Be	//1726
+//#define GEAR5	0x910
+//#define GEAR6	0xB50
+
+//calibration during UK
+//#define NEUTRAL 0xEBC   //3772
+//#define RANGE_NEUTRAL 100
+//#define GEAR1	0xD9B	//3483
+//#define GEAR2	0xFC9	//
+//#define GEAR3	0x479   //1145
+//#define GEAR4	0x6Be	//1726
+//#define GEAR5	0x910
+//#define GEAR6	0xB50
+
+
+#define NEUTRAL 0x7c6    //1990	//1890-2090
 #define RANGE_NEUTRAL 100
-//#define GEAR1 0x06BF//1.995V//0x2C2//0xB3//0xD7//0xE4//0x2B0//0xA0
-//#define GEAR2 0x0912//2.712V//0x11C//0x90//0x12E
-//#define GEAR3 0x0B6A//3.439V//3.0xB1//0x1BB
-//#define GEAR4 0x3814
-//#define GEAR5 0x4475
-//#define GEAR6 0x1159
+#define GEAR1	0x690	//1680	//1780-1500
+#define GEAR2	0x8ef	//2287	//2467-2107
+#define GEAR3	0xB3E	//2878	//2698-3058
+#define GEAR4	0xcB0	//3248  //3428-3068
+#define GEAR5	0xfd5	//4053	//3873-4233
+#define GEAR6	0x453	//1107	//927-1287
 
 
-#define NEUTRAL 0xEBC
-#define GEAR1	0xD9B
-#define GEAR2	0x22A
-#define GEAR3	0x479
-#define GEAR4	0x6Be
-#define GEAR5	0x910
-#define GEAR6	0xB50
 
-#define RANGE 150
-#define RANGE_FIRST_HIGH 70
+//#define NEUTRAL 1920    //1990	//1890-2090
+//#define RANGE_NEUTRAL 100
+//#define GEAR1	1633	//1680	//1780-1500
+//#define GEAR2	2209	//2287	//2467-2107
+//#define GEAR3	2761	//2878	//2698-3058
+//#define GEAR4	3329	//3248  //3428-3068
+//#define GEAR5	3680	//4053	//3873-4233
+//#define GEAR6	98	//1107	//927-1287
+
+#define RANGE 180
+#define RANGE_FIRST_HIGH 100
 
 #define NEUTRALLOW (NEUTRAL - RANGE_NEUTRAL)
 #define NEUTRALHIGH (NEUTRAL + RANGE_NEUTRAL)
 #define GEAR1LOW (GEAR1 - RANGE)
 #define GEAR1HIGH (GEAR1 + RANGE_FIRST_HIGH)
 #define GEAR2LOW (GEAR2 - RANGE)
-#define GEAR2HIGH (GEAR2 + RANGE)
+#define GEAR2HIGH (GEAR2 + RANGE)%0xfff
 #define GEAR3LOW (GEAR3 - RANGE)
 #define GEAR3HIGH (GEAR3 + RANGE)
 #define GEAR4LOW (GEAR4 - RANGE)
@@ -66,8 +104,10 @@ typedef int bool;
 #define GEAR5HIGH (GEAR5 + RANGE)
 #define GEAR6LOW (GEAR6 - RANGE)
 #define GEAR6HIGH (GEAR6 + RANGE)
+
 #define SHIFTDOWN2RPM_PROTECTION 8500
 #define SHIFTDOWN3RPM_PROTECTION 10500
+
 
 void gearShiftManager(void);
 int GetGearPosition(void);

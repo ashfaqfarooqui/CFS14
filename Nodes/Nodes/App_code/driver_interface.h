@@ -54,6 +54,7 @@ void switchAction(void);
 void setSwitchStates(uint8_t);
 unsigned char debounceInput(int , int , int  );
 void updateSwitches(void);
+void calculateBrakeBias();
 
 #endif
 

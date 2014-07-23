@@ -222,8 +222,8 @@ void sendGearTime(uint8_t shiftDirection)
 	CanTxMsg GearTime;
 	uint8_t transmitStatus;
 	uint8_t data[3];
-	uint16_t time=0;
- time = getTimerValue();
+	uint16_t time = 0;
+	time = getTimerValue();
 	data[0] = shiftDirection;
 	data[2] = (time) & 0xff;
 	data[1] = (time >> 8) & 0xff;
@@ -252,4 +252,19 @@ void sendSwitchState()
 	} while (transmitStatus == CAN_TxStatus_NoMailBox);
 	sensorData[SWITCHSTATE] = 0;
 }
+void sendCaliperTemp()
+{
+	CanTxMsg caliperTemp;
+	uint8_t transmitStatus;
+	uint8_t data[7];
+	data[0] = 0;
+	data[2] = (sensorData[CALIPER_TEMP]) & 0xff;
+	data[1] = (sensorData[CALIPER_TEMP] >> 8) & 0x0f;
 
+	caliperTemp = CAN_createMessage_uint(CAN_ADR_CALIPER_TEMP,
+	CAN_RTR_Data, CAN_ID_STD, 3, &data[0]);
+	do
+	{
+		transmitStatus = CAN_Transmit(CAN1, &caliperTemp);
+	} while (transmitStatus == CAN_TxStatus_NoMailBox);
+}

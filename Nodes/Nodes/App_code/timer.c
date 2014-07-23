@@ -213,11 +213,10 @@ void delay(uint16_t delay)
 	uint16_t tim = 0;
 	TIM_TimeBaseInitTypeDef timerInitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-	tim = (uint16_t) delay * (42000) / 41999;
 
 	timerInitStructure.TIM_Prescaler = 42000 - 1;
 	timerInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStructure.TIM_Period = tim;
+	timerInitStructure.TIM_Period = delay;
 	timerInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 
 	TIM_TimeBaseInit(TIM2, &timerInitStructure);
@@ -332,14 +331,14 @@ void init_gearShiftTimer()
 
 void startTimer()
 {
-	TIM4->ARR = 0xffff;
 	TIM4->CNT = 0;
+	TIM4->ARR = 0xffff;
 	TIM_Cmd(TIM4, ENABLE);
 }
 void stopTimer()
 {
 	TIM4->ARR = 0;
-	TIM_Cmd(TIM4, ENABLE);
+	TIM_Cmd(TIM4, DISABLE);
 }
 uint16_t getTimerValue()
 {

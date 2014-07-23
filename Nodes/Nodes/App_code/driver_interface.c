@@ -78,10 +78,9 @@ void init_driverInterface()
 		
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource8);
 		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource4);
-		SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource10);
 		EXTI_InitStructure.EXTI_Line = EXTI_Line8;
 		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
 		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 		EXTI_Init(&EXTI_InitStructure);
 		EXTI_InitStructure.EXTI_Line = EXTI_Line4;
@@ -118,18 +117,37 @@ void EXTI9_5_IRQHandler(void) //right pedal
 	if (EXTI_GetITStatus(EXTI_Line8) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARUP_POS] = 1;
-		while (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
-		{
+//		while (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+//		{
+//
+//			timer++;
+//			if (timer > 256)
+//			{
+//				break;
+//			}
+//
+//		}
+//		if (timer > 15)
+//		{
+//			shiftUpSwitch = TRUE;
+//		}
 
-			timer++;
-
-		}
-		if (timer > 15)
+		if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
 		{
-			shiftUpSwitch = TRUE;
+			delay(20);
+			if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+			{
+				shiftUpSwitch = TRUE;
+				startTimer();
+				sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x01);
+			}
 		}
-		startTimer();
-		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x01);
+//		delay(5);
+//		if (GPIO_ReadInputDataBit(INPUTPORT, GPIO_Pin_8) == RESET)
+//		{
+//			shiftUpSwitch = TRUE;
+//		}
+
 		EXTI_ClearFlag(EXTI_Line8); //clear interrupt
 
 	}
@@ -141,18 +159,40 @@ void EXTI4_IRQHandler(void) //left pedal
 	if (EXTI_GetITStatus(EXTI_Line4) != RESET) //check if EXTI line is asserted
 	{
 //		rawDigitalState[GEARDOWN_POS] = 1;
-		while (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+//		while (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+//		{
+//
+//			timer++;
+//			if (timer > 256)
+//			{
+//				break;
+//			}
+//
+//		}
+//
+//		if (timer > 4)
+//		{
+//			shiftDownSwitch = TRUE;
+//		}
+		if (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
 		{
+			delay(20);
+			if (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+			{
+				shiftDownSwitch = TRUE;
+				startTimer();
+				sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x10);
 
-			timer++;
+			}
 
 		}
-		if (timer > 15)
-		{
-			shiftDownSwitch = TRUE;
-		}
-		startTimer();
-		sensorData[SWITCHSTATE] = sensorData[SWITCHSTATE] | (0x10);
+
+//		delay(5);
+//		if (GPIO_ReadInputDataBit(INPUTPORT, GEARDOWN) == RESET)
+//		{
+//			shiftUpSwitch = TRUE;
+//		}
+
 		EXTI_ClearFlag(EXTI_Line4); //clear interrupt
 
 	}
@@ -215,7 +255,7 @@ void updateSwitches()
 	}
 	if (rawDigitalState[GEARDOWN_POS] == 1 || rawDigitalState[GEARUP_POS] == 1)
 	{
-		startTimer();
+//		startTimer();
 		sensorData[SWITCHSTATE] = (rawDigitalState[GEARDOWN_POS] << 4
 				| rawDigitalState[GEARUP_POS]);
 	}
@@ -380,4 +420,29 @@ void switchAction()
 		previousRecievedStates = recievedStates;
 		//}
 	}
+}
+
+void calculateBrakeBias()
+{
+	float pi = 3.14;
+	float r_disc_front = 83.74;
+	float r_disc_rear = 79.95;
+	float d_caliper_front = 25;
+	float d_caliper_rear = 25;
+	uint8_t n_pistons_front = 4;
+	uint8_t n_pistons_rear = 2;
+	uint8_t ny = 1;
+	float F_brake_front, F_brake_rear, bias_front, bias_rear, T_front, T_rear;
+
+	F_brake_front = (62.5 * (sensorData[BRAKE_PRESSURE_F] * 3.3 * 1.4 / 4095)
+			- 31.2) * pi / 4 * d_caliper_front * d_caliper_front;
+	F_brake_rear = (62.5 * (sensorData[BRAKE_PRESSURE_R] * 3.3 * 1.4 / 4095)
+			- 31.2) * pi / 4 * d_caliper_rear * d_caliper_rear;
+
+	T_front = r_disc_front * F_brake_front * ny * n_pistons_front;
+	T_rear = r_disc_rear * F_brake_rear * ny * n_pistons_rear;
+
+	bias_front = T_front / (T_front + T_rear) * 100;
+	bias_rear = T_rear / (T_front + T_rear) * 100;
+
 }

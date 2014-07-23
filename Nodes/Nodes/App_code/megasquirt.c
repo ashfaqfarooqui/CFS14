@@ -18,15 +18,15 @@ void launchControl()
 	if (LaunchControlActivated == TRUE)
 	{
 
-		ElClutch((ElectricClutchActuated==TRUE) || (LaunchControlActivated==TRUE));
+		ElClutch((ElectricClutchActuated==TRUE) /*|| (LaunchControlActivated==TRUE)*/);
 		error = sensorData[ENGINE_RPM] - SET_RPM;
-		if (error > 400)
-		{
-			cutIgnition(PERIOD_CUT_IGNITION * kp / 100);
-		}
+		//if (error > 400)
+		//{
+			cutIgnition(0);
+		//}
 
 	} else
 	{
-		cutIgnition(PERIOD_CUT_IGNITION);
+		cutIgnition(PERIOD_GEAR);
 	}
 }

@@ -226,6 +226,12 @@ void readMessages()
 					sensorData[OIL_TEMPRATURE] |= (RxMessage.Data[1] << 8);
 					CAN_FIFORelease(CAN1, CAN_FIFO0);
 					FIFOReleased = TRUE;
+				} else if (RxMessage.StdId == CAN_ADR_THROTTLE_POSITION)
+				{
+					sensorData[THROTTLE_POSITION] = RxMessage.Data[1];
+					sensorData[THROTTLE_POSITION] |= RxMessage.Data[0];
+					CAN_FIFORelease(CAN1, CAN_FIFO0);
+					FIFOReleased = TRUE;
 				}
 
 			}

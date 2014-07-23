@@ -88,15 +88,15 @@ void initPWMCutIgnition()
 	
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = PERIOD_CUT_IGNITION;
+	TIM_OCInitStructure.TIM_Pulse = PERIOD_GEAR;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	TIM_OC4Init(TIM3, &TIM_OCInitStructure);
 
 	TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
-//	TIM_ARRPreloadConfig(TIM3, ENABLE);
+	TIM_ARRPreloadConfig(TIM3, ENABLE);
 	/* TIM3 enable counter */
-//	TIM_Cmd(TIM3, ENABLE);
+	TIM_Cmd(TIM3, ENABLE);
 }
 
 void cutIgnition(uint16_t dutyCycle)

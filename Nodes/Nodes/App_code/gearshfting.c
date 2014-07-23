@@ -53,12 +53,11 @@ void gearShiftManager(void)
 	unsigned int sensorMonitor = 0;
 	
 	InactiveCutIgnition();
-	ElClutch(
-			(ElectricClutchActuated == TRUE)
-					|| (LaunchControlActivated == TRUE));
+	ElClutch((ElectricClutchActuated == TRUE)/*
+	 || (LaunchControlActivated == TRUE)*/);
 
 	GetGearPosition();
-	
+
 	if (!gearIsInPosition)
 	{
 		sensorMonitor++;
@@ -96,9 +95,9 @@ void gearShiftManager(void)
 		return;
 	}
 
-	if (shiftUpSwitch == TRUE)
+	if (shiftUpSwitch == TRUE && shiftDownSwitch == FALSE)
 	{
-		
+
 		//GetGearPosition();
 		shiftUpSwitch = FALSE;
 
@@ -106,17 +105,17 @@ void gearShiftManager(void)
 		{
 			if (gearPosition == 0)
 			{ //now is in neutral
-				flagNeutralToFirst = true;
+//				flagNeutralToFirst = true;
 				shiftDownActive = true;
 				shiftUpActive = false;
-				
+
 				neutralToGear = true;
 			} else if (gearPosition > MAX_GEAR_POSITION - 1)
 			{ //in gear 3 or over gear
 				return;
 			} else
 			{
-				flagFirstToSecond = true;
+//				flagFirstToSecond = true;
 				shiftUpActive = true;
 				shiftDownActive = false;
 				
@@ -129,7 +128,7 @@ void gearShiftManager(void)
 
 	}
 
-	if (shiftDownSwitch == TRUE)
+	if (shiftDownSwitch == TRUE && shiftUpSwitch == FALSE)
 	{
 		shiftDownSwitch = FALSE;
 		if (gearIsInPosition)
@@ -155,7 +154,6 @@ void gearShiftManager(void)
 					//TODO
 					shiftDownActive = true;
 					shiftUpActive = false;
-					
 				}
 			}
 		} else
@@ -166,12 +164,22 @@ void gearShiftManager(void)
 
 	}
 
+	if (shiftDownSwitch == TRUE && shiftUpSwitch == TRUE)
+	{
+		shiftDownSwitch = FALSE;
+		shiftUpSwitch = FALSE;
+	}
+
 	actuateShift();
+	delay(20);
+	sendGear();
+	delay(20);
 }
 
 void actuateShift()
 {
-	if (shiftUpActive)
+	IWDG_ReloadCounter();
+	if (shiftUpActive==true)
 	{
 		shiftUpSwitch = FALSE;
 		shiftDownSwitch = FALSE;
@@ -179,10 +187,11 @@ void actuateShift()
 		stopTimer();
 		sendGearTime(SHIFT_DIRECTION_UP);
 		shiftUpActive = false;
-		delay(100);
+		delay(25);
+		sendGearTime(SHIFT_DIRECTION_UP);
 	}
 
-	if (shiftDownActive)
+	if (shiftDownActive==true)
 	{
 		shiftUpSwitch = FALSE;
 		shiftDownSwitch = FALSE;
@@ -190,7 +199,8 @@ void actuateShift()
 		stopTimer();
 		sendGearTime(SHIFT_DIRECTION_DOWN);
 		shiftDownActive = false;
-		delay(100);
+		delay(25);
+		sendGearTime(SHIFT_DIRECTION_DOWN);
 	}
 
 }
@@ -199,6 +209,7 @@ int GetGearPosition()
 
 	gearPositionSensorData = sensorData[GEAR_POSITION];
 	gear = 0;
+	gearIsInPosition = false;
 	for (gear = 0; gear < 6; gear++)
 	{
 		if (gearPositionSensorData > shiftLevelsLow[gear]
@@ -209,18 +220,11 @@ int GetGearPosition()
 			break;
 		}
 
-		if (gearPositionSensorData > shiftLevelsHigh[gear]
-				&& gearPositionSensorData < shiftLevelsLow[gear + 1])
+		if (gearPositionSensorData >= shiftLevelsHigh[gear]
+				&& gearPositionSensorData <= shiftLevelsLow[gear + 1])
 		{
-			gearPosition = gear;
+			gearPosition = 8;
 			gearIsInPosition = false;
-			break;
-		}
-		if (gear == 2 && gearPositionSensorData > 0xf00
-				&& gearPositionSensorData < 0xfE0)
-		{
-			gearPosition = gear;
-			gearIsInPosition = true;
 			break;
 		}
 	}
@@ -235,53 +239,50 @@ void ShiftUp(int gearPositionDeliver)
 
 	uint32_t gearPositionMonitor = 0;
 
-	flagShiftUp = true;
+//	flagShiftUp = true;
 	ActiveCutIgnition();
 	ActuateShiftUp(PERIOD_GEAR);
 //	ActiveShiftUp();
-	
+
 	for (;; gearPositionMonitor++)
 	{
-		flagMonitoring = true;
+//		flagMonitoring = true;
 
 		saveRawADCData();
 		gearPositionCurrent = GetGearPosition();
 		if (gearIsInPosition && gearPositionCurrent == gearPositionDeliver + 1)
 		{
-			flagReachGear = true;
+//			flagReachGear = true;
 			break;
-		}
-		if (gearPositionMonitor > MONITOR_TIME)
+		} else if (gearPositionMonitor > MONITOR_TIME)
 		{
-			flagProblem = true;
+//			flagProblem = true;
 			gearPositionMonitor = 0;
+
 			problem = true;
 			break;
 		}
 	}
 
 	flagOutOfMonitoring = true;
-	//delay(1000);
 	ActuateShiftUp(0);
 //	InactiveShiftUp();
 	InactiveCutIgnition();
 
-	flagReleaseShiftUp = true;
+//	flagReleaseShiftUp = true;
 
 }
 
 void ShiftDown(int gearPositionDeliver)
 {
-	//int gearPositionCurrent = 0;
 	uint32_t gearPositionMonitor = 0;
 
 	ActiveClutch();
 
-	delay(80);
-
+	delay(150);
 	ActuateShiftDown(PERIOD_GEAR);
 //	ActiveShiftDown();
-	
+
 	for (;; gearPositionMonitor++)
 	{
 		saveRawADCData();
@@ -289,22 +290,22 @@ void ShiftDown(int gearPositionDeliver)
 
 		if (neutralToGear == false)
 		{
-			flagSecondToFirst = true;
+//			flagSecondToFirst = true;
 			if (gearIsInPosition
 					&& gearPositionCurrent == gearPositionDeliver - 1)
 			{
-				flagFirstToNeutral = true;
+//				flagFirstToNeutral = true;
 				break;
 			}
 		}
 
-		if (neutralToGear == true)
+		else if (neutralToGear == true)
 		{
-			flagFirstToNeutral = true;
+//			flagFirstToNeutral = true;
 			if (gearIsInPosition
 					&& gearPositionCurrent == gearPositionDeliver + 1)
 			{
-				neutralToGear = false;
+//				neutralToGear = false;
 				break;
 			}
 
@@ -326,22 +327,21 @@ void ShiftDown(int gearPositionDeliver)
 
 void neutralMgr(void)
 {
-	
+
 	GetGearPosition();
 	if (gearPosition == 1)
 	{
 		ToNeutral = TRUE;
 	}
-	if (gearPosition != 0)
+	if (gearPosition != 0 && gearPosition >!1)
 	{
-			ActuateShiftUp(dutyCycle);
+		ActuateShiftUp(dutyCycle);
 
-			dutyCycle = (dutyCycle + 2) % 85;
+		dutyCycle = (dutyCycle + 2) % 85;
 	}
-	if (gearIsInPosition && gearPosition == 0)
+	if ((gearIsInPosition && gearPosition == 0) || gearPosition > 1)
 	{
 		ActuateShiftUp(0);
-		
 		dutyCycle = 0;
 		neutralSwitch = FALSE;
 		ToNeutral = FALSE;
@@ -354,19 +354,19 @@ void ElClutch(bol elClutch)
 
 	if (elClutch == TRUE)
 	{
-		ActiveClutch();
+		actuate(GPIOA, CLUTCH);
 		//flagElClutch = true;
 	}
 	if (elClutch == FALSE)
 	{
-		InactiveClutch();
+		release(GPIOA, CLUTCH);
 		//flagElClutch = false;
 	}
 }
 
 void autoShiftManager(void)
 {
-	
+
 	uint16_t rpm = sensorData[ENGINE_RPM];
 	GetGearPosition();
 	if ((autoShiftSwitch == TRUE && autoShiftBlocked == FALSE)

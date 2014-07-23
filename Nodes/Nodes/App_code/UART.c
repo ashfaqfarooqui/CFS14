@@ -68,9 +68,9 @@ void USART_puts_char(USART_TypeDef* USARTx, char *s)
 {
 	while (*s)
 	{
-		while ((USART_GetFlagStatus(UART4, USART_FLAG_TXE) == SET))
+		while ((USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == SET))
 		{
-			USART_SendData(UART4, *s++);
+			USART_SendData(USARTx, *s++);
 			
 		}
 	}
